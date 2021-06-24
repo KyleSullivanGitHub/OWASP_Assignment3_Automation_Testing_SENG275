@@ -2,8 +2,7 @@ import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 
@@ -13,13 +12,22 @@ public class Setup
     //Main Website URL
     String website = "https://juice-shop.herokuapp.com";
     //File Path to Chosen Browser Driver
-    String path = "";
+    String path = ""; //Set to Driver file path
     String driverType;
     WebDriver browser;
     //Chosen Browser. Change name to correct browser.
     String chosenBrowser = "Firefox";//'Firefox' or 'Chrome'
 
-    @BeforeMethod(alwaysRun = true)
+
+    /**
+     * Description
+     * @Param
+     * @See
+     */
+    @BeforeSuite
+    @BeforeMethod(
+            onlyForGroups = {"Start Test"},
+            description = "")
     public void setUp() throws IOException
     {
         switch(chosenBrowser)
@@ -37,10 +45,10 @@ public class Setup
         }
         System.setProperty(driverType,path);
         browser.manage().window().maximize();
+        //go to site
     }
 
-    @AfterMethod(alwaysRun = true)
+    @AfterMethod(
+            onlyForGroups = {"Close Browser"})
     public void cleanUp(){browser.quit();}
-
-
-    }
+}
