@@ -9,6 +9,11 @@ import java.io.IOException;
 
 public class Setup
 {
+
+
+
+
+    /*
     //Main Website URL
     String website = "https://juice-shop.herokuapp.com";
     //File Path to Chosen Browser Driver
@@ -23,7 +28,7 @@ public class Setup
      * Description
      * @Param
      * @See
-     */
+
     @BeforeSuite
     @BeforeMethod(
             onlyForGroups = {"Start Test"},
@@ -50,5 +55,6 @@ public class Setup
 
     @AfterMethod(
             onlyForGroups = {"Close Browser"})
-    public void cleanUp(){browser.quit();}
+    public void cleanUp(){ }
+    */
 }
