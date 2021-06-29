@@ -2,31 +2,29 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.*;
 
+import java.io.IOException;
+
 /**
  * A class providing data values for all tests in the automated system.
  */
 public class Test_Data
 {
-    static String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\";
-
-
-
+    static String FireFoxDriver = "webdriver.gecko.driver";
+    static String FireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
 
     /**
      *
      * @return
      */
     @DataProvider(
-            name = "Environment_Setup"
+            name = "Environment_Setup_TS_001"
     )
-    public static Object[][] Environment_Setup()
+    public static Object[][] Environment_Setup_TS_001() throws IOException
     {
         return new Object[][]{
-                //{new FirefoxDriver(), "webdriver.gecko.driver", driverPath+"geckodriver-v0.29.1-win64\\geckodriver.exe"},
                 //{new ChromeDriver(), "webdriver.gecko.driver", driverPath+"geckodriver-v0.29.1-win64\\geckodriver.exe"},
-                new Object[] {new TS_001_Register_Functionality(driverPath)},
-                new Object[] {new TS_001_Register_Functionality(driverPath)},
-
+                new Object[] {
+                        new TS_001_Register_Functionality("Firefox",FireFoxDriver,FireFoxLoc)},
         };
     }
 
