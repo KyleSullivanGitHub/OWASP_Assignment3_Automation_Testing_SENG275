@@ -1,0 +1,7 @@
+List of Groups in Project
+Start
+    Methods in this group will have a new browser generated upon the start of the method
+End
+    Methods in this group will close the current browser upon completion of the method.
+
+Page: Sign up
