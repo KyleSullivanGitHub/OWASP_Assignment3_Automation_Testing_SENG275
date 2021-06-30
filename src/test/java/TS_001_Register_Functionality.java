@@ -50,6 +50,7 @@ public class TS_001_Register_Functionality
      */
    @Test(
             description = "Test Cases: TC_RF_001",
+            groups = {"Smoke Testing","Sanity Testing"},
             priority = 0,
             enabled = true)
     public void Sign_Up_Page_Access() throws IOException, InterruptedException
@@ -77,6 +78,7 @@ public class TS_001_Register_Functionality
      */
     @Test(
             description = "Test Cases: TC_RF_011, TC_RF_012, TC_RF_014, TC_RF_017, TC_RF_020",
+            groups = {"Regression Testing", "Sanity Testing"},
             priority = 1,
             enabled = true)
     public void Sign_Up_Check_UI() throws IOException, InterruptedException
@@ -98,6 +100,7 @@ public class TS_001_Register_Functionality
      */
     @Test(
             description = "Test Cases: TC_RF_002, TC_RF_016",
+            groups = {"Smoke Testing", "Regression Testing"},
             priority = 2,
             enabled = true)
     public void Sign_Up_Functionality_Valid() throws IOException
@@ -116,6 +119,7 @@ public class TS_001_Register_Functionality
      */
     @Test(
             description = "Test Cases: TC_RF_003",
+            groups = {"Regression Testing"},
             dependsOnMethods = "Sign_Up_Functionality_Valid",
             priority = 2,
             enabled = true)
@@ -135,6 +139,7 @@ public class TS_001_Register_Functionality
      */
     @Test(
             description = "Test Cases: TC_RF_004, TC_RF_005, TC_RF_006, TC_RF_007, TC_RF_008, TC_RF_009, TC_RF_010, TC_RF_013, TC_RF_018, TC_RF_019",
+            groups = {"Regression Testing"},
             priority = 3,
             dataProvider = "Invalid_Sign_Up",
             dataProviderClass = Test_Data.class,
@@ -162,6 +167,7 @@ public class TS_001_Register_Functionality
      */
     @Test(
             description = "Test Cases: TC_RF_015",
+            groups = {"Regression Testing"},
             priority = 4,
             dataProvider = "Sign_Up_Passwords",
             dataProviderClass = Test_Data.class,
