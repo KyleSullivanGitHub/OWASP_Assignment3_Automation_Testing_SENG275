@@ -24,8 +24,8 @@ Common class setup
 Start Browser
 (if you need to create different browsers for differnet web apps)
         TestBrowser driver = passBrowser.createBrowser(chosenBrowser); //basic setup class, used to do common functions.
-        WebDriver browserWindow = driver.makeDriver();
         System.setProperty(driver.getDriver(),driver.getDriverLoc());
+        WebDriver browserWindow = driver.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
 

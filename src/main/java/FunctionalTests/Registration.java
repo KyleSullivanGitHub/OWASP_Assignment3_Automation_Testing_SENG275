@@ -35,16 +35,17 @@ public class Registration
             priority = 0,
             dataProvider = "RF1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            threadPoolSize = 1,
             enabled = true
     )
     public void RF1_Valid_Input(String email, String password, String question, String chosenBrowser) throws IOException
     {
         TestBrowser driver = passBrowser.createBrowser(chosenBrowser); //basic setup class, used to do common functions.
-        WebDriver browserWindow = driver.makeDriver();
         System.setProperty(driver.getDriver(),driver.getDriverLoc());
+        WebDriver browserWindow = driver.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+
     }
 
     /**purpose

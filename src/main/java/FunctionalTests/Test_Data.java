@@ -23,8 +23,8 @@ public class Test_Data
 
         return new Object[][]{
                 {email,password,question,"Firefox"},
-                {email,password,question,"Chrome"},
-                {email,password,question,"Edge"},
+                //{email,password,question,"Chrome"},
+                //{email,password,question,"Edge"},
         };
     }
 }

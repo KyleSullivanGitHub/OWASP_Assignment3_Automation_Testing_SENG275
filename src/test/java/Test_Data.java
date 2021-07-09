@@ -11,7 +11,7 @@ public class Test_Data
 {
     static String FireFoxDriver = "webdriver.gecko.driver";
     static String FireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
-    static String ChromeDriver
+    static String ChromeDriver;
 
     /**
      *
