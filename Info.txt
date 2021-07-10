@@ -15,7 +15,7 @@ Common class setup
      * Programmer: Kyle Sullivan
      */
     @BeforeSuite
-    public void regSetUp() throws IOException
+    public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser(TestBrowser.getPrimaryBrowser());
     }
@@ -23,23 +23,21 @@ Common class setup
 
 Start Browser
 (if you need to create different browsers for differnet web apps)
-        TestBrowser driver = passBrowser.createBrowser(chosenBrowser); //basic setup class, used to do common functions.
-        System.setProperty(driver.getDriver(),driver.getDriverLoc());
-        WebDriver browserWindow = driver.makeDriver();
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
 
 (if you need to create  browsers of the same web type)
         WebDriver browserWindow = environment.makeDriver()
-        System.setProperty(environment.getDriver(),environment.getDriverLoc());
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
 
-Close Browser Window
+Close Browser Window. Use this rather than .quit if you have more tests to run.
         Thread.sleep(5000);
         browserWindow.close();
 
-Close driver
+Close browser window, and driver.
     environment.quit();
 
 Data provider class
@@ -83,5 +81,22 @@ test Class
 public void __()
 {
 }
+
+Common Selenium Commands
+browserWindow.get(""); // go to a certian URL
+browserWindow.getTitle();// gets the title of the webpage
+
+WebElement __ = browserWindow.findElement(By. cssSelector("")); //create an object that is targeted at a specific element of the page
+__.isEnabled(); //returns true if the element is active, false if not
+
+__.click(); //clicks on the element
+
+__.sendKeys(""); //types the specific keyes
+__.getAttribute("");// gets the attribute from the page source
+
+new WebDriverWait(browserWindow,5).until(ExpectedConditions.titleIs("Search - University of Victoria"));
+
+__.getText(); //returns the text of the element.
+
 
 

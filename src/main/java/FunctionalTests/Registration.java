@@ -17,7 +17,7 @@ public class Registration
      *Programmer: Kyle Sullivan
      */
     @BeforeSuite
-    public void regSetUp() throws IOException
+    public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
     }
@@ -38,14 +38,16 @@ public class Registration
             threadPoolSize = 3,
             enabled = true
     )
-    public void RF1_Valid_Input(String email, String password, String question, String chosenBrowser) throws IOException
+    public void RF1_Valid_Input(String email, String password, String question, String chosenBrowser) throws IOException, InterruptedException
     {
-        TestBrowser driver = passBrowser.createBrowser(chosenBrowser); //basic setup class, used to do common functions.
-        System.setProperty(driver.getDriver(),driver.getDriverLoc());
-        WebDriver browserWindow = driver.makeDriver();
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser); //basic setup class, used to do common functions.
+        WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
 
+
+        Thread.sleep(5000);
+        browserWindow.quit();
     }
 
     /**purpose
