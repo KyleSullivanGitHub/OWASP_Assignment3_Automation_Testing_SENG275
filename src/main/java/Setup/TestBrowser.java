@@ -11,7 +11,7 @@ public abstract class TestBrowser
 {
     protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\"; //Overall path of the driver. Change to meet your code.
     protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
-    protected String chromeLoc = "";
+    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
     protected String edgeLoc = "";
     static String primaryBrowser = "Firefox";
 

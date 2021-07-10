@@ -19,7 +19,7 @@ public class Registration
     @BeforeSuite
     public void regSetUp() throws IOException
     {
-        environment = passBrowser.createBrowser(TestBrowser.getPrimaryBrowser());
+        environment = passBrowser.createBrowser();
     }
 
     /**
@@ -35,7 +35,7 @@ public class Registration
             priority = 0,
             dataProvider = "RF1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 1,
+            threadPoolSize = 3,
             enabled = true
     )
     public void RF1_Valid_Input(String email, String password, String question, String chosenBrowser) throws IOException

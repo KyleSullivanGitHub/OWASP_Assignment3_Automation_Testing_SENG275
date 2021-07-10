@@ -1,10 +1,24 @@
 package Setup;
 
+import org.openqa.selenium.WebDriver;
+
 import java.io.IOException;
 
 public class CreateEnvironment
 {
+    private String primaryBrowser = TestBrowser.getPrimaryBrowser();
+
+    public TestBrowser createBrowser() throws IOException
+    {
+        return getTestBrowser(primaryBrowser);
+    }
+
     public TestBrowser createBrowser(String chosenBrowser) throws IOException
+    {
+        return getTestBrowser(chosenBrowser);
+    }
+
+    private Setup.TestBrowser getTestBrowser(String chosenBrowser) throws IOException
     {
         switch (chosenBrowser)
         {

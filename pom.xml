@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>3.141.59</version>
+            <version>4.0.0-beta-4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
@@ -163,18 +163,6 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-xpi-driver</artifactId>
-            <version>4.0.0-beta-4</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-opera-driver -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-opera-driver</artifactId>
-            <version>4.0.0-beta-4</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-safari-driver -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-safari-driver</artifactId>
             <version>4.0.0-beta-4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v88 -->
