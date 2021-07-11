@@ -6,32 +6,63 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.IOException;
-
+/**
+ * TestBrowser Class
+ * Programmer: Kyle Sullivan
+ * Contains basic functions to allow a test to be called from any of three specific browser.
+ */
 public abstract class TestBrowser
 {
-    protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\"; //Overall path of the driver. Change to meet your code.
+    //driver path to your folder contianing all drivers for web testing. Change to match your setup
+    protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\";
+    //Location of firefox driver within your WebDriver folder.
     protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
+    //Location of chrome driver within your WebDriver folder.
     protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
-    protected String edgeLoc = "";
-    static String primaryBrowser = "Firefox";
+    //Location of Edge driver within your webdriver folder.
+    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
 
-    WebDriver browser;
+    //preferred driver to run all tests on. Change to whatever suits your fancy
+    static String primaryBrowser = "Chrome";
+
+    //String containing driver text
     String driver;
+    //String containg driver location
     String driverLoc;
 
     public TestBrowser() throws IOException {}
 
+    /**
+     * Used by CreateEnvironment to default to a specific browser for the majority of tests.
+     * Programmer: Kyle Sullivan
+     * @return driver A string containing the default browser for tests
+     */
     public static String getPrimaryBrowser() { return primaryBrowser; }
+
+    /**
+     * Used by CreateEnvironment to create the test Environment.
+     * Programmer: Kyle Sullivan
+     * @return driver A string containing the initialization text to create the environment
+     */
     public String getDriver() { return driver; }
+    /**
+     * Used by CreateEnvironment to create the test Environment.
+     * Programmer: Kyle Sullivan
+     * @return driverLoc A string containing the location text of the driver to create the environment
+     */
     public String getDriverLoc() {return driverLoc;}
 
+    /**
+     * Abstract class for returning a usable web environment.
+     * Programmer: Kyle Sullivan
+     */
     public abstract WebDriver makeDriver();
 }
 
 class useFireFox extends TestBrowser
 {
     /**
-     * Sets the driver type and path
+     * Sets the driver type and path for a firefox browser
      * Programmer: Kyle Sullivan
      */
     public useFireFox() throws IOException
@@ -54,7 +85,7 @@ class useFireFox extends TestBrowser
 class useChrome extends TestBrowser
 {
     /**
-     * Sets the driver type and path
+     * Sets the driver type and path for a chrome browser
      * Programmer: Kyle Sullivan
      */
     public useChrome() throws IOException
@@ -77,7 +108,7 @@ class useChrome extends TestBrowser
 class useEdge extends TestBrowser
 {
     /**
-     * Sets the driver type and path
+     * Sets the driver type and path for an edge browser
      * Programmer: Kyle Sullivan
      */
     public useEdge() throws IOException

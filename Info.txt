@@ -1,3 +1,16 @@
+Important INFO
+Before running any tests, several things must be done.
+First, download the ChromeDriver, FirefoxDriver and EdgeDriver Selenium needs to run tests. just search these names and you will find it.
+Second, unzip these files into the same file somewhere on your computer.
+in TestBrowser.java:
+Change:
+driverPath to the path directory  for the file with all your unzipped driver files
+primaryBrowser to whatever browser you want to run the majority of the tests with.
+
+Rememember, anytime you pull the file from the repository, someone else might have changed them, so make sure.
+
+
+
 common imports
     import Setup.*;
     import org.openqa.selenium.WebDriver;
@@ -68,7 +81,7 @@ test Class
 /**
  * purpose
  * Programmer
- * @Param
+ * @param
  */
 @Test(
     groups = {"",""},
@@ -86,7 +99,7 @@ Common Selenium Commands
 browserWindow.get(""); // go to a certian URL
 browserWindow.getTitle();// gets the title of the webpage
 
-WebElement __ = browserWindow.findElement(By. cssSelector("")); //create an object that is targeted at a specific element of the page
+WebElement __ = browserWindow.findElement(By. cssSelector("")); //create an object that is targeted at a specific element of the page. The string will typically be an 'id' value
 __.isEnabled(); //returns true if the element is active, false if not
 
 __.click(); //clicks on the element
@@ -94,7 +107,6 @@ __.click(); //clicks on the element
 __.sendKeys(""); //types the specific keyes
 __.getAttribute("");// gets the attribute from the page source
 
-new WebDriverWait(browserWindow,5).until(ExpectedConditions.titleIs("Search - University of Victoria"));
 
 __.getText(); //returns the text of the element.
 
