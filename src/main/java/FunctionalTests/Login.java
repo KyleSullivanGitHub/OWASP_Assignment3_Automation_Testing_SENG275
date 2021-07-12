@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 
 import static org.testng.Assert.*;
 
-public class Registration implements ITest
+public class Login implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
@@ -21,7 +21,7 @@ public class Registration implements ITest
 
     /**
      *Create an environment for all tests using the same browser app.
-     *Programmer: Kyle Sullivan
+     *Programmer: Seyedmehrad Adimi
      */
     @BeforeSuite
     public void SetUp() throws IOException
@@ -31,21 +31,21 @@ public class Registration implements ITest
 
     /**
      * Smoke test for valid inputs within several different browsers
-     * Programmer: Kyle Sullivan
+     * Programmer: Seyedmehrad Adimi
      * @param email email text for test
      * @param password password text for test
      * @param answer answer to security question text for test
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Registration","Registration Smoke","hasDataProvider"},
+            groups = {"Smoke","Login","Login Smoke","hasDataProvider"},
             priority = 0,
-            dataProvider = "RF1_Input",
+            dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3,
             enabled = true
     )
-    public void RF1_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG1_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -58,103 +58,39 @@ public class Registration implements ITest
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
         Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/login");
+
+        browserWindow.findElement (By.id ("email")).sendKeys (email);
+        browserWindow.findElement (By.id ("password")).sendKeys (password);
         Thread.sleep(500);
+
+        browserWindow.findElement (By.id ("loginButton")).click ();
+        Thread.sleep(1000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
         browserWindow.quit();
     }
 
     /**
-     *Smoke tests a single invalid registration attempt.
-     *Programmer: Kyle Sullivan
+     *Smoke tests a single invalid login attempt.
+     *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Registration Smoke","Registration"},
+            groups = {"Smoke","Login Smoke","Loginn"},
             priority = 1,
             enabled = true
     )
-    public void RF2_Invalid_Input() throws InterruptedException
+    public void LG2_Invalid_Input() throws InterruptedException
     {
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, "email", "pswrd", "password",false, "");
+        fillOutLog (browserWindow, "email", "pswrd");
 
-        //check that the registration button cannot be clicked.
-        assertFalse(browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled());
+        // Check that error message appears. Keep for tmr since website is not working
 
         Thread.sleep(5000);
         browserWindow.quit();
     }
 
-//    /**purpose
-//     *Programmer
-//     *@param
-//     */
-//    @Test(
-//            groups = {"",""},
-//            priority = 2,
-//            enabled = true
-//    )
-//    public void RF3_Validation_Email()
-//    {
-//
-//    }
-
-    /**
-     * Smoke tests several invalid cases, which can be found in the data provider class.
-     *  Programmer:Kyle Sullivan
-     *  @param
-     */
-    @Test(
-            groups = {"Sanity","Registration Sanity","Registration","hasDataProvider"},
-            priority = 3,
-            dataProvider = "RF4_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
-    )
-    public void RF4_Invalid_Input(String testing, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
-    {
-        boolean disabledButton;
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-
-        fillOutReg(browserWindow, email, password, repeatPassword,doQuestion,answer);
-
-        disabledButton = browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled();
-
-        if(disabledButton)
-        {
-            //if the registration button is enabled, ensure it does not accept the account details.
-            browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
-            Thread.sleep(1000);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/register");//confirm that we have not left the page.
-        }
-        else
-        {
-            //If the registration button cannot be accessed, confirm the test.
-            assertFalse(disabledButton);
-        }
-
-        browserWindow.quit();
-    }
-
-//    /**purpose
-//     *Programmer
-//     *@param
-//     */
-//    @Test(
-//            groups = {"",""},
-//            priority = 4,
-//            dataProvider = "",
-//            dataProviderClass = Test_Data.class,
-//            threadPoolSize =0,
-//            enabled = true
-//    )
-//    public void RF_Regression()
-//    {
-//
-//    }
 
     private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
@@ -210,6 +146,33 @@ public class Registration implements ITest
 
         //give security question answer
         browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //enter answer
+    }
+
+
+    private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
+    {
+        boolean notFound = true;
+        int optionTry = 0;
+        int optionTryLimit = 50;
+
+        browserWindow.get(website);
+        Thread.sleep(2500);
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
+        Thread.sleep(500);
+
+
+
+        //verify that we can access the login page
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click();
+
+        Thread.sleep(500);
+
+
+        browserWindow.findElement(By.id("email")).sendKeys(email); //enter email
+        browserWindow.findElement(By.id ("password")).sendKeys(password); //enter password
+        browserWindow.findElement(By.id ("loginButton")).click (); //click on login
     }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})

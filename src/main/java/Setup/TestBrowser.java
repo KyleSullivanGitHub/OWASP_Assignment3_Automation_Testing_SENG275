@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
 
 import java.io.IOException;
 /**
@@ -14,13 +15,15 @@ import java.io.IOException;
 public abstract class TestBrowser
 {
     //driver path to your folder contianing all drivers for web testing. Change to match your setup
-    protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\";
+    protected String driverPath = "/Users/seyedmehradadimi/Desktop/Web Develpment/Web Drivers/";
     //Location of firefox driver within your WebDriver folder.
-    protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
+    protected String fireFoxLoc = "geckodriver 2";
     //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
+    protected String chromeLoc = "chromedriver";
     //Location of Edge driver within your webdriver folder.
-    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
+    protected String edgeLoc = "msedgedriver";
+    //Location of Safari driver within your webdriver folder.
+    protected String safariLoc = "safaridriver";
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
     static String primaryBrowser = "Chrome";
@@ -68,7 +71,7 @@ class useFireFox extends TestBrowser
     public useFireFox() throws IOException
     {
         this.driver = "webdriver.gecko.driver";
-        this.driverLoc = this.driverPath + fireFoxLoc;
+        this.driverLoc = this.driverPath +fireFoxLoc;
     }
 
     /**
@@ -91,7 +94,7 @@ class useChrome extends TestBrowser
     public useChrome() throws IOException
     {
         this.driver = "webdriver.chrome.driver";
-        this.driverLoc = this.driverPath + chromeLoc;
+        this.driverLoc = this.driverPath +chromeLoc;
     }
 
     /**
@@ -114,7 +117,7 @@ class useEdge extends TestBrowser
     public useEdge() throws IOException
     {
         this.driver = "webdriver.edge.driver";
-        this.driverLoc = this.driverPath + edgeLoc;
+        this.driverLoc = this.driverPath +edgeLoc;
     }
 
     /**
@@ -125,6 +128,29 @@ class useEdge extends TestBrowser
     public WebDriver makeDriver()
     {
         return new EdgeDriver();
+    }
+}
+
+class useSafari extends TestBrowser
+{
+    /**
+     * Sets the driver type and path for a Safari browser
+     * Programmer: Seyedmehrad Adimi
+     */
+    public useSafari() throws IOException
+    {
+        this.driver = "webdriver.safari.driver";
+        this.driverLoc = this.driverPath+ safariLoc;
+    }
+
+    /**
+     * Creates and returns a new Safari browser window.
+     * Programmer: Seyedmehrad Adimi
+     * @return SafariDriver() - The initialized browser for the given test
+     */
+    public WebDriver makeDriver()
+    {
+        return new SafariDriver ();
     }
 }
 

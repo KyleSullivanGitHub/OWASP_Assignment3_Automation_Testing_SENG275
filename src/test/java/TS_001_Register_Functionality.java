@@ -15,7 +15,7 @@ public class TS_001_Register_Functionality
 {
     WebDriver browser; //Browser for the test
     String driverType; //Driver for the test
-    String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\"; //Overall path of the driver. Change to meet your code.
+    String driverPath = "/Users/seyedmehradadimi/Desktop/Web Develpment/Web Drivers/"; //Overall path of the driver. Change to meet your code.
     String website = "https://juice-shop.herokuapp.com"; //default website URL
     String chosenBrowser; //string stating the browser
     Setup functions = new Setup(); //basic setup class, used to do common functions.
@@ -55,6 +55,7 @@ public class TS_001_Register_Functionality
             enabled = true)
     public void Sign_Up_Page_Access() throws IOException, InterruptedException
    {
+
        //start up browser
        environmentSetup();
 
