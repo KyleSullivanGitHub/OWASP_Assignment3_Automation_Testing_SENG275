@@ -98,6 +98,29 @@ public class Test_Data
         };
     }
 
+    /**
+     * This dataProvider passes valid email and password strings for the LG3 valid input test (Google Account)
+     * Programmer: Seyedmehrad Adimi
+     * @return object with email and password for that test.
+     */
+    @DataProvider(
+            name = "LG3_Input",
+            parallel = true
+    )
+    public static Object[][] LG3_Input()
+    {
+
+        String email = "helloworld.owasp" ;
+        String password = "seng275@";
+
+        return new Object[][]{
+                //{"Firefox", email+"@gmail.com",password},
+                {"Chrome", email+"@gmail.com",password},
+                // {"Edge", email+"@gmail.com",password}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                // {"Safari", email+"@gmail.com",password}
+        };
+    }
+
 
 
 

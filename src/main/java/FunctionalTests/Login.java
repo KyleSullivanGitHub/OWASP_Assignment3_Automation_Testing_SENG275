@@ -4,11 +4,16 @@ import Setup.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.safari.SafariDriver;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Random;
 
 import static org.testng.Assert.*;
 
@@ -53,7 +58,7 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLog(browserWindow, email, password, password,true, answer);
+        fillOutReg(browserWindow, email, password, password,true, answer);
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
@@ -74,7 +79,7 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Loginn"},
+            groups = {"Smoke","Login Smoke","Login"},
             priority = 1,
             enabled = true
     )
@@ -84,15 +89,53 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
         fillOutLog (browserWindow, "email", "pswrd");
-
+        Thread.sleep(2000);
         // Check that error message appears. Keep for tmr since website is not working
-
-        Thread.sleep(5000);
+        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+        Thread.sleep(1500);
+        assertEquals (message.getText (), "Invalid email or password.");
+        Thread.sleep(3000);
         browserWindow.quit();
     }
 
 
-    private void fillOutLog(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    /**
+     * Smoke test for valid Google Login within several different browsers
+     * Programmer: Seyedmehrad Adimi
+     * @param email email text for test
+     * @param password password text for test
+     * @param chosenBrowser browser used for that test
+     */
+    @Test(
+            groups = {"Smoke","Google_Login","Login Smoke","hasDataProvider"},
+            priority = 0,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void LG3_Valid_Input(String chosenBrowser, String email, String password) throws InterruptedException
+    {
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        fillOutLog (browserWindow, "email", "pswrd");
+        Thread.sleep(2000);
+        // Check that error message appears. Keep for tmr since website is not working
+        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+        Thread.sleep(1500);
+        assertEquals (message.getText (), "Invalid email or password.");
+        Thread.sleep(3000);
+        browserWindow.quit();
+    }
+
+
+
+
+
+
+
+    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;
@@ -157,6 +200,7 @@ public class Login implements ITest
 
         browserWindow.get(website);
         Thread.sleep(2500);
+        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(500);
 

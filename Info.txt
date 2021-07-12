@@ -289,7 +289,18 @@ class useSafari extends TestBrowser
 
 **********************************************************************************************************************************
 
+Seyedmehrad Adimi Driver Setup:
 
+//driver path to your folder contianing all drivers for web testing. Change to match your setup
+    protected String driverPath = "/Users/seyedmehradadimi/Desktop/Web Develpment/Web Drivers/";
+    //Location of firefox driver within your WebDriver folder.
+    protected String fireFoxLoc = "geckodriver 2";
+    //Location of chrome driver within your WebDriver folder.
+    protected String chromeLoc = "chromedriver";
+    //Location of Edge driver within your webdriver folder.
+    protected String edgeLoc = "msedgedriver";
+    //Location of Safari driver within your webdriver folder.
+    protected String safariLoc = "safaridriver";
 
-
+**********************************************************************************************************************************
 
