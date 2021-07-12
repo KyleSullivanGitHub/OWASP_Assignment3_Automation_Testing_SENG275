@@ -157,6 +157,68 @@ public class Login implements ITest
 
 
 
+    @Test(
+            groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
+            priority = 0,
+            dataProvider = "LG5_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void LG5_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    {
+
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        fillOutReg(browserWindow, email, password, password,true, answer);
+
+        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+
+        Thread.sleep(1000);
+        // Test case TC_LF_004: Invalid email and Valid password
+        browserWindow.findElement (By.id ("email")).sendKeys ("inv"+email);
+        browserWindow.findElement (By.id ("password")).sendKeys (password);
+        Thread.sleep(500);
+
+        browserWindow.findElement (By.id ("loginButton")).click ();
+
+        // Message Assertion?
+
+
+        // Test case TC_LF_005: Valid email and Inalid password
+        browserWindow.findElement (By.id ("email")).sendKeys (email);
+        browserWindow.findElement (By.id ("password")).sendKeys ("inv"+password);
+        Thread.sleep(500);
+
+        browserWindow.findElement (By.id ("loginButton")).click ();
+        // Message Assertion?
+
+        // Test case TC_LF_006: No credentials
+
+        browserWindow.findElement (By.id ("email")).sendKeys ("");
+        browserWindow.findElement (By.id ("password")).sendKeys ("");
+        Thread.sleep(500);
+
+        browserWindow.findElement (By.id ("loginButton")).click ();
+        // Message Assertion?
+
+
+        // Test case TC_LF_010: No credentials: HOW?
+
+
+
+
+        Thread.sleep(1000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        browserWindow.quit();
+    }
+
+
+
+
 
     private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
