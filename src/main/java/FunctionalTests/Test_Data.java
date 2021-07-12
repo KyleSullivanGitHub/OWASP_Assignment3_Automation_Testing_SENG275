@@ -98,7 +98,25 @@ public class Test_Data
         };
     }
 
+    /**
+     * This dataProvider passes strings corresponding to the web browser to test
+     * Programmer: Nicole Makarowski
+     * @return Strings containing all web browsers to be tested
+     */
+    @DataProvider(
+            name = "webBrowserData",
+            parallel = true
+    )
+    public static Object[][] webBrowserData()
+    {
 
+        return new Object[][]{
+                {"Firefox"},
+                {"Chrome"},
+                {"Edge"} //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                // {"Safari"}
+        };
+    }
 
 
 
