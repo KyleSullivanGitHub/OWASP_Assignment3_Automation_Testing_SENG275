@@ -2,6 +2,7 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -114,22 +115,44 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG3_Valid_Input(String chosenBrowser, String email, String password) throws InterruptedException
-    {
-        WebDriver browserWindow = environment.makeDriver();
+    public void LG3_Valid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLog (browserWindow, "email", "pswrd");
-        Thread.sleep(2000);
-        // Check that error message appears. Keep for tmr since website is not working
-        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-        Thread.sleep(1500);
-        assertEquals (message.getText (), "Invalid email or password.");
-        Thread.sleep(3000);
+        fillOutLogGoogle(browserWindow, email, password);
+        Thread.sleep (1000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        Thread.sleep (1000);
         browserWindow.quit();
     }
 
 
+    /**
+     *Smoke tests a single invalid Google login attempt.
+     *Programmer: Seyedmehrad Adimi
+     */
+    @Test(
+            groups = {"Smoke","Login Smoke","Google_Login"},
+            priority = 1,
+            enabled = true
+    )
+    public void LG4_Invalid_Input() throws InterruptedException
+    {
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        fillOutLogGoogleInvalid (browserWindow, "email", "pswrd");
+        Thread.sleep(2000);
+        // Check that error message appears. Keep for tmr since website is not working
+
+        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+        Thread.sleep(1000);
+        assertEquals (message.getText (), "Couldn’t find your Google Account");
+        Thread.sleep(3000);
+        browserWindow.quit();
+    }
 
 
 
@@ -194,9 +217,6 @@ public class Login implements ITest
 
     private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
-        boolean notFound = true;
-        int optionTry = 0;
-        int optionTryLimit = 50;
 
         browserWindow.get(website);
         Thread.sleep(2500);
@@ -218,6 +238,92 @@ public class Login implements ITest
         browserWindow.findElement(By.id ("password")).sendKeys(password); //enter password
         browserWindow.findElement(By.id ("loginButton")).click (); //click on login
     }
+
+
+    private void fillOutLogGoogle(WebDriver browserWindow, String email, String password) throws InterruptedException
+    {
+
+
+        browserWindow.get(website);
+
+        Thread.sleep(2500);
+        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
+        Thread.sleep(500);
+
+
+
+        //verify that we can access the login page
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click();
+
+        Thread.sleep(500);
+
+
+
+        browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
+        Thread.sleep(1000);
+        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
+        Thread.sleep(500);
+
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        Thread.sleep(1000);
+        emailUsr.click ();
+        emailUsr.sendKeys (email);
+        Thread.sleep(500);
+        emailUsr.sendKeys (Keys.ENTER);
+        Thread.sleep(500);
+
+        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+        passwordInput.click ();
+        passwordInput.sendKeys (password);
+        Thread.sleep(500);
+        passwordInput.sendKeys (Keys.ENTER);
+
+    }
+
+
+
+
+
+
+    private void fillOutLogGoogleInvalid(WebDriver browserWindow, String email, String password) throws InterruptedException
+    {
+
+
+        browserWindow.get(website);
+
+        Thread.sleep(2500);
+        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
+        Thread.sleep(500);
+
+
+
+        //verify that we can access the login page
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click();
+
+        Thread.sleep(500);
+
+
+
+        browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
+        Thread.sleep(1000);
+        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
+        Thread.sleep(500);
+
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        Thread.sleep(1000);
+        emailUsr.click ();
+        emailUsr.sendKeys (email);
+        Thread.sleep(500);
+        emailUsr.sendKeys (Keys.ENTER);
+        Thread.sleep(500);
+    }
+
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
