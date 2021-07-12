@@ -17,7 +17,8 @@ public class Registration implements ITest
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
-    CreateEnvironment passBrowser = new CreateEnvironment();
+    CreateEnvironment passBrowser;
+
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -26,6 +27,7 @@ public class Registration implements ITest
     @BeforeSuite
     public void SetUp() throws IOException
     {
+        passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
     }
 
@@ -96,9 +98,9 @@ public class Registration implements ITest
             priority = 2,
             enabled = true
     )
-    public void RF3_Validation_Email()
+    public void RF3_Validation_Email() throws IOException, InterruptedException
     {
-
+        TestFunctions.createAccount();
     }
 
     /**
@@ -169,17 +171,19 @@ public class Registration implements ITest
      * @throws InterruptedException
      * @throws IOException triggers if no browser has been set for the test
      */
-    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    public void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;
         int optionTryLimit = 50;
 
         browserWindow.get(website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
+        Thread.sleep(5000);
 
+        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        Thread.sleep(500);
+        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
+        Thread.sleep(500);
         //verify that we can access the login page
         WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
         assertTrue(accountMenuLogin.isEnabled());

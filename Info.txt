@@ -10,6 +10,9 @@ primaryBrowser to whatever browser you want to run the majority of the tests wit
 Rememember, anytime you pull the file from the repository, someone else might have changed them, so make sure.
 
 
+Creating A browser for test
+1. Create a create Environment object for the class
+
 
 common imports
     import Setup.*;
