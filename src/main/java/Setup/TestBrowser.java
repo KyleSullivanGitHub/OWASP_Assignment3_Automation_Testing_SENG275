@@ -14,20 +14,22 @@ import java.io.IOException;
  */
 public abstract class TestBrowser
 {
+    /*
+     * Change the below to match your system. Store your setup in info.txt
+     */
+
     //driver path to your folder contianing all drivers for web testing. Change to match your setup
-    protected String driverPath = "/Users/seyedmehradadimi/Desktop/Web Develpment/Web Drivers/";
+    protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\";
     //Location of firefox driver within your WebDriver folder.
-    protected String fireFoxLoc = "geckodriver 2";
+    protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
     //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver";
+    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
     //Location of Edge driver within your webdriver folder.
-    protected String edgeLoc = "msedgedriver";
-    //Location of Safari driver within your webdriver folder.
-    protected String safariLoc = "safaridriver";
+    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
     static String primaryBrowser = "Chrome";
-
+//********************************************************************************************************************//
     //String containing driver text
     String driver;
     //String containg driver location
@@ -131,12 +133,13 @@ class useEdge extends TestBrowser
     }
 }
 
+/**
 class useSafari extends TestBrowser
 {
     /**
      * Sets the driver type and path for a Safari browser
      * Programmer: Seyedmehrad Adimi
-     */
+     * /
     public useSafari() throws IOException
     {
         this.driver = "webdriver.safari.driver";
@@ -147,10 +150,11 @@ class useSafari extends TestBrowser
      * Creates and returns a new Safari browser window.
      * Programmer: Seyedmehrad Adimi
      * @return SafariDriver() - The initialized browser for the given test
-     */
+     * /
     public WebDriver makeDriver()
     {
         return new SafariDriver ();
     }
 }
+*/
 

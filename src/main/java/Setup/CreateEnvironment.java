@@ -57,9 +57,12 @@ public class CreateEnvironment
             case "Edge": //Chrome Browser
                 passOn = new useEdge();
                 break;
+                /*
             case "Safari": // Safari Browser
                 passOn = new useSafari ();
                 break;
+
+                 */
             default: //Invalid browser set
                 throw new IOException("No Chosen Browser");
 

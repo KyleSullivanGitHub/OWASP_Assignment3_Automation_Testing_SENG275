@@ -86,19 +86,20 @@ public class Registration implements ITest
         browserWindow.quit();
     }
 
-//    /**purpose
-//     *Programmer
-//     *@param
-//     */
-//    @Test(
-//            groups = {"",""},
-//            priority = 2,
-//            enabled = true
-//    )
-//    public void RF3_Validation_Email()
-//    {
-//
-//    }
+
+    /**purpose
+     *Programmer
+     *@param
+     */
+    @Test(
+            groups = {"",""},
+            priority = 2,
+            enabled = true
+    )
+    public void RF3_Validation_Email()
+    {
+
+    }
 
     /**
      * Smoke tests several invalid cases, which can be found in the data provider class.
@@ -139,23 +140,35 @@ public class Registration implements ITest
         browserWindow.quit();
     }
 
-//    /**purpose
-//     *Programmer
-//     *@param
-//     */
-//    @Test(
-//            groups = {"",""},
-//            priority = 4,
-//            dataProvider = "",
-//            dataProviderClass = Test_Data.class,
-//            threadPoolSize =0,
-//            enabled = true
-//    )
-//    public void RF_Regression()
-//    {
-//
-//    }
+    /**purpose
+     *Programmer
+     *@param
+     */
+    @Test(
+            groups = {"",""},
+            priority = 4,
+            dataProvider = "",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize =0,
+            enabled = true
+    )
+    public void RF_Regression()
+    {
 
+    }
+
+    /**
+     * Method used to fill out registration form with passed values. Universal for all tests within registration.java
+     * Programmer: Kyle Sullivan
+     * @param browserWindow browser window used for this test
+     * @param email email string used for test
+     * @param password password string used for test
+     * @param repeatPassword repeat password string used for test
+     * @param doQuestion true/false to whether to use a security question
+     * @param answer String for security question.
+     * @throws InterruptedException
+     * @throws IOException triggers if no browser has been set for the test
+     */
     private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
@@ -182,8 +195,7 @@ public class Registration implements ITest
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
         browserWindow.findElement(By.cssSelector("#repeatPasswordControl")).sendKeys(repeatPassword); //reenter password
-        //select security question
-        browserWindow.findElement(By.cssSelector(".mat-select-trigger")).click();
+        browserWindow.findElement(By.cssSelector(".mat-select-trigger")).click(); //select security question
 
         if(doQuestion)
         {
@@ -207,7 +219,6 @@ public class Registration implements ITest
                 }
             }
         }
-
         //give security question answer
         browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //enter answer
     }

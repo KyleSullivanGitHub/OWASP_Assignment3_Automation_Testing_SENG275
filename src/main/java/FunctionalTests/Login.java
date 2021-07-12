@@ -53,7 +53,7 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, email, password, password,true, answer);
+        fillOutLog(browserWindow, email, password, password,true, answer);
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
@@ -92,7 +92,7 @@ public class Login implements ITest
     }
 
 
-    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    private void fillOutLog(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;

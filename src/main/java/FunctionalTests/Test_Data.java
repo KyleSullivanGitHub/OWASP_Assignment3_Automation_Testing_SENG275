@@ -38,7 +38,7 @@ public class Test_Data
                 {"Firefox", email+randomNum1+"@gmail.com",password,question},
                 {"Chrome", email+randomNum2+"@gmail.com",password,question},
                 {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-                {"Safari", email+randomNum4+"@gmail.com",password,question}
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
 
