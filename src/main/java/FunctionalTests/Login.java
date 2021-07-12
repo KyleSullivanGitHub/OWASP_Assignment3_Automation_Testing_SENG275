@@ -165,7 +165,7 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG5_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -216,6 +216,105 @@ public class Login implements ITest
         browserWindow.quit();
     }
 
+
+
+
+    /**
+     *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
+     *  @param email email text for test
+     *  @param password password text for test
+     *  @param chosenBrowser browser used for that test
+     *Programmer: Seyedmehrad Adimi
+     */
+    @Test(
+            groups = {"Sanity","Login Sanity","Google_Login"},
+            priority = 0,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void LG6_Invalid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        // Test case TC_LF_022 : Valid password and Invalid email
+        fillOutLogGoogleInvalid (browserWindow, "email", password);
+        Thread.sleep(2000);
+
+
+        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+        Thread.sleep(1000);
+        assertEquals (message.getText (), "Couldn’t find your Google Account");
+        Thread.sleep(500);
+
+        // Test case TC_LF_023 : Invalid password and valid email
+        fillOutLogGoogleInvalid (browserWindow, email, "inv"+password);
+
+        Thread.sleep(1000);
+
+        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+        passwordInput.click ();
+        passwordInput.sendKeys ("inv"+password);
+        Thread.sleep(500);
+        passwordInput.sendKeys (Keys.ENTER);
+
+
+        // Message Assertion????
+
+        Thread.sleep(3000);
+        browserWindow.quit();
+    }
+
+
+
+
+
+    /**
+     * Smoke test for valid Login memory within several different browsers
+     * Programmer: Seyedmehrad Adimi
+     * @param email email text for test
+     * @param password password text for test
+     * @param chosenBrowser browser used for that test
+     */
+    @Test(
+            groups = {"Smoke","Google_Login","Login_Memory","Login Sanity","hasDataProvider"},
+            priority = 0,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void LG7_Login_Memory(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        fillOutLogGoogle(browserWindow, email, password);
+        Thread.sleep (1000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+
+        Thread.sleep (1000);
+        browserWindow.navigate ().back ();
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");
+
+        Thread.sleep (1000);
+        browserWindow.quit();
+        Thread.sleep (1000);
+
+        WebDriver browserWindow1 = environment.makeDriver();
+        browserWindow1.manage().window().maximize();
+        browserWindow1.get(website);
+
+        // Logged In Assertion?
+       // assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+
+        Thread.sleep (1000);
+        browserWindow.quit();
+    }
 
 
 
