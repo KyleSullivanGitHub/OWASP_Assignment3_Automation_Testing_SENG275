@@ -149,11 +149,10 @@ public class Login implements ITest
 
         WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
         Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn’t find your Google Account");
+        assertEquals (message.getText (), "Couldn't find your Google Account");
         Thread.sleep(3000);
         browserWindow.quit();
     }
-
 
 
 
@@ -185,34 +184,49 @@ public class Login implements ITest
 
         browserWindow.findElement (By.id ("loginButton")).click ();
 
+        Thread.sleep(1500);
         // Message Assertion?
+        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+        Thread.sleep(500);
+        assertEquals (message.getText (), "Invalid email or password.");
+
 
 
         // Test case TC_LF_005: Valid email and Inalid password
+        browserWindow.findElement (By.id ("email")).clear ();
+        Thread.sleep(500);
         browserWindow.findElement (By.id ("email")).sendKeys (email);
+        Thread.sleep(500);
+        browserWindow.findElement (By.id ("password")).clear ();
+        Thread.sleep(500);
         browserWindow.findElement (By.id ("password")).sendKeys ("inv"+password);
         Thread.sleep(500);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
         // Message Assertion?
+        Thread.sleep(500);
+        WebElement message1 = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+        Thread.sleep(500);
+        assertEquals (message1.getText (), "Invalid email or password.");
 
         // Test case TC_LF_006: No credentials
 
+        browserWindow.findElement (By.id ("email")).clear ();
         browserWindow.findElement (By.id ("email")).sendKeys ("");
+        browserWindow.findElement (By.id ("password")).clear ();
         browserWindow.findElement (By.id ("password")).sendKeys ("");
         Thread.sleep(500);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
+
         // Message Assertion?
+        assertTrue (browserWindow.findElement (By.id ("loginButton")).isDisplayed ());
 
 
         // Test case TC_LF_010: No credentials: HOW?
 
 
-
-
         Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");
         browserWindow.quit();
     }
 
@@ -247,7 +261,7 @@ public class Login implements ITest
 
         WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
         Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn’t find your Google Account");
+        assertEquals (message.getText (), "Couldn't find your Google Account");
         Thread.sleep(500);
 
         // Test case TC_LF_023 : Invalid password and valid email
@@ -261,9 +275,11 @@ public class Login implements ITest
         Thread.sleep(500);
         passwordInput.sendKeys (Keys.ENTER);
 
-
+        Thread.sleep(500);
+        WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
+        Thread.sleep(500);
         // Message Assertion????
-
+        assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
         Thread.sleep(3000);
         browserWindow.quit();
     }
@@ -294,26 +310,29 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
         fillOutLogGoogle(browserWindow, email, password);
-        Thread.sleep (1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        Thread.sleep (2000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-        Thread.sleep (1000);
+        Thread.sleep (2000);
         browserWindow.navigate ().back ();
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-        Thread.sleep (1000);
+        Thread.sleep (2000);
         browserWindow.quit();
-        Thread.sleep (1000);
+
+      /*  Thread.sleep (2000);
 
         WebDriver browserWindow1 = environment.makeDriver();
         browserWindow1.manage().window().maximize();
         browserWindow1.get(website);
 
-        // Logged In Assertion?
-       // assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
-
+        Thread.sleep (2000);
+        browserWindow1.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
         Thread.sleep (1000);
-        browserWindow.quit();
+        assertTrue (browserWindow1.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isDisplayed ());
+
+        Thread.sleep (2000);
+        browserWindow.quit();*/
     }
 
 
@@ -425,18 +444,20 @@ public class Login implements ITest
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
         Thread.sleep(1000);
-        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
-        Thread.sleep(500);
+//        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
+//        Thread.sleep(500);
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
         Thread.sleep(1000);
         emailUsr.click ();
+
         emailUsr.sendKeys (email);
         Thread.sleep(500);
         emailUsr.sendKeys (Keys.ENTER);
         Thread.sleep(500);
 
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+        Thread.sleep(500);
         passwordInput.click ();
         passwordInput.sendKeys (password);
         Thread.sleep(500);
@@ -456,7 +477,7 @@ public class Login implements ITest
         browserWindow.get(website);
 
         Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        browserWindow.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(500);
 
@@ -473,12 +494,15 @@ public class Login implements ITest
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
         Thread.sleep(1000);
-        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
-        Thread.sleep(500);
+       // browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
+        //Thread.sleep(500);
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
         Thread.sleep(1000);
         emailUsr.click ();
+        emailUsr.click ();
+        Thread.sleep(1000);
+        emailUsr.clear ();
         emailUsr.sendKeys (email);
         Thread.sleep(500);
         emailUsr.sendKeys (Keys.ENTER);
