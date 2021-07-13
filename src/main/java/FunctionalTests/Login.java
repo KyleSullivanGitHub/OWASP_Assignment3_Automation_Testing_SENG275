@@ -122,7 +122,7 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
         fillOutLogGoogle(browserWindow, email, password);
-        Thread.sleep (1000);
+        Thread.sleep (2000);
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
         Thread.sleep (1000);
         browserWindow.quit();
@@ -454,7 +454,7 @@ public class Login implements ITest
         emailUsr.sendKeys (email);
         Thread.sleep(500);
         emailUsr.sendKeys (Keys.ENTER);
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
         Thread.sleep(500);
