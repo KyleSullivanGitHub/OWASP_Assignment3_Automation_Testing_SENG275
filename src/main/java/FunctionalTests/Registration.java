@@ -14,8 +14,9 @@ import static org.testng.Assert.*;
 
 public class Registration implements ITest
 {
-    private ThreadLocal<String> testName = new ThreadLocal<>();
+    private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
     String website = "https://juice-shop.herokuapp.com"; //default website URL
+
     TestBrowser environment;
     CreateEnvironment passBrowser;
 
@@ -156,7 +157,12 @@ public class Registration implements ITest
     )
     public void RF_Regression()
     {
-
+        //Test Header
+        //Test URL
+        //Test Title
+        //Check mandatory fields
+        //check password advice
+        //check password is hidden
     }
 
     /**
@@ -178,9 +184,8 @@ public class Registration implements ITest
         int optionTryLimit = 50;
 
         browserWindow.get(website);
-        Thread.sleep(5000);
+        TestFunctions.waitForSite(browserWindow);
 
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         Thread.sleep(500);
         browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
         Thread.sleep(500);

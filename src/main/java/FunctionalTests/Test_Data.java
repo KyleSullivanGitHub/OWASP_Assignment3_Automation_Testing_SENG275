@@ -98,7 +98,26 @@ public class Test_Data
         };
     }
 
+    /**
+     * This dataProvider passes valid random email, password, and question strings for the RF1 valid input test
+     * Programmer: Kyle Sullivan
+     * @return object with emails, passwords, security question answers, and the browser for that test.
+     */
+    @DataProvider(
+            name = "AS1_Input",
+            parallel = true
+    )
+    public static Object[][] AS1_Input()
+    {
+        String password = TestFunctions.constPassword;
 
+        return new Object[][]{
+                {"Firefox"},
+                {"Chrome"},
+                //{"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
+        };
+    }
 
 
 

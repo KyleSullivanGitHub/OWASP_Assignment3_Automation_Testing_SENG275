@@ -43,11 +43,14 @@ Start Browser
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
 
 (if you need to create  browsers of the same web type)
         WebDriver browserWindow = environment.makeDriver()
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
+
 
 Close Browser Window. Use this rather than .quit if you have more tests to run.
         Thread.sleep(5000);
