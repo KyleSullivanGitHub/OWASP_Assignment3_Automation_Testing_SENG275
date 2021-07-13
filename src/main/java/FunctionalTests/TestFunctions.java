@@ -19,6 +19,7 @@ public class TestFunctions
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     static String constEmail;//String containing the email for the constant session
     static String constPassword = "Seng265!";//password for the constant session
+    static String constAnswer = "Seng"; //answer for security question
     static String OS = System.getProperty("os.name").toLowerCase();
 
     /**
@@ -29,8 +30,8 @@ public class TestFunctions
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
-        Boolean ready = false;
-        Thread.sleep(1000);
+        boolean ready = false;
+        Thread.sleep(500);
         while(!ready)
         {
             try
@@ -47,6 +48,39 @@ public class TestFunctions
                 Thread.sleep(500);
             }
         }
+    }
+
+    /**
+     * Quick navigation to the login page from any other page.
+     * Programmer: Kyle Sullivan
+     * @param test web browser for test
+     * @throws InterruptedException
+     */
+    public static void navToLogin(WebDriver test) throws InterruptedException
+    {
+        //Find the account button
+        test.findElement(By.cssSelector("#navbarAccount")).click();
+        Thread.sleep(500);
+        //verify that we can access the login page
+        WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click(); //Go to login page
+    }
+
+    /**
+     * Quick navigation to the registration page from any other page.
+     * Programmer: Kyle Sullivan
+     * @param test web browser for test
+     * @throws InterruptedException
+     */
+    public static void navToReg(WebDriver test) throws InterruptedException
+    {
+        //navigate to login page
+        navToLogin(test);
+        //ensure that we can navigate to the sign up page
+        WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
+        assertTrue(signUpLink.isEnabled());
+        signUpLink.click();//enter sign up page
     }
 
 
@@ -78,9 +112,14 @@ public class TestFunctions
             //make the separate browser window
             WebDriver tempBrowser = signUp.environment.makeDriver();
             tempBrowser.manage().window().maximize();
+            tempBrowser.get(signUp.website);
+            //Ensure the site is ready for testing
+            waitForSite(tempBrowser);
+            //navigate to registration.
+            navToReg(tempBrowser);
 
-            //Register teh Account
-            signUp.fillOutReg(tempBrowser, constEmail, constPassword, constPassword, true, "seng");
+            //Register the Account
+            signUp.fillOutReg(tempBrowser, constEmail, constPassword, constPassword, true, constAnswer);
             tempBrowser.findElement(By.cssSelector("#registerButton")).click();//click register button
             //close the browser
             tempBrowser.quit();
@@ -130,14 +169,9 @@ public class TestFunctions
         //check if the constant account has been created for this test session
         if(!registerOnce)
             createAccount();
-
-        test.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
+        //Check if we are already on the login page
+        if(test.getCurrentUrl().equals("https://juice-shop.herokuapp.com/#/login"))
+            navToLogin(test);
 
         Thread.sleep(500);
 
@@ -152,14 +186,13 @@ public class TestFunctions
      * @param loggedIn whether the test is logged in or not
      * @throws InterruptedException
      */
-    public static void commonRegression(WebDriver test, Boolean loggedIn) throws InterruptedException
+    public static void commonRegression(WebDriver test, Boolean loggedIn)
     {
 
         //check dropdown menu
             //check correct URLS
         WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
-        assertTrue(navMenu.isEnabled());
-        assertTrue(navMenu.isDisplayed());
+        assertWebElement(navMenu);
         navMenu.click();
 
         //check Main logo
@@ -168,58 +201,54 @@ public class TestFunctions
 
         //check Search tools
         WebElement searchBar = test.findElement(By.cssSelector("#searchQuery"));
-        assertTrue(searchBar.isEnabled());
-        assertTrue(searchBar.isDisplayed());
+        assertWebElement(searchBar);
         searchBar.click();
-
 
         //check account button
         WebElement accountMenu = test.findElement(By.id ("navbarAccount"));
-        assertTrue(accountMenu.isEnabled());
-        assertTrue(accountMenu.isDisplayed());
+        assertWebElement(accountMenu);
         accountMenu.click();
 
         if(loggedIn)
         {
 
             WebElement profile = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1)"));
-            assertTrue(profile.isEnabled());
-            assertTrue(profile.isDisplayed());
+            assertWebElement(profile);
             assertEquals(profile.getText(),constEmail);
 
             WebElement ordPayMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(2)"));
-            assertTrue(ordPayMenu.isEnabled());
-            assertTrue(ordPayMenu.isDisplayed());
+            assertWebElement(ordPayMenu);
             assertEquals(ordPayMenu.getText(),"Orders & Payment");
 
             WebElement privMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(3)"));
-            assertTrue(privMenu.isEnabled());
-            assertTrue(privMenu.isDisplayed());
+            assertWebElement(privMenu);
             assertEquals(privMenu.getText(),"Privacy & Security");
 
             WebElement logoutMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(4)"));
-            assertTrue(logoutMenu.isEnabled());
-            assertTrue(logoutMenu.isDisplayed());
+            assertWebElement(logoutMenu);
             assertEquals(logoutMenu.getText(),"Logout");
 
             WebElement basketMenu = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]"));
-            assertTrue(basketMenu.isEnabled());
-            assertTrue(basketMenu.isDisplayed());
+            assertWebElement(basketMenu);
             basketMenu.click();
 
         }
         else
         {
             WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
-            assertTrue(accountMenuLogin.isEnabled());
-            assertTrue(accountMenuLogin.isDisplayed());
+            assertWebElement(accountMenuLogin);
             assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
         }
 
         WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
-        assertTrue(changeLanguageMenu.isEnabled());
-        assertTrue(changeLanguageMenu.isDisplayed());
+        assertWebElement(changeLanguageMenu);
         changeLanguageMenu.click();
+    }
+
+    private static void assertWebElement(WebElement testing)
+    {
+        assertTrue(testing.isEnabled());
+        assertTrue(testing.isDisplayed());
     }
 
 

@@ -61,57 +61,49 @@ public class AccountSafety implements ITest
     )
     public void AS1_Login(String chosenBrowser) throws IOException, InterruptedException, UnsupportedFlavorException
     {
+        String toggleXpath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-login/div/mat-card/div/mat-form-field[2]/div/div[1]/div[4]/button";
+
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+        //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
+        //Quickly fill out login form
         TestFunctions.quickLogFill(browserWindow,TestFunctions.constPassword);
+        //Confirm that the password box is of type password, thus only visible as dots
         WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
         assertEquals(passwordField.getAttribute("type"),"password");
-        passwordField.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-login/div/mat-card/div/mat-form-field[2]/div/div[1]/div[4]/button")).click();
+        //Click on the toggle setting
+        passwordField.findElement(By.xpath(toggleXpath)).click();
+        //Confirm that the password box has been switched to type text, and now is fully visible
         assertEquals(passwordField.getAttribute("type"),"text");
-        passwordField.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-login/div/mat-card/div/mat-form-field[2]/div/div[1]/div[4]/button")).click();
+        //toggle again
+        passwordField.findElement(By.xpath(toggleXpath)).click();
+
+        //Confirm that the user cannot copy and paste the password from it's section.
         Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-
-
-
-        //passowrd copying impossible
-        if(TestFunctions.OS.indexOf("win") >=0)
+        if(TestFunctions.OS.contains("win"))
         {
             passwordField.sendKeys(Keys.CONTROL + "a");
             passwordField.sendKeys(Keys.CONTROL + "c");
         }
-        else if(TestFunctions.OS.indexOf("mac") >=0)
+        else if(TestFunctions.OS.contains("mac"))
         {
             passwordField.sendKeys(Keys.COMMAND + "a");
             passwordField.sendKeys(Keys.COMMAND + "c");
         }
         assertNotEquals(cb.getData(DataFlavor.stringFlavor),TestFunctions.constPassword);
+        browserWindow.findElement(By.id ("loginButton")).click (); //click on login
 
 
         //password not visible within page description
+        //TODO Password visibility in source code
 
-    }
-
-    @Test
-    public void AS2_Registration()
-    {
-        //Password visibility toggled
-
-    }
-
-    @Test
-    public void AS3_PasswordRecovery()
-    {
-        //Passowrd Visibility toggled
-    }
-
-    public void passwordVisibility()
-    {
-
+        browserWindow.quit();
     }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})

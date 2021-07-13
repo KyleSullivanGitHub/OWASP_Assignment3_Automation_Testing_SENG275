@@ -10,8 +10,24 @@ primaryBrowser to whatever browser you want to run the majority of the tests wit
 Rememember, anytime you pull the file from the repository, someone else might have changed them, so make sure.
 
 
-Creating A browser for test
-1. Create a create Environment object for the class
+TestFunctions.java methods
+
+waitForSite(WebDriver). Delays inital actions on site startup until main page is loaded, then removes teh cookie window
+
+navToLogin(WebDriver). Quick navigation to login page.
+
+navToReg(WebDriver). Quick navigation to registration page.
+
+createAccount(). Creation of a default account, usable by all tests. Will only run once per suite. Place in SetUp methods of each test class
+
+login(WebDriver). quickly fills out the login page and logs in
+login(WebDriver, String). ^ but with an alternate password
+
+quickLogFill(WebDriver,String). fills out the login page, but does not log in. Used by login(). Will navigate to login page if not already there
+
+commonRegression(WebDriver, Boolean (logged in or not)). common regression for most regression tests. UNFINISHED
+
+assertWebElement(WebElement). Asserts that a web element is enabled and displayed.
 
 
 common imports
