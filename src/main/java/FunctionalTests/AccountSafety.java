@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.spi.ToolProvider;
 
-public class AccountSafety
+public class AccountSafety implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
     String website = "https://juice-shop.herokuapp.com"; //default website URL
