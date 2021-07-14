@@ -14,10 +14,12 @@ import static org.testng.Assert.*;
 
 public class Registration implements ITest
 {
-    private ThreadLocal<String> testName = new ThreadLocal<>();
+    private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
     String website = "https://juice-shop.herokuapp.com"; //default website URL
+
     TestBrowser environment;
-    CreateEnvironment passBrowser = new CreateEnvironment();
+    CreateEnvironment passBrowser;
+
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -26,6 +28,7 @@ public class Registration implements ITest
     @BeforeSuite
     public void SetUp() throws IOException
     {
+        passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
     }
 
@@ -52,6 +55,11 @@ public class Registration implements ITest
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        //navigate to registration.
+        TestFunctions.navToReg(browserWindow);
 
         fillOutReg(browserWindow, email, password, password,true, answer);
 
@@ -76,6 +84,11 @@ public class Registration implements ITest
     {
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        //navigate to registration.
+        TestFunctions.navToReg(browserWindow);
 
         fillOutReg(browserWindow, "email", "pswrd", "password",false, "");
 
@@ -94,17 +107,23 @@ public class Registration implements ITest
     @Test(
             groups = {"",""},
             priority = 2,
-            enabled = true
+            enabled = false
     )
     public void RF3_Validation_Email()
     {
-
+        //TODO Validation Email
     }
 
     /**
      * Smoke tests several invalid cases, which can be found in the data provider class.
-     *  Programmer:Kyle Sullivan
-     *  @param
+     * Programmer: Kyle Sullivan
+     * @param testing invalid case being tested
+     * @param email Email String for Test
+     * @param password Password String for Test
+     * @param repeatPassword Repeat Password String for Test
+     * @param doQuestion Boolean whether to do the security question or not
+     * @param answer Answer String for test
+     * @throws InterruptedException
      */
     @Test(
             groups = {"Sanity","Registration Sanity","Registration","hasDataProvider"},
@@ -119,6 +138,11 @@ public class Registration implements ITest
         boolean disabledButton;
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        //navigate to registration.
+        TestFunctions.navToReg(browserWindow);
 
         fillOutReg(browserWindow, email, password, repeatPassword,doQuestion,answer);
 
@@ -150,11 +174,26 @@ public class Registration implements ITest
             dataProvider = "",
             dataProviderClass = Test_Data.class,
             threadPoolSize =0,
-            enabled = true
+            enabled = false
     )
     public void RF_Regression()
     {
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Test Header
+        //Test URL
+        //Test Title
+        //Check mandatory fields
+        //check password advice
+        assertEquals(browserWindow.findElement(By.cssSelector("#mat-slide-toggle-1-input")).getAttribute("aria-checked"),"false");
 
+        //check password is hidden
+        WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
+        assertEquals(passwordField.getAttribute("type"),"password");
+        WebElement repPasswordField = browserWindow.findElement(By.cssSelector("#repeatPasswordControl"));
+        assertEquals(passwordField.getAttribute("type"),"password");
+
+        //TODO RF regression
     }
 
     /**
@@ -167,28 +206,13 @@ public class Registration implements ITest
      * @param doQuestion true/false to whether to use a security question
      * @param answer String for security question.
      * @throws InterruptedException
-     * @throws IOException triggers if no browser has been set for the test
      */
-    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    public void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;
         int optionTryLimit = 50;
 
-        browserWindow.get(website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
-
-        //Verify that the sign up page is accessible
-        WebElement signUpLink = browserWindow.findElement(By.cssSelector("#newCustomerLink"));
-        assertTrue(signUpLink.isEnabled());
-        signUpLink.click();
 
         assertEquals(browserWindow.getCurrentUrl(),website+"/#/register");
 

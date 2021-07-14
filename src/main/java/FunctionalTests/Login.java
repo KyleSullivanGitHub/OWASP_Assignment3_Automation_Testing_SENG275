@@ -17,6 +17,7 @@ public class Login implements ITest
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
+    //Create a CreateEnvironment Object to handle which browser type the TestBrowser environment will be created as.
     CreateEnvironment passBrowser = new CreateEnvironment();
 
     /**
@@ -52,8 +53,9 @@ public class Login implements ITest
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(website);
 
-        fillOutLog(browserWindow, email, password, password,true, answer);
+        fillOutReg(browserWindow, email, password, password,true, answer);
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
@@ -74,7 +76,7 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Loginn"},
+            groups = {"Smoke","Login Smoke","Login"},
             priority = 1,
             enabled = true
     )
@@ -82,6 +84,7 @@ public class Login implements ITest
     {
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(website);
 
         fillOutLog (browserWindow, "email", "pswrd");
 
@@ -92,13 +95,12 @@ public class Login implements ITest
     }
 
 
-    private void fillOutLog(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;
         int optionTryLimit = 50;
 
-        browserWindow.get(website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
@@ -155,7 +157,6 @@ public class Login implements ITest
         int optionTry = 0;
         int optionTryLimit = 50;
 
-        browserWindow.get(website);
         Thread.sleep(2500);
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(500);
