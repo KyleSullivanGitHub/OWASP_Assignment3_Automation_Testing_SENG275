@@ -69,7 +69,7 @@ public class Basket implements ITest{
         TestFunctions.waitForSite(browserWindow);
 
         //Login/Initial steps??
-        TestFunctions.loginViaGoogle(browserWindow);
+        TestFunctions.login(browserWindow);
 
         Thread.sleep(6000);
 
