@@ -13,6 +13,7 @@ Rememember, anytime you pull the file from the repository, someone else might ha
 TestFunctions.java methods
 
 waitForSite(WebDriver). Delays initial actions on site startup until main page is loaded, then removes the cookie window
+waitForSite(WebDriver,String). Delays actions on site until a specific element is present
 
 navToLogin(WebDriver). Quick navigation to login page.
 
@@ -20,8 +21,10 @@ navToReg(WebDriver). Quick navigation to registration page.
 
 createAccount(). Creation of a default account, usable by all tests. Will only run once per suite. Place in SetUp methods of each test class
 
-login(WebDriver). quickly fills out the login page and logs in
-login(WebDriver, String). ^ but with an alternate password
+login(WebDriver). Quickly logs in using a google account.
+
+manualLogin(WebDriver). quickly fills out the login page and logs in
+manualLogin(WebDriver, String). ^ but with an alternate password
 
 quickLogFill(WebDriver,String). fills out the login page, but does not log in. Used by login(). Will navigate to login page if not already there
 
