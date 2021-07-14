@@ -50,18 +50,21 @@ public class Basket implements ITest{
 
         //Login/Initial steps??
 
-        //Select Product
-        browserWindow.findElement(By.cssSelector("_____")).click();//click product icon
-
         //Add product to cart
-        browserWindow.findElement(By.cssSelector("_____")).click();//click add to basket
+        // browserWindow.findElement(By.cssSelector("_____")).click();//click add to basket
+
+        //Add to cart
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button")).click();//click product icon
+
+        //Quantity icon on cart updated
+        assertEquals(browserWindow.findElement(By.cssSelector("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/span[2]")),"1"); //Quantity updated
 
         //Navigate to Basket
-        browserWindow.findElement(By.cssSelector("_____")).click();//click basket icon
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon")).click();//click basket icon
 
         //Verify Navigation to basket page
         assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
-
+        /*
         //Verify product Info
         assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Product Name
         assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Price
@@ -77,7 +80,7 @@ public class Basket implements ITest{
         browserWindow.findElement(By.cssSelector("_____")).click();//click trash icon
 
         //Verify Product is removed
-
+        */
         browserWindow.quit();
     }
 
