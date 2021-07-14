@@ -3,9 +3,9 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.Keys;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -21,33 +21,64 @@ public class TestFunctions
     static String constEmail;//String containing the email for the constant session
     static String constPassword = "Seng265!";//password for the constant session
     static String constAnswer = "Seng"; //answer for security question
+    static String googleEmail = "helloworld.owasp@gmail.com";
+    static String googlePassword = "seng275@";
     static String OS = System.getProperty("os.name").toLowerCase();
     static String website = "https://juice-shop.herokuapp.com"; //default website URL
+    static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
 
     /**
-     * Pauses the test until a specific element is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
+     * Pauses the test until the cookie popup on site visitation is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
      * Programmer: Kyle Sullivan
      * @param test Webdriver to pause
      * @throws InterruptedException
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
+        waitForSitePrimary(test,cookieElement);
+    }
+
+    /**
+     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param cssSelector element to look for
+     * @throws InterruptedException
+     */
+    public static void waitForSite(WebDriver test, String cssSelector) throws InterruptedException
+    {
+        waitForSitePrimary(test,cssSelector);
+    }
+
+    /**
+     * Functionality for waitForSite
+     * @param test Webdriver to pause
+     * @param cssElement element to look for
+     * @throws InterruptedException
+     */
+    private static void waitForSitePrimary(WebDriver test, String cssElement) throws InterruptedException
+    {
         boolean ready = false;
-        Thread.sleep(500);
+        Thread.sleep(100);
         while(!ready)
         {
             try
             {
-                WebElement cookies = test.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper"));
-                if(cookies.isDisplayed())
+                //find the element
+                WebElement element = test.findElement(By.cssSelector(cssElement));
+                //if the element is presented...
+                if(element.isDisplayed())
                 {
+                    //stop the loop
                     ready = true;
-                    cookies.click();
+                    if(cssElement.equals(cookieElement))
+                        element.click();
                 }
             }
+            //if not, catch the exception, wait a moment then try again.
             catch(Exception NoSuchElementException)
             {
-                Thread.sleep(500);
+                Thread.sleep(100);
             }
         }
     }
@@ -132,41 +163,24 @@ public class TestFunctions
     }
 
     /**
-     * Logs into page using default credentials with google authentication
-     * Programmer: Seyedmehrad Adimi
-     * @throws IOException
+     * Logs into the site via google and a pre-created google account.
+     * Programmer: Seyedmehrad Adimi, Nicole Makarowski, Kyle Sullivan
+     * @param test Test to log in to.
      * @throws InterruptedException
      */
-    public static void loginViaGoogle(WebDriver browserWindow) throws InterruptedException{
-        String email = "helloworld.owasp@gmail.com";
-        String password = "seng275@";
+    public static void login(WebDriver test) throws InterruptedException
+    {
+        navToLogin(test);
 
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
-        Thread.sleep(1500);
-
-        browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        Thread.sleep(1000);
-
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
-        Thread.sleep(1000);
-        emailUsr.click ();
-        emailUsr.sendKeys (email);
-        Thread.sleep(500);
-        emailUsr.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        Thread.sleep(500);
-        passwordInput.click ();
-        passwordInput.sendKeys (password);
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
+        test.findElement(By.id("loginButtonGoogle")).click();
+        waitForSite(test,"#identifierId");
+        WebElement emailUser = test.findElement(By.cssSelector("#identifierId"));
+        emailUser.click();
+        emailUser.sendKeys(googleEmail + Keys.ENTER);
+        waitForSite(test,"#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input");
+        WebElement passwordInput = test.findElement(By.cssSelector("#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input"));
+        passwordInput.click();
+        passwordInput.sendKeys(googlePassword + Keys.ENTER);
     }
 
     /**
@@ -176,7 +190,7 @@ public class TestFunctions
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void login(WebDriver test) throws IOException, InterruptedException
+    public static void manualLogin(WebDriver test) throws IOException, InterruptedException
     {
         quickLogFill(test, constPassword);
         test.findElement(By.id ("loginButton")).click (); //click on login
@@ -190,7 +204,7 @@ public class TestFunctions
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void login(WebDriver test, String password) throws IOException, InterruptedException
+    public static void manualLogin(WebDriver test, String password) throws IOException, InterruptedException
     {
         quickLogFill(test, password);
         test.findElement(By.id ("loginButton")).click (); //click on login
