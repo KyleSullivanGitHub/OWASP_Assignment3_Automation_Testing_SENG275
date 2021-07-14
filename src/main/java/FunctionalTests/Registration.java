@@ -185,7 +185,7 @@ public class Registration implements ITest
         //Test Title
         //Check mandatory fields
         //check password advice
-        assertEquals(browserWindow.findElement(By.cssSelector("#mat-slide-toggle-1-input")).getAttribute("aria-checked"),"false");
+        assertEquals(browserWindow.findElement(By.className ("mat-slide-toggle-thumb")).getAttribute("aria-checked"),"false");
 
         //check password is hidden
         WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
