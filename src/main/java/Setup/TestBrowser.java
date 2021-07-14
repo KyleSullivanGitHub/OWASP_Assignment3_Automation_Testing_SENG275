@@ -18,14 +18,17 @@ public abstract class TestBrowser
      * Change the below to match your system. Store your setup in info.txt
      */
 
-    //driver path to your folder contianing all drivers for web testing. Change to match your setup
-    protected String driverPath = "C:\\Users\\Owner\\Documents\\WebDriver\\";
+    //driver path to folder contianing all drivers for web testing. Currently only Windows compatible
+    //TODO add other OS Functionality
+    protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
     //Location of firefox driver within your WebDriver folder.
     protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
     //Location of chrome driver within your WebDriver folder.
     protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
     //Location of Edge driver within your webdriver folder.
     protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
+
+    //TODO Add Safari
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
     static String primaryBrowser = "Chrome";
