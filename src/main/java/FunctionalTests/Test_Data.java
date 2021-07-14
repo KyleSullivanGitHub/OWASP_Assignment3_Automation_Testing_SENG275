@@ -159,11 +159,11 @@ public class Test_Data
         String pass = "primary";
         String fail = "warn";
         return new Object[][]{
-                {"1234567!",fail,fail,pass,pass,pass},
-                {"abcdefg!",pass,fail,fail,pass,pass},
-                {"ABCDEFG!",fail,pass,fail,pass,pass},
-                {"123abcDEF",pass,pass,pass,fail,pass},
-                {"1aB!",pass,pass,pass,pass,fail},
+                {"No_Characters","1234567!",fail,fail,pass,pass,pass},
+                {"No_Uppercase_or_Num","abcdefg!",pass,fail,fail,pass,pass},
+                {"No_Lowercase_or_Num","ABCDEFG!",fail,pass,fail,pass,pass},
+                {"No_Special","123abcDEF",pass,pass,pass,fail,pass},
+                {"Too_Short","1aB!",pass,pass,pass,pass,fail},
         };
     }
 
