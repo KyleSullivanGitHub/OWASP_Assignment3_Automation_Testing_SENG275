@@ -10,6 +10,28 @@ primaryBrowser to whatever browser you want to run the majority of the tests wit
 Rememember, anytime you pull the file from the repository, someone else might have changed them, so make sure.
 
 
+TestFunctions.java methods
+
+waitForSite(WebDriver). Delays initial actions on site startup until main page is loaded, then removes the cookie window
+waitForSite(WebDriver,String). Delays actions on site until a specific element is present
+
+navToLogin(WebDriver). Quick navigation to login page.
+
+navToReg(WebDriver). Quick navigation to registration page.
+
+createAccount(). Creation of a default account, usable by all tests. Will only run once per suite. Place in SetUp methods of each test class
+
+login(WebDriver). Quickly logs in using a google account.
+
+manualLogin(WebDriver). quickly fills out the login page and logs in
+manualLogin(WebDriver, String). ^ but with an alternate password
+
+quickLogFill(WebDriver,String). fills out the login page, but does not log in. Used by login(). Will navigate to login page if not already there
+
+commonRegression(WebDriver, Boolean (logged in or not)). common regression for most regression tests. UNFINISHED
+
+assertWebElement(WebElement). Asserts that a web element is enabled and displayed.
+
 
 common imports
     import Setup.*;
@@ -40,11 +62,14 @@ Start Browser
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
 
 (if you need to create  browsers of the same web type)
         WebDriver browserWindow = environment.makeDriver()
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
+
 
 Close Browser Window. Use this rather than .quit if you have more tests to run.
         Thread.sleep(5000);
