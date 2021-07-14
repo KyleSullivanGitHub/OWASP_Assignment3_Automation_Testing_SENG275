@@ -22,6 +22,18 @@ public class Basket implements ITest{
     CreateEnvironment passBrowser = new CreateEnvironment();
     WebDriver browserWindow;
 
+    String addToCart_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button";
+    String basketIconQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/span[2]";
+    String basketIcon_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon";
+    String productName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[2]";
+    String productPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[4]";
+    String productQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/span";
+    String totalPrice_XPath = "//*[@id=\"price\"]";
+    String increaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[2]";
+    String decreaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[1]";
+    String removeProduct_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[5]/button";
+
+
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
@@ -48,16 +60,6 @@ public class Basket implements ITest{
             enabled = true
     )
     public void BA1_Valid_Usage(String chosenBrowser) throws IOException, InterruptedException {
-        String addToCart_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button";
-        String basketIconQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/span[2]";
-        String basketIcon_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon";
-        String productName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[2]";
-        String productPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[4]";
-        String productQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/span";
-        String totalPrice_XPath = "//*[@id=\"price\"]";
-        String increaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[2]";
-        String decreaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[1]";
-        String removeProduct_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[5]/button";
 
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -93,16 +95,6 @@ public class Basket implements ITest{
         assertEquals(browserWindow.findElement(By.xpath(productQuantity_XPath)).getText(), "1"); //Quantity
         assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 1.99¤"); //Total Price
 
-        //Increase Quantity by one
-        browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
-
-        //Decrease Quantity by one
-        browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
-
         //Remove Product
         browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
         Thread.sleep(1500);
@@ -121,16 +113,15 @@ public class Basket implements ITest{
             priority = 2,
             enabled = true
     )
-    public void BA2_Invalid_Usage() {
+    public void BA2_Invalid_Usage() throws InterruptedException{
 
-        //Create  browser for this particular test
         browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
 
+        browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
 
         //Verify add to basket element does not exist
-        browserWindow.findElement(By.cssSelector("_____")).click();//click product icon
-
+        assertTrue(browserWindow.findElements(By.xpath(addToCart_XPath)).isEmpty());
 
         browserWindow.quit();
 
@@ -145,21 +136,44 @@ public class Basket implements ITest{
             priority = 3,
             enabled = true
     )
-    public void BA3_Alternate_Usages() {
-
+    public void BA3_Alternate_Usages() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
 
-        //Verify Add to cart is visible when clicking on product
-        browserWindow.findElement(By.cssSelector("_____")).click();//click product icon
-        assertTrue( browserWindow.findElement(By.cssSelector("_____")).isEnabled());//Add to cart visible
+        browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
+        //Login/Initial steps??
+        TestFunctions.login(browserWindow);
 
-        //Verify Add to cart visible when viewing 'compare products'
-        browserWindow.findElement(By.cssSelector("_____")).click();//click compare products
-        assertTrue( browserWindow.findElement(By.cssSelector("_____")).isEnabled());//Add to cart visible
+        Thread.sleep(6000);
+
+        //Add to cart
+        browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+
+        //Navigate to Basket
+        browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+        //Verify Navigation to basket page
+        Thread.sleep(1500);
+        assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
+
+        //Increase Quantity by one
+        browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
+
+        //Decrease Quantity by one
+        browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
+
+        //Remove Product
+        browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 0¤");
 
         browserWindow.quit();
+
     }
 
     /**
@@ -172,7 +186,7 @@ public class Basket implements ITest{
             enabled = true
     )
     public void BA_Regression() {
-
+        //TODO ADD Basket REGRESSION TEST
     }
 
 
