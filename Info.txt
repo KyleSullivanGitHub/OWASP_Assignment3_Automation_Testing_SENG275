@@ -12,7 +12,7 @@ Rememember, anytime you pull the file from the repository, someone else might ha
 
 TestFunctions.java methods
 
-waitForSite(WebDriver). Delays inital actions on site startup until main page is loaded, then removes teh cookie window
+waitForSite(WebDriver). Delays initial actions on site startup until main page is loaded, then removes the cookie window
 
 navToLogin(WebDriver). Quick navigation to login page.
 
