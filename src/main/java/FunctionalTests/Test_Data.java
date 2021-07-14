@@ -104,8 +104,7 @@ public class Test_Data
      * @return Strings containing all web browsers to be tested
      */
     @DataProvider(
-            name = "webBrowserData",
-            parallel = true
+            name = "webBrowserData"
     )
     public static Object[][] webBrowserData()
     {

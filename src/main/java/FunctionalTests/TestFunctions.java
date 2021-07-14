@@ -5,6 +5,7 @@ import Setup.TestBrowser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class TestFunctions
     static String constPassword = "Seng265!";//password for the constant session
     static String constAnswer = "Seng"; //answer for security question
     static String OS = System.getProperty("os.name").toLowerCase();
+    static String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     /**
      * Pauses the test until a specific element is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
@@ -127,6 +129,44 @@ public class TestFunctions
             //mark the account as created for this session
             registerOnce = true;
         }
+    }
+
+    /**
+     * Logs into page using default credentials with google authentication
+     * Programmer: Seyedmehrad Adimi
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void loginViaGoogle(WebDriver browserWindow) throws InterruptedException{
+        String email = "helloworld.owasp@gmail.com";
+        String password = "seng275@";
+
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
+        Thread.sleep(500);
+
+        //verify that we can access the login page
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click();
+        Thread.sleep(1500);
+
+        browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
+        Thread.sleep(1000);
+
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        Thread.sleep(1000);
+        emailUsr.click ();
+        emailUsr.sendKeys (email);
+        Thread.sleep(500);
+        emailUsr.sendKeys (Keys.ENTER);
+        Thread.sleep(1000);
+        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+        Thread.sleep(500);
+        passwordInput.click ();
+        passwordInput.sendKeys (password);
+        Thread.sleep(500);
+        passwordInput.sendKeys (Keys.ENTER);
+        Thread.sleep(1000);
     }
 
     /**

@@ -4,11 +4,14 @@ import Setup.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 
 import static org.testng.Assert.*;
 
@@ -17,6 +20,7 @@ public class Basket implements ITest{
     String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
+    WebDriver browserWindow;
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -27,8 +31,10 @@ public class Basket implements ITest{
     {
         environment = passBrowser.createBrowser();
     }
-
-
+    @AfterTest
+    public void  tearDown(){
+        browserWindow.quit();
+    }
 
     /**
      *Smoke tests a valid basket usage.
@@ -41,51 +47,73 @@ public class Basket implements ITest{
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void BA1_Valid_Usage(String chosenBrowser) throws IOException {
+    public void BA1_Valid_Usage(String chosenBrowser) throws IOException, InterruptedException {
+        String addToCart_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button";
+        String basketIconQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/span[2]";
+        String basketIcon_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon";
+        String productName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[2]";
+        String productPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[4]";
+        String productQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/span";
+        String totalPrice_XPath = "//*[@id=\"price\"]";
+        String increaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[2]";
+        String decreaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[1]";
+        String removeProduct_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[5]/button";
 
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Login/Initial steps??
+        //Wait for Website to load
+        browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
 
-        //Add product to cart
-        // browserWindow.findElement(By.cssSelector("_____")).click();//click add to basket
+        //Login/Initial steps??
+        TestFunctions.loginViaGoogle(browserWindow);
+
+        Thread.sleep(6000);
 
         //Add to cart
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button")).click();//click product icon
+        browserWindow.findElement(By.xpath(addToCart_XPath)).click();
 
+        Thread.sleep(1500);
         //Quantity icon on cart updated
-        assertEquals(browserWindow.findElement(By.cssSelector("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/span[2]")),"1"); //Quantity updated
+        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
         //Navigate to Basket
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon")).click();//click basket icon
+        browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
 
         //Verify Navigation to basket page
+        Thread.sleep(1500);
         assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
-        /*
+
         //Verify product Info
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Product Name
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Price
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Quantity
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Total Price
+        assertEquals(browserWindow.findElement(By.xpath(productName_XPath)).getText(),"Apple Juice (1000ml)"); //Product Name
+        assertEquals(browserWindow.findElement(By.xpath(productPrice_XPath)).getText(),"1.99¤"); //Price
+        assertEquals(browserWindow.findElement(By.xpath(productQuantity_XPath)).getText(), "1"); //Quantity
+        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 1.99¤"); //Total Price
 
-        //Change quantity
+        //Increase Quantity by one
+        browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
 
-        // Verify Quantity change
-
+        //Decrease Quantity by one
+        browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
         //Remove Product
-        browserWindow.findElement(By.cssSelector("_____")).click();//click trash icon
+        browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
+        Thread.sleep(1500);
+        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 0¤");
 
-        //Verify Product is removed
-        */
         browserWindow.quit();
     }
 
     /**
      *Smoke tests a invalid basket usage.
+     * Verifies cannot add a product to cart when logged out
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -96,31 +124,13 @@ public class Basket implements ITest{
     public void BA2_Invalid_Usage() {
 
         //Create  browser for this particular test
-        WebDriver browserWindow = environment.makeDriver();
+        browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Login/Initial steps??
 
-        //Select Product
+        //Verify add to basket element does not exist
         browserWindow.findElement(By.cssSelector("_____")).click();//click product icon
 
-        //Add product to cart
-        browserWindow.findElement(By.cssSelector("_____")).click();//click add to basket
-
-        //Navigate to Basket
-        browserWindow.findElement(By.cssSelector("_____")).click();//click basket icon
-
-        //Verify Navigation to basket page
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
-
-        //Verify product is present
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____"); //Product Name
-
-        //Attempt to lower quantity  below zero
-        browserWindow.findElement(By.cssSelector("_____")).click();//click Minus button
-
-        //Verify value above one or button disabled
-        assertEquals(browserWindow.findElement(By.cssSelector("___")),"____");//Quantity is above 1
 
         browserWindow.quit();
 
@@ -138,7 +148,7 @@ public class Basket implements ITest{
     public void BA3_Alternate_Usages() {
 
         //Create  browser for this particular test
-        WebDriver browserWindow = environment.makeDriver();
+        browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Verify Add to cart is visible when clicking on product
