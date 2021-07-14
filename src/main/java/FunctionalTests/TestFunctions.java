@@ -21,7 +21,7 @@ public class TestFunctions
     static String constEmail;//String containing the email for the constant session
     static String constPassword = "Seng265!";//password for the constant session
     static String constAnswer = "Seng"; //answer for security question
-    static String googleEmail = "hellowworld.owasp@gmail.com";
+    static String googleEmail = "helloworld.owasp@gmail.com";
     static String googlePassword = "seng275@";
     static String OS = System.getProperty("os.name").toLowerCase();
     static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
