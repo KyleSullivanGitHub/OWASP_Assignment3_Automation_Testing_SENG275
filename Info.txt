@@ -72,11 +72,44 @@ Start Browser
 
 
 Close Browser Window. Use this rather than .quit if you have more tests to run.
-        Thread.sleep(5000);
+        Thread.sleep(TestFunctions.endTestWait);
         browserWindow.close();
 
 Close browser window, and driver.
     environment.quit();
+
+Methods for chaning the name of tests using data providers
+
+    private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
+
+/**
+     * Method for changing the name of tests performed multiple times
+     * by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
+    @BeforeMethod(onlyForGroups = {"hasDataProvider"})
+    public void BeforeMethod(Method method, Object[] testData)
+    {
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
+    }
+
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
+    @Override
+    public String getTestName()
+    {
+        return testName.get();
+    }
+
+
 
 Data provider class
     /**

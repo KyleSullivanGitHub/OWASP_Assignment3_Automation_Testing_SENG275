@@ -13,24 +13,29 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
+/**
+ * Tests for verifying the functionality of the password Complexity feature present wherever the user needs to create passwords
+ */
 public class PasswordComplexity implements ITest
 {
-    private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
+    private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
+    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
 
-    String validPassword = "aB3!aB3!";
-    String pass = "primary";
-    String fail = "warn";
+    String validPassword = "aB3!aB3!";//Valid password for any complexity test
+
+    String pass = "primary";//Used to determine if a password has passed a specific complexity standard
+    String fail = "warn";//Used to determine if a password has failed a specific complexity standard.
 
 
     /**
-     *Create an environment for all tests using the same browser app.
-     *Programmer: Kyle Sullivan
+     * Create an environment for all tests using the same browser app.
+     * Programmer: Kyle Sullivan
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @BeforeSuite
     public void SetUp() throws IOException, InterruptedException
@@ -42,16 +47,17 @@ public class PasswordComplexity implements ITest
         //Create a constant account to use in tests
         TestFunctions.createAccount();
     }
-
     /**
      * Smoke test for valid inputs for Password Complexity within several different browsers
      * Programmer: Kyle Sullivan
-     * @param chosenBrowser browser used for that test
+     * @param chosenBrowser Browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
             groups = {"Smoke","Password Complexity","Password Complexity Smoke","hasDataProvider"},
             priority = 0,
-            dataProvider = "PC1_Input",
+            dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3,
             enabled = true
@@ -63,20 +69,27 @@ public class PasswordComplexity implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
+
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
-
-        //Navigate to the Registration Page
-        TestFunctions.navToReg(browserWindow);
-
-        testPassAdviceReg(browserWindow,validPassword,pass,pass,pass,pass,pass);
-        browserWindow.quit();
+        try
+        {
+            //Test Password
+            testPassAdviceReg(browserWindow, validPassword, pass, pass, pass, pass, pass);
+        }
+        finally
+        {
+            //End Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
     /**
      * Smoke test for invalid input for Password Complexity
      * Programmer: Kyle Sullivan
+     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
             groups = {"Smoke","Password Complexity","Password Complexity Smoke"},
@@ -85,53 +98,74 @@ public class PasswordComplexity implements ITest
     )
     public void PCS2_Password_Complexity_Invalid() throws InterruptedException
     {
+        //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
+        //Navigate to the website
         browserWindow.get(website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
-        //Navigate to the Registration Page
-        TestFunctions.navToReg(browserWindow);
 
-        testPassAdviceReg(browserWindow,"1234567!",fail,fail,pass,pass,pass);
-        browserWindow.quit();
+        try
+        {
+            //Try the password
+            testPassAdviceReg(browserWindow, "1234567!", fail, fail, pass, pass, pass);
+        }
+        finally
+        {
+            //End the Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for all types of invalid input for Password Complexity
      * Programmer: Kyle Sullivan
-     *  @param type Type of invalid input, used for naming tests
-     *  @param password Password string for test
-     *  @param lowercase Whether the password should pass the lowercase test
-     *  @param uppercase Whether the password should pass the uppercase test
-     *  @param number Whether the password should pass the number test
-     *  @param special Whether the password should pass the special character test
-     *  @param length Whether the password should pass the length test
-     * @throws InterruptedException
+     * @param type Type of invalid input, used for naming tests
+     * @param password Password string for test
+     * @param lowercase Whether the password should pass the lowercase test
+     * @param uppercase Whether the password should pass the uppercase test
+     * @param number Whether the password should pass the number test
+     * @param special Whether the password should pass the special character test
+     * @param length Whether the password should pass the length test
+     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
             groups = {"Sanity","Password Complexity","Password Complexity Sanity","hasDataProvider"},
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
+            invocationCount = 5,
             threadPoolSize = 3,
             enabled = true
     )
     public void PCS3_Password_Complexity_Invalid_Reg(String type, String password, String lowercase, String uppercase, String number, String special, String length) throws InterruptedException
     {
+        //Create Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
-        testPassAdviceReg(browserWindow,password,lowercase,uppercase,number,special,length);
-        browserWindow.quit();
+        try
+        {
+            //Test password
+            testPassAdviceReg(browserWindow, password, lowercase, uppercase, number, special, length);
+        }
+        finally
+        {
+            //End Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for valid inputs in Forgot Password for Password Complexity
      * Programmer: Kyle Sullivan
+     * @exception InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
             groups = {"Sanity","Password Complexity","Password Complexity Sanity"},
@@ -140,57 +174,80 @@ public class PasswordComplexity implements ITest
     )
     public void PCS4_Password_Complexity_Valid_FP() throws InterruptedException
     {
+        //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
-        testPassAdviceFP(browserWindow,validPassword,pass,pass,pass,pass,pass);
-        browserWindow.quit();
+        try
+        {
+            //Test a valid password within Forgot Password
+            testPassAdviceFP(browserWindow,validPassword,pass,pass,pass,pass,pass);
+        }
+        finally
+        {
+            //End Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for Invalid Inputs in Forgot Password for Password Complexity
-     * @param type type of invalid input for test, used in naming the test.
+     * Programmer: Kyle Sullivan
+     * @param type Type of invalid input for test, used in naming the test.
      * @param password Password string for test
      * @param lowercase Whether the password should pass the lowercase test
      * @param uppercase Whether the password should pass the uppercase test
      * @param number Whether the password should pass the number test
      * @param special Whether the password should pass the special character test
      * @param length Whether the password should pass the length test
-     * @throws InterruptedException
+     * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
             groups = {"Sanity","Password Complexity","Password Complexity Sanity","hasDataProvider"},
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
+            invocationCount = 5,
             threadPoolSize = 3,
             enabled = true
     )
     public void PCS5_Password_Complexity_Invalid_FP(String type, String password, String lowercase, String uppercase, String number, String special, String length) throws InterruptedException
     {
+        //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
-        testPassAdviceFP(browserWindow,password,lowercase,uppercase,number,special,length);
-        browserWindow.quit();
+        try
+        {
+            //Test the Invalid Input
+            testPassAdviceFP(browserWindow, password, lowercase, uppercase, number, special, length);
+        }
+        finally
+        {
+            //End the Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
-     * Password complexity test for all Password Complexity class test methods
+     * Setup for Password complexity tests within Registration
      * Programmer: Kyle Sullivan
-     * @param browserWindow browser used for that test
+     * @param browserWindow Browser used for that test
      * @param password Password string for test
      * @param lowercase Whether the password should pass the lowercase test
      * @param uppercase Whether the password should pass the uppercase test
      * @param number Whether the password should pass the number test
      * @param special Whether the password should pass the special character test
      * @param length Whether the password should pass the length test
+     * @exception InterruptedException Thrown if the test was interrupted during a waiting period
      */
     public void testPassAdviceReg(WebDriver browserWindow, String password, String lowercase, String uppercase, String number, String special, String length) throws InterruptedException
     {
@@ -199,49 +256,52 @@ public class PasswordComplexity implements ITest
         //Navigate to the Registration Page
         TestFunctions.navToReg(browserWindow);
 
-        //Activate password complexity advice
+        //Activate password complexity advice by toggling the slider
         browserWindow.findElement(By.className("mat-slide-toggle-thumb")).click();
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
 
+        //Test the Password
         testPassAdvice(browserWindow,lowercase,uppercase,number,special,length,xPathLoc);
 
     }
+
     /**
-     * Password complexity test for all Password Complexity class test methods
+     * Setup for Password complexity tests within Forgot Password
      * Programmer: Kyle Sullivan
-     * @param browserWindow browser used for that test
+     * @param browserWindow Browser used for that test
      * @param password Password string for test
      * @param lowercase Whether the password should pass the lowercase test
      * @param uppercase Whether the password should pass the uppercase test
      * @param number Whether the password should pass the number test
      * @param special Whether the password should pass the special character test
      * @param length Whether the password should pass the length test
+     * @exception InterruptedException Thrown if the test was interrupted during a thread waiting period
      */
     public void testPassAdviceFP(WebDriver browserWindow, String password, String lowercase, String uppercase, String number, String special, String length) throws InterruptedException
     {
         //xPath to common part of icon elements on password advice element
         String xPathLoc = "forgot-password";
-        //navigate to Login
-        TestFunctions.navToLogin(browserWindow);
+
         //Navigate to Forgot Password
+        TestFunctions.navToLogin(browserWindow);
         browserWindow.findElement(By.className("forgot-pw")).click();
 
         //Fill out form
-        browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);
-        browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);
+        browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
+        browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
 
-        //Activate Password Advice
+        //Activate Password Advice by toggling the slider.
         browserWindow.findElement(By.className("mat-slide-toggle")).click();
         browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys(password); //enter password
 
-
+        //Test the password
         testPassAdvice(browserWindow,lowercase,uppercase,number,special,length,xPathLoc);
     }
 
     /**
      * Password complexity test for all Password Complexity class test methods
      * Programmer: Kyle Sullivan
-     * @param browserWindow browser used for that test
+     * @param browserWindow Browser used for that test
      * @param lowercase Whether the password should pass the lowercase test
      * @param uppercase Whether the password should pass the uppercase test
      * @param number Whether the password should pass the number test
@@ -251,8 +311,16 @@ public class PasswordComplexity implements ITest
      */
     public void testPassAdvice(WebDriver browserWindow, String lowercase, String uppercase, String number, String special, String length,String xPathLoc)
     {
+        //common HTML element containing results of password complexity standards
         String iconPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-"+xPathLoc+"/div/mat-card/div[2]/mat-password-strength-info/mat-card/mat-card-content/";
 
+        /*
+         * To test whether a password has passed or failed a standards test, the automation looks at the icon for each standard.
+         * Each Icon can be in one of two states, pass or fail, indicated by the color attribute of the icon in question.
+         * If the icon is red, its color attribute is warn, which is the fail state for a standard test
+         * If the icon is green, its color attribute is primary, which is the pass state for a standard test.
+         * There are 5 standard tests to check.
+         */
         assertEquals(browserWindow.findElement(By.xpath(iconPath+"div[1]/mat-icon")).getAttribute("color"), lowercase);//Check lowercase test
         assertEquals(browserWindow.findElement(By.xpath(iconPath+"div[2]/mat-icon")).getAttribute("color"), uppercase);//Check uppercase test
         assertEquals(browserWindow.findElement(By.xpath(iconPath+"div[3]/mat-icon")).getAttribute("color"), number);//check number test
@@ -260,12 +328,26 @@ public class PasswordComplexity implements ITest
         assertEquals(browserWindow.findElement(By.xpath(iconPath+"div[5]/mat-icon")).getAttribute("color"), length);//check length test
     }
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
 
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {
