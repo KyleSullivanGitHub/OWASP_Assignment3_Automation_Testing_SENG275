@@ -11,6 +11,7 @@ public class Test_Data
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
 
+    //*******************************************************************************************************
 
     /**
      * This dataProvider passes valid random email, password, and question strings for the RF1 valid input test
@@ -67,6 +68,8 @@ public class Test_Data
         };
     }
 
+    //*******************************************************************************************************
+
 
     /**
      * This dataProvider passes valid random email and password strings for the LG1 valid input test
@@ -91,12 +94,16 @@ public class Test_Data
         String question = "seng";
 
         return new Object[][]{
-                //{"Firefox", email+randomNum1+"@gmail.com",password,question},
+                {"Firefox", email+randomNum1+"@gmail.com",password,question},
                 {"Chrome", email+randomNum2+"@gmail.com",password,question},
-               // {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                // {"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
+
+    //*******************************************************************************************************
+
+
 
     /**
      * This dataProvider passes valid email and password strings for the LG3 valid input test (Google Account)
@@ -122,41 +129,70 @@ public class Test_Data
     }
 
     /**
-     * This dataProvider passes valid email and valid password strings for the LG5 Invalid input test.
-     * The data will be modified in the test class since we have 4 combinations (valid/invalid passwords and emails)
-     * for this test. For now, this data provider only provides the valid ones
-     * Programmer: Seyedmehrad Adimi
-     * @return object with emails and passwords for that test.
+     * This dataProvider passes the desired browsers to the Account Safety methods.
+     * Programmer: Kyle Sullivan
+     * @return object with Strings corresponding to valid web browsers.
      */
     @DataProvider(
-            name = "LG5_Input",
+            name = "AS1_Input",
             parallel = true
     )
-    public static Object[][] LG5_Input()
+    public static Object[][] AS1_Input()
     {
-        while(randomNum1 == randomNum2 || randomNum1 == randomNum3 || randomNum2 == randomNum3)
-        {
-            randomNum1 = emailRandomizer();
-            randomNum2 = emailRandomizer();
-            randomNum3 = emailRandomizer();
-            randomNum4 = emailRandomizer();
-        }
-        String email = "helloworld" ;
-        String password = "Seng310@#$";
-        String question = "seng";
 
         return new Object[][]{
-                //{"Firefox", email+randomNum1+"@gmail.com",password,question},
-                {"Chrome", email+randomNum2+"@gmail.com",password,question},
-                // {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-                // {"Safari", email+randomNum4+"@gmail.com",password,question}
+                {"Firefox"},
+                {"Chrome"},
+                {"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
 
+    //*******************************************************************************************************
 
+    /**
+     * This dataProvider passes the desired browsers to the password complexity PC1 method.
+     * Programmer: Kyle Sullivan
+     * @return object with Strings corresponding to valid web browsers.
+     */
+    @DataProvider(
+            name = "browserSwitch",
+            parallel = true
+    )
+    public static Object[][] browserSwitch()
+    {
 
+        return new Object[][]{
+                {"Firefox"},
+                {"Chrome"},
+                {"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
+        };
+    }
 
+    /**
+     * This dataProvider passes invalid Passwords to the Password Complexity class.
+     * Programmer: Kyle Sullivan
+     * @return object with invalid passwords, and true/false values for the password complexity.
+     */
+    @DataProvider(
+            name = "PC_Input",
+            parallel = true
+    )
+    public static Object[][] PC_Input()
+    {
+        String pass = "primary";
+        String fail = "warn";
+        return new Object[][]{
+                {"No_Characters","1234567!",fail,fail,pass,pass,pass},
+                {"No_Uppercase_or_Num","abcdefg!",pass,fail,fail,pass,pass},
+                {"No_Lowercase_or_Num","ABCDEFG!",fail,pass,fail,pass,pass},
+                {"No_Special","123abcDEF",pass,pass,pass,fail,pass},
+                {"Too_Short","1aB!",pass,pass,pass,pass,fail},
+        };
+    }
 
+    //*******************************************************************************************************
 
     /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.

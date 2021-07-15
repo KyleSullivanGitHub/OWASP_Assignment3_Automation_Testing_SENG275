@@ -27,10 +27,12 @@ public abstract class TestBrowser
     protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
     //Location of Edge driver within your webdriver folder.
     protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
+
+    //TODO Add Safari
+
     //preferred driver to run all tests on. Change to whatever suits your fancy
     static String primaryBrowser = "Chrome";
 //********************************************************************************************************************//
-
     //String containing driver text
     String driver;
     //String containg driver location
