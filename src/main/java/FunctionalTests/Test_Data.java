@@ -167,7 +167,7 @@ public class Test_Data
     {
         int emailNumRandomizer = 0;
         Random emailRandomizer = new Random();
-        for(int i = 0; i < 40; i++)
+        for(int i = 0; i < 20; i++)
         {
             emailNumRandomizer += emailRandomizer.nextInt(9);
         }
