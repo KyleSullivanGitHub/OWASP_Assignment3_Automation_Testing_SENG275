@@ -94,9 +94,9 @@ public class Test_Data
         String question = "seng";
 
         return new Object[][]{
-                //{"Firefox", email+randomNum1+"@gmail.com",password,question},
+                {"Firefox", email+randomNum1+"@gmail.com",password,question},
                 {"Chrome", email+randomNum2+"@gmail.com",password,question},
-               // {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                // {"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
@@ -118,7 +118,7 @@ public class Test_Data
         return new Object[][]{
                 {"Firefox"},
                 {"Chrome"},
-                //{"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                 //{"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
@@ -131,16 +131,16 @@ public class Test_Data
      * @return object with Strings corresponding to valid web browsers.
      */
     @DataProvider(
-            name = "PC1_Input",
+            name = "browserSwitch",
             parallel = true
     )
-    public static Object[][] PC1_Input()
+    public static Object[][] browserSwitch()
     {
 
         return new Object[][]{
                 {"Firefox"},
                 {"Chrome"},
-                //{"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                 //{"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }

@@ -26,4 +26,30 @@ public class RecyclingBox
         environment = passBrowser.createBrowser();
         TestFunctions.createAccount();
     }
+
+    public void RB1_Valid_Usage()
+    {
+        //navigate to recycling box
+        //valid usage of recycling box
+    }
+
+    public void RB2_Invalid_Usage()
+    {
+        //navigate
+        //test empty quanityty
+
+    }
+
+    public void RB3_Invalid_Usage_Comprehensive()
+    {
+        //test empty quantity
+        //test negative quantity
+        //test no address set
+        //test no address saved
+    }
+
+    public void RB_Regression()
+    {
+
+    }
 }
