@@ -39,10 +39,8 @@ public class Registration implements ITest
     /**
      * Smoke test for valid inputs to Registration within several different browsers
      * Programmer: Kyle Sullivan
-     * @param email Email text for test
-     * @param password Password text for test
-     * @param answer Answer to security question text for test
      * @param chosenBrowser Browser used for that test
+     * @param dataSet Object containing a data set for this test
      * @exception IOException Thrown if no browser is chosen for a test
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
@@ -54,7 +52,7 @@ public class Registration implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void RF1_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void RF1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -67,12 +65,11 @@ public class Registration implements ITest
         TestFunctions.waitForSite(browserWindow);
         try
         {
-
             //Navigate to registration.
             TestFunctions.navToReg(browserWindow);
 
             //Fill out registration with a valid data set
-            fillOutReg(browserWindow, email, password, password, true, answer);
+            fillOutReg(browserWindow, dataSet);
 
             browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
@@ -114,7 +111,7 @@ public class Registration implements ITest
             //Navigate to registration.
             TestFunctions.navToReg(browserWindow);
             //Fill out registration form with an invalid data set
-            fillOutReg(browserWindow, "email", "pswrd", "password", false, "");
+            fillOutReg(browserWindow, new Object[] {"email", "pswrd", "password", false, ""});
 
             //Check that the registration button cannot be clicked.
             assertFalse(browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled());
@@ -156,11 +153,7 @@ public class Registration implements ITest
      * Smoke tests several invalid cases for Registration, which can be found in the data provider class.
      * Programmer: Kyle Sullivan
      * @param testing Invalid case being tested
-     * @param email Email String for Test
-     * @param password Password String for Test
-     * @param repeatPassword Repeat Password String for Test
-     * @param doQuestion Boolean whether to do the security question or not
-     * @param answer Answer String for test
+     * @param dataSet An Object containing a data set for this test
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
@@ -171,7 +164,7 @@ public class Registration implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void RF4_Invalid_Input(String testing, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    public void RF4_Invalid_Input(String testing, Object[] dataSet) throws InterruptedException
     {
 
         boolean disabledButton; //Whether the Registration button is disabled
@@ -189,7 +182,7 @@ public class Registration implements ITest
             //Navigate to registration.
             TestFunctions.navToReg(browserWindow);
             //Fill out Registration form
-            fillOutReg(browserWindow, email, password, repeatPassword, doQuestion, answer);
+            fillOutReg(browserWindow, dataSet);
             //Check if the registration button is disabled.
             disabledButton = browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled();
 
@@ -261,14 +254,15 @@ public class Registration implements ITest
      * Method used to fill out registration form with passed values. Universal for all tests within registration.java
      * Programmer: Kyle Sullivan
      * @param browserWindow  Browser window used for this test
-     * @param email          Email string used for test
-     * @param password       Password string used for test
-     * @param repeatPassword Repeat password string used for test
-     * @param doQuestion     True/false to whether to use a security question
-     * @param answer         String for security question.
+     * @param dataSet an object containing:
+     *  Email string used for test
+     *  Password string used for test
+     *  Repeat password string used for test
+     *  True/false to whether to use a security question
+     *  String for security question.
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
-    public void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    public void fillOutReg(WebDriver browserWindow, Object[] dataSet) throws InterruptedException
     {
         boolean notFound = true;//Whether the correct value for a security question has been found
         int optionTry = 0;//Current list element of the security question options being tried for the security question
@@ -277,13 +271,13 @@ public class Registration implements ITest
         //Ensure the test is on the registration page
         assertEquals(browserWindow.getCurrentUrl(), website + "/#/register");
 
-        browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //Enter email
-        browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //Enter password
-        browserWindow.findElement(By.cssSelector("#repeatPasswordControl")).sendKeys(repeatPassword); //Re-enter password
+        browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys((String)dataSet[0]); //Enter email
+        browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys((String)dataSet[1]); //Enter password
+        browserWindow.findElement(By.cssSelector("#repeatPasswordControl")).sendKeys((String)dataSet[2]); //Re-enter password
         browserWindow.findElement(By.cssSelector(".mat-select-trigger")).click(); //Select security question
 
         //If a security question is being selected for this test
-        if (doQuestion)
+        if ((boolean) dataSet[3])
         {
             Thread.sleep(500);
             /*
@@ -309,7 +303,7 @@ public class Registration implements ITest
             }
         }
         //give security question answer
-        browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //Enter answer
+        browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys((String)dataSet[4]); //Enter answer
     }
 
 

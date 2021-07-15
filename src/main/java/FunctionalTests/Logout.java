@@ -121,8 +121,8 @@ public class Logout implements ITest
             browserWindow.get(website);
 
             //Check if the account menu has the logout button displayed. If it is displayed, then the test was passed as the user was not logged out
-            TestFunctions.waitForSite(browserWindow, "#navbarAccount"); //Wait for site to be ready
-            browserWindow.findElement(By.cssSelector("#navbarAccount")).click();//Open account menu
+            TestFunctions.waitForSite(browserWindow, TestFunctions.navPath); //Wait for site to be ready
+            browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();//Open account menu
             Thread.sleep(100);
             WebElement browserWindowLogout = browserWindow.findElement(By.cssSelector("#navbarLogoutButton"));
             boolean userIsNotLoggedOut = browserWindowLogout.isDisplayed();
@@ -136,8 +136,8 @@ public class Logout implements ITest
             //Refresh the page on the secondary test window
             browserSecondary.navigate().refresh();
             //Check if logged out. If the logout button is present, then the user was not logged out, and the test was failed.
-            TestFunctions.waitForSite(browserSecondary, "#navbarAccount");
-            browserSecondary.findElement(By.cssSelector("#navbarAccount")).click();
+            TestFunctions.waitForSite(browserSecondary, TestFunctions.navPath);
+            browserSecondary.findElement(By.cssSelector(TestFunctions.navPath)).click();
             Thread.sleep(100);
 
             boolean secondaryIsLoggedOut = browserSecondary.findElement(By.cssSelector("#navbarLogoutButton")).isDisplayed();
@@ -213,9 +213,9 @@ public class Logout implements ITest
     private void verifyLoggedOut(WebDriver browserWindow) throws InterruptedException
     {
         //Waits for the account menu to be accessible then opens it
-        TestFunctions.waitForSite(browserWindow,"#navbarAccount");
+        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath);
         Thread.sleep(100);
-        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
+        browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
         Thread.sleep(100);
 
         boolean logoutVisible = false; //Whether the logout button is visible
@@ -238,7 +238,7 @@ public class Logout implements ITest
         //Log the user back in via google
         TestFunctions.login(browserWindow);
         //Open the account menu
-        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
+        browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
         Thread.sleep(500);
     }
 

@@ -16,8 +16,10 @@ import static org.testng.Assert.*;
 
 public class TestFunctions
 {
+    //TODO Replace as many path strings as possible with variables
 
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
+    private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
     static String website = "https://juice-shop.herokuapp.com/#/";
     static String constEmail;//String containing the email for the constant session
     static String constPassword = "Seng265!";//password for the constant session
@@ -27,7 +29,9 @@ public class TestFunctions
     static String OS = System.getProperty("os.name").toLowerCase();
     static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
     static int endTestWait = 2500;
-
+    static String navPath = "#navbarAccount";
+    
+    
     /**
      * Pauses the test until the cookie popup on site visitation is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
      * Programmer: Kyle Sullivan
@@ -60,7 +64,6 @@ public class TestFunctions
     private static void waitForSitePrimary(WebDriver test, String cssElement) throws InterruptedException
     {
         boolean ready = false;
-        Thread.sleep(100);
         while(!ready)
         {
             try
@@ -84,6 +87,16 @@ public class TestFunctions
         }
     }
 
+    public void openAccountMenu(WebDriver test)
+    {
+        //check if account is on header
+
+
+        //If it is
+    }
+
+
+
     //TODO will probably need to make a method for navigating to account menu when screen is not full sized
 
     /**
@@ -95,7 +108,7 @@ public class TestFunctions
     public static void navToLogin(WebDriver test) throws InterruptedException
     {
         //Find the account button
-        test.findElement(By.cssSelector("#navbarAccount")).click();
+        test.findElement(By.cssSelector(navPath)).click();
         Thread.sleep(500);
         //verify that we can access the login page
         WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
@@ -156,7 +169,7 @@ public class TestFunctions
             navToReg(tempBrowser);
 
             //Register the Account
-            signUp.fillOutReg(tempBrowser, constEmail, constPassword, constPassword, true, constAnswer);
+            signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
             tempBrowser.findElement(By.cssSelector("#registerButton")).click();//click register button
             //close the browser
             tempBrowser.quit();
@@ -197,7 +210,7 @@ public class TestFunctions
         while(!test.getCurrentUrl().equals(website))
             Thread.sleep(100);
 
-        TestFunctions.waitForSite(test,"#navbarAccount");//wait until the site has loaded
+        TestFunctions.waitForSite(test,navPath);//wait until the site has loaded
     }
 
     /**
@@ -248,6 +261,22 @@ public class TestFunctions
 
         test.findElement(By.id("email")).sendKeys(constEmail); //enter email
         test.findElement(By.id ("password")).sendKeys(password); //enter password
+    }
+
+    public static void createAddress(WebDriver browserWindow)
+    {
+        /*
+        if(//not logged in)
+        //orders
+        //my saved address
+        if(//address already present)
+                {
+                        return
+                }
+        //add new addresss
+
+
+         */
     }
 
     /**
