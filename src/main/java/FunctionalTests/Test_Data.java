@@ -5,11 +5,32 @@ import java.util.Random;
 
 public class Test_Data
 {
+//TODO maybe switch from multiple parameters to a builder pattern or an object?
 
     private static int randomNum1 = emailRandomizer();
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
+
+    /**
+     * This dataProvider passes the desired browsers to any test Method which only needs to know what browsers they have to test with
+     * Programmer: Kyle Sullivan
+     * @return object with Strings corresponding to valid web browsers.
+     */
+    @DataProvider(
+            name = "browserSwitch",
+            parallel = true
+    )
+    public static Object[][] browserSwitch()
+    {
+
+        return new Object[][]{
+                {"Firefox"},
+                //{"Chrome"},
+                //{"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
+        };
+    }
 
     //*******************************************************************************************************
 
@@ -36,9 +57,9 @@ public class Test_Data
         String question = "seng";
 
         return new Object[][]{
-                {"Firefox", email+randomNum1+"@gmail.com",password,question},
-                {"Chrome", email+randomNum2+"@gmail.com",password,question},
-                {"Edge", email+randomNum3+"@gmail.com",password,question}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Firefox", new Object[]{email+randomNum1+"@gmail.com",password, password, true, question}},
+                {"Chrome", new Object[]{email+randomNum2+"@gmail.com",password, password, true, question}},
+                {"Edge", new Object[]{email+randomNum3+"@gmail.com",password, password, true, question}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                 //{"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
@@ -60,11 +81,11 @@ public class Test_Data
 
         return new Object[][]{
                 {"No inputs", "","","",false,""},
-                {"Invalid Password (Too Short)", goodEmail,"ad1!","ad1!",true,goodAnswer},
-                {"Invalid Repeat Password (incorrect repeat password)", goodEmail,goodPassword,"BadPassword",true,goodAnswer},
-                {"Invalid Email (Existing Email)", "helloworld"+randomNum1+"@gmail.com",goodPassword,goodPassword,true,goodAnswer},
-                {"Invalid Email (bad email)", "eda@e",goodPassword,goodPassword,true,goodAnswer},
-                {"Invalid Repeat Password (no repeat password)", goodEmail,goodPassword,"",true,goodAnswer},
+                {"Invalid Password (Too Short)",new Object[]{goodEmail,"ad1!","ad1!",true,goodAnswer}},
+                {"Invalid Repeat Password (incorrect repeat password)", new Object[]{goodEmail,goodPassword,"BadPassword",true,goodAnswer}},
+                {"Invalid Email (Existing Email)", new Object[]{"helloworld"+randomNum1+"@gmail.com",goodPassword,goodPassword,true,goodAnswer}},
+                {"Invalid Email (bad email)", new Object[]{"eda@e",goodPassword,goodPassword,true,goodAnswer}},
+                {"Invalid Repeat Password (no repeat password)", new Object[]{goodEmail,goodPassword,"",true,goodAnswer}},
         };
     }
 
@@ -150,25 +171,7 @@ public class Test_Data
 
     //*******************************************************************************************************
 
-    /**
-     * This dataProvider passes the desired browsers to the password complexity PC1 method.
-     * Programmer: Kyle Sullivan
-     * @return object with Strings corresponding to valid web browsers.
-     */
-    @DataProvider(
-            name = "browserSwitch",
-            parallel = true
-    )
-    public static Object[][] browserSwitch()
-    {
 
-        return new Object[][]{
-                {"Firefox"},
-                {"Chrome"},
-                {"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-                //{"Safari", email+randomNum4+"@gmail.com",password,question}
-        };
-    }
 
     /**
      * This dataProvider passes invalid Passwords to the Password Complexity class.
@@ -184,13 +187,45 @@ public class Test_Data
         String pass = "primary";
         String fail = "warn";
         return new Object[][]{
-                {"No_Characters","1234567!",fail,fail,pass,pass,pass},
-                {"No_Uppercase_or_Num","abcdefg!",pass,fail,fail,pass,pass},
-                {"No_Lowercase_or_Num","ABCDEFG!",fail,pass,fail,pass,pass},
-                {"No_Special","123abcDEF",pass,pass,pass,fail,pass},
-                {"Too_Short","1aB!",pass,pass,pass,pass,fail},
+                {"No_Characters",new Object[]{"1234567!",fail,fail,pass,pass,pass}},
+                {"No_Uppercase_or_Num",new Object[]{"abcdefg!",pass,fail,fail,pass,pass}},
+                {"No_Lowercase_or_Num",new Object[]{"ABCDEFG!",fail,pass,fail,pass,pass}},
+                {"No_Special",new Object[]{"123abcDEF",pass,pass,pass,fail,pass}},
+                {"Too_Short",new Object[]{"1aB!",pass,pass,pass,pass,fail}},
         };
     }
+    //*******************************************************************************************************
+    @DataProvider(
+            name = "RB3_Input",
+            parallel = true
+    )
+    public static Object[][] RB3_Input()
+    {
+        int validQuantity = 10;
+        return new Object[][]{
+                {"Empty_Quantity",new Object[]{0,true,false,false,""}},
+                {"Below_Min_Quantity",new Object[]{1,true,false,false,""}},
+                {"Above_Max_Quantity",new Object[]{1001,true,false,false,""}},
+                {"Negative_Quantity",new Object[]{-1,true,false,false,""}},
+                {"No_Address",new Object[]{validQuantity,false,false,false,""}},
+                {"Bulk_No_Date",new Object[]{200,true,true,false,""}},
+                {"Bulk_Past_Date",new Object[]{200,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[5]/td[7]"}},
+        };
+    }
+
+    @DataProvider(
+            name = "RB4_Input",
+            parallel = true
+    )
+    public static Object[][] RB4_Input()
+    {
+        int validQuantity = 200;
+        return new Object[][]{
+                {"Bulk_No_Pickup",new Object[]{validQuantity,true,false,false,""}},
+                {"Bulk_Valid_Date",new Object[]{validQuantity,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"}},
+        };
+    }
+    //int quantity, boolean doAddress, boolean doPickup, boolean doDate, String date
 
     //*******************************************************************************************************
 
