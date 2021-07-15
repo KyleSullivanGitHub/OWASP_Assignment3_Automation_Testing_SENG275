@@ -19,7 +19,7 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
-public class Support_Chat implements ITest
+public class Account_Management implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
@@ -38,22 +38,23 @@ public class Support_Chat implements ITest
 
 
     /**
-     *Smoke tests for Valid use of support chat
-     * Includes test cases SC_001, SC_002, SC_005, SC_009.
+     *Smoke tests for Valid use of Account Management
+     * Includes test cases MA_001, MA_002, MA_005
      *Programmer: Seyedmehrad Adimi
      * @param email email text for test
      * @param password password text for test
      * @param chosenBrowser browser used for that test
      */
+    //TODO Check MA_005 and how to apply it
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Valid_Support_Chat"},
+            groups = {"Smoke","Account_Management Smoke","Valid_Account_Management"},
             dataProvider = "LG3_Input",
             priority = 1,
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3,
             enabled = true
     )
-    public void SC1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void MA1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -65,40 +66,34 @@ public class Support_Chat implements ITest
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         Thread.sleep(300);
 
-        // SC_001 test case: Support chat is not visible when the user is not logged in
+        // MA_001 test case: Verify that the Profile page is hidden while logged out
 
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(200);
 
+
         try {
-            WebElement SupportChat = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(8) > div > span"));
-            assertTrue (SupportChat.isDisplayed ());
+            WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
+            assertTrue (AccountManagement.isDisplayed ());
         }catch (Exception e){
             assertFalse (false);
         }
 
-
-        // SC_002 test case: Navigating to support chat after login
+        // MA_002 test case: Verify navigating to 'Profile' page
         loginForMe (browserWindow,email,password);
         Thread.sleep (1000);
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep (1000);
-        WebElement SupportChat = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(8)"));
-        assertTrue (SupportChat.isDisplayed ());
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep (1000);
 
-        // SC_005 test case:
-        SupportChat.click ();
-
-        WebElement inputText = browserWindow.findElement (By.id ("message-input"));
-        inputText.sendKeys ("NoNoNo");
-        inputText.sendKeys (Keys.ENTER);
+        WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
+        AccountManagement.click ();
         Thread.sleep (1000);
-        WebElement SupportChat_answer = browserWindow.findElement (By.cssSelector ("#chat-window > div:nth-child(3) > div"));
+
+        WebElement profileTitle = browserWindow.findElement (By.cssSelector ("#card > div > h1"));
+        assertEquals (profileTitle.getText (),"User Profile");
+
+
         Thread.sleep (1000);
-        assertTrue (SupportChat_answer.isDisplayed ());
-
-
         browserWindow.quit();
     }
 
@@ -106,6 +101,8 @@ public class Support_Chat implements ITest
 
 
 
+
+    // TODO How to upload a picture and how to check if the pic is uploaded
     /**
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
@@ -113,6 +110,7 @@ public class Support_Chat implements ITest
      * @param email email text for test
      * @param password password text for test
      * @param chosenBrowser browser used for that test
+     * link: https://ibb.co/6gBdXKJ
      */
     @Test(
             groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
@@ -122,7 +120,7 @@ public class Support_Chat implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void SC2_Invalid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void MA2_Update_Profile(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -135,41 +133,48 @@ public class Support_Chat implements ITest
         Thread.sleep(300);
 
 
-
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep(200);
-
-
-
         loginForMe (browserWindow,email,password);
         Thread.sleep (1000);
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep (1000);
-        WebElement SupportChat = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(8)"));
-        assertTrue (SupportChat.isDisplayed ());
+        browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep (1000);
 
-
-        SupportChat.click ();
-
-        WebElement inputText = browserWindow.findElement (By.id ("message-input"));
-        inputText.sendKeys ("");
-        inputText.sendKeys (Keys.ENTER);
+        WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
+        AccountManagement.click ();
         Thread.sleep (1000);
 
-        try {
-            WebElement SupportChat_answer = browserWindow.findElement (By.cssSelector ("#chat-window > div:nth-child(3) > div"));
-            assertTrue (SupportChat_answer.isDisplayed ());
-        }catch (Exception e){
-            assertFalse (false);
-        }
+        WebElement profileUserName = browserWindow.findElement (By.id ("username"));
+        Thread.sleep (1000);
+        profileUserName.sendKeys ("IamHelloWorld");
+        WebElement setUsernameBtn = browserWindow.findElement (By.cssSelector ("#submit"));
+        Thread.sleep (1000);
+        setUsernameBtn.click ();
+        Thread.sleep (1000);
+        WebElement checkUsername = browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > p"));
+        assertEquals (checkUsername.getText (), "\\IamHelloWorld");
 
 
+
+        WebElement profilePicUrl = browserWindow.findElement (By.id ("url"));
+        Thread.sleep (1000);
+        profilePicUrl.sendKeys ("https://ibb.co/6gBdXKJ");
+        Thread.sleep (1000);
+
+        WebElement setPicture = browserWindow.findElement (By.cssSelector ("#submitUrl"));
+        Thread.sleep (1000);
+        setPicture.click ();
+        Thread.sleep (1000);
+
+
+
+
+
+        Thread.sleep(2500);
         browserWindow.quit();
     }
 
+
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
-       browserWindow.get (website);
+        browserWindow.get (website);
         Thread.sleep(500);
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(500);
@@ -181,7 +186,7 @@ public class Support_Chat implements ITest
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
 
 
