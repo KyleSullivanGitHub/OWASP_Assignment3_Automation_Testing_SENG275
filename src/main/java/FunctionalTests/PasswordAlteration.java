@@ -190,12 +190,13 @@ public class PasswordAlteration implements ITest
         browserWindow = logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
-        // Inital password reset
+        // Initiate password reset
         browserWindow.findElement(By.id("navbarAccount")).click();
         Thread.sleep(1000);
 
         Actions action = new Actions(browserWindow);
-        WebElement privacyAndSecurityTab = browserWindow.findElement(By.xpath("/html/body/div[3]/div[2]/div/div/div/button[3]"));
+        WebElement privacyAndSecurityTab = browserWindow.findElement(By.xpath(
+                "/html/body/div[3]/div[2]/div/div/div/button[3]"));
         action.moveToElement(privacyAndSecurityTab).perform();
         Thread.sleep(1000);
 
@@ -230,6 +231,72 @@ public class PasswordAlteration implements ITest
         WebElement emailContainer = browserWindow.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1) > span"));
 
         assertEquals(emailContainer.getText(), email);
+    }
+
+    /**
+     * Sanity test for valid password reset
+     * Programmer: Salam Fazil
+     * @param email email text for test
+     * @param password password text for test
+     * @param chosenBrowser browser used for that test
+     */
+    @Test(
+            groups = {"Smoke","PasswordAlteration","PA_Sanity","hasDataProvider"},
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3
+    )
+
+    public void PA5_invalidReset(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    {
+        // Reset password to this
+        String newPass = "1234";
+
+        // Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        browserWindow.get(website);
+        Thread.sleep(1000);
+
+        // Dismiss the initial pop up
+        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > " +
+                "app-welcome-banner > div > div:nth-child(3) > " +
+                "button.mat-focus-indicator.close-dialog." +
+                "mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
+        Thread.sleep(1000);
+
+        // Create an account with random email and password
+        browserWindow = register(browserWindow, email, password, answer);
+        Thread.sleep(1000);
+
+        // Log in to created account
+        browserWindow = logIn(browserWindow, email, password);
+        Thread.sleep(1000);
+
+        // Initiate password reset
+        browserWindow.findElement(By.id("navbarAccount")).click();
+        Thread.sleep(1000);
+
+        Actions action = new Actions(browserWindow);
+        WebElement privacyAndSecurityTab = browserWindow.findElement(By.xpath(
+                "/html/body/div[3]/div[2]/div/div/div/button[3]"));
+        action.moveToElement(privacyAndSecurityTab).perform();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
+        Thread.sleep(1000);
+
+        browserWindow = addText(browserWindow, "currentPassword", password);
+
+        browserWindow = addText(browserWindow, "newPassword", newPass);
+
+        browserWindow.findElement(By.id("newPasswordRepeat")).click();
+        Thread.sleep(1000);
+
+        WebElement invalidPassErrorMsgContainer = browserWindow.findElement(By.id("mat-error-16"));
+        assertEquals(invalidPassErrorMsgContainer.getText(), "Password must be 5-20 characters long.");
     }
 
 
