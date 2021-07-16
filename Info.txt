@@ -34,26 +34,115 @@ assertWebElement(WebElement). Asserts that a web element is enabled and displaye
 
 
 common imports
-    import Setup.*;
-    import org.openqa.selenium.WebDriver;
-    import org.testng.annotations.*;
-    import java.io.IOException;
+
+Test Startup"
+
+   package FunctionalTests;
+
+   import Setup.CreateEnvironment;
+   import Setup.TestBrowser;
+   import org.openqa.selenium.By;
+   import org.openqa.selenium.WebDriver;
+   import org.openqa.selenium.WebElement;
+   import org.testng.ITest;
+   import org.testng.annotations.BeforeMethod;
+   import org.testng.annotations.BeforeSuite;
+   import org.testng.annotations.Test;
+   import static org.testng.Assert.*;
 
 
-Common class setup
-    String TestFunctions.website = "https://juice-shop.herokuapp.com"; //default website URL
+   import java.io.IOException;
+
+(class name) implements ITest
+// Within Class
+
+    private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
+
     TestBrowser environment;
-    CreateEnvironment passBrowser = new CreateEnvironment();
+    CreateEnvironment passBrowser;
+
 
     /**
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
+     * @exception IOException Thrown if no browser is chosen for a test
      */
     @BeforeSuite
     public void SetUp() throws IOException
     {
-        environment = passBrowser.createBrowser(TestBrowser.getPrimaryBrowser());
+        passBrowser = new CreateEnvironment();
+        environment = passBrowser.createBrowser();
     }
+
+    /**
+     * Purpose
+     * Programmer:
+     * @param
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException Thrown if the test is interrupted during a wait period
+     */
+    @Test(
+            groups = {"type", "class type", "class", "hasDataProvider"}, //Replace "hasDataProvider" with "noDataProvider" if no data provider is used
+            priority = 0,
+            dataProvider = "",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void name() throws IOException, InterruptedException
+    {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        try
+        {
+
+        }
+        finally
+        {
+            //End Test
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+
+   /**
+        * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+        * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+        * Programmer: Canberk Akduygu
+        * @param method Test method whose name is to be changed
+        * @param testData The data parameters for the method
+        */
+       @BeforeMethod(onlyForGroups = {"hasDataProvider"})
+       public void BeforeMethod(Method method, Object[] testData)
+       {
+           //Set name to (method name)_(first value in data provider)
+           testName.set(method.getName() + "_" + testData[0]);
+       }
+       @BeforeMethod(onlyForGroups = {"noDataProvider"})
+       public void BeforeMethod(Method method)
+       {
+           //Set name to (method name)
+           testName.set(method.getName());
+       }
+       /**
+        * Returns the name of the test. Used to alter the name of tests performed multiple times
+        * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+        * Programmer: Canberk Akduygu
+        * @return Name of test
+        */
+       @Override
+       public String getTestName()
+       {
+           return testName.get();
+       }
+
+
 
 
 Start Browser

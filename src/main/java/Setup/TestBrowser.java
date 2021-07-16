@@ -1,10 +1,15 @@
 package Setup;
 
+
+import FunctionalTests.TestFunctions;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 /**
@@ -14,27 +19,17 @@ import java.io.IOException;
  */
 public abstract class TestBrowser
 {
+    //Quick ternary operators to detrime what operating system is being used. Only Mac and Windows are supported
+    private String temp = FunctionalTests.TestFunctions.OS;
+    private boolean OSWin = temp.contains("win") ? true : false;
+    private boolean OSMac = !OSWin && temp.contains("Mac") ? true : false;
 
-    //driver path to folder containing all drivers for web testing. Currently only Windows compatible
-    //TODO add other OS Functionality
-  /*  protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
-    //Location of firefox driver within your WebDriver folder.
-    protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
-    //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
-    //Location of Edge driver within your webdriver folder.
-    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";*/
+    //Set the drivers and driver path to the correct ones for the given operating systems.
+    protected String driverPath = OSWin ? "src\\main\\java\\Setup\\WebDriver\\" : OSMac ? "src/main/java/Setup/WebDriverMac/" : null;
+    protected String fireFoxLoc= OSWin ? "geckodriver-v0.29.1-win64\\geckodriver.exe" : OSMac ? "geckodriver 2" : null;
+    protected String chromeLoc= OSWin ? "chromedriver_win32\\chromedriver.exe" : OSMac ? "chromedriver" : null;
+    protected String edgeLoc= OSWin ? "edgedriver_win64\\msedgedriver.exe" : OSMac ? "msedgedriver" : null;
 
-    //driver path to folder contianing all drivers for web testing. MAC
-    //TODO add other OS Functionality
-
-    protected String driverPath = "src/main/java/Setup/WebDriverMac/";
-    //Location of firefox driver within your WebDriver folder.
-    protected String fireFoxLoc = "geckodriver 2";
-    //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver";
-    //Location of Edge driver within your webdriver folder.
-    protected String edgeLoc = "msedgedriver";
 
     //TODO Add Safari
 
@@ -73,6 +68,12 @@ public abstract class TestBrowser
      * Programmer: Kyle Sullivan
      */
     public abstract WebDriver makeDriver();
+
+    /**
+     * Quick check to see if the current operating system is supported
+     * @throws IOException Thrown if the operating system is unsupported
+     */
+    public void checkSupported() throws IOException { if(!this.OSWin && !this.OSMac) throw new IOException("Unsupported Operation System");}
 }
 
 class useFireFox extends TestBrowser
@@ -81,10 +82,12 @@ class useFireFox extends TestBrowser
      * Sets the driver type and path for a firefox browser
      * Programmer: Kyle Sullivan
      */
-    public useFireFox()
+    public useFireFox() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
+
     }
 
     /**
@@ -104,8 +107,9 @@ class useChrome extends TestBrowser
      * Sets the driver type and path for a chrome browser
      * Programmer: Kyle Sullivan
      */
-    public useChrome()
+    public useChrome() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.chrome.driver";
         this.driverLoc = this.driverPath +chromeLoc;
     }
@@ -127,8 +131,9 @@ class useEdge extends TestBrowser
      * Sets the driver type and path for an edge browser
      * Programmer: Kyle Sullivan
      */
-    public useEdge()
+    public useEdge() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.edge.driver";
         this.driverLoc = this.driverPath +edgeLoc;
     }

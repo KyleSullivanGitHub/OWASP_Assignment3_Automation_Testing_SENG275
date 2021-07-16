@@ -171,8 +171,8 @@ public class TestFunctions
     {
         //Find the account button
         test.findElement(By.cssSelector(navPath)).click();
-        Thread.sleep(500);
         //verify that we can access the login page
+        waitForSite(test,navbarLogin);
         WebElement accountMenuLogin = test.findElement(By.cssSelector(navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click(); //Go to login page
