@@ -72,13 +72,13 @@ public class Checkout implements ITest {
             Thread.sleep(1000);
             //Add to cart
             browserWindow.findElement(By.xpath(addToCart_XPath)).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //Navigate to Basket
             browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
 
             //Verify Navigation to basket page
-            Thread.sleep(1500);
+            Thread.sleep(500);
             assertEquals(browserWindow.getCurrentUrl(), website + "/#/basket");
 
             //Verify product Info
@@ -86,7 +86,7 @@ public class Checkout implements ITest {
 
             //Click checkout button
             browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //Select saved Address
             if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
@@ -95,12 +95,12 @@ public class Checkout implements ITest {
             }
             TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button")).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //select shipping method
             TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]")).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //Select payment method
             if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
@@ -109,11 +109,11 @@ public class Checkout implements ITest {
             }
             TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]")).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //Place order
             browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
-            Thread.sleep(1500);
+            Thread.sleep(500);
 
             //Validate order
             assertEquals(browserWindow.findElement(By.xpath(checkoutProductName_XPath)).getText(), "Apple Juice (1000ml)"); //Product Name
@@ -128,24 +128,18 @@ public class Checkout implements ITest {
     }
 
     void addSavedAddress(WebDriver browserWindow) {
-        String country_XPath = "//*[@id=\"mat-input-1\"]";
-        String name_XPath = "//*[@id=\"mat-input-2\"]";
-        String mobile_XPath = "//*[@id=\"mat-input-3\"]";
-        String zipCode_XPath = "//*[@id=\"mat-input-4\"]";
-        String address_XPath = "//*[@id=\"mat-input-5\"]";
-        String city_XPath = "//*[@id=\"mat-input-6\"]";
-        String state_XPath = "//*[@id=\"mat-input-7\"]";
-
+        //add new address
         browserWindow.findElement(By.xpath(addSavedAddress_XPath)).click();
 
-        browserWindow.findElement(By.xpath(country_XPath)).sendKeys("USA");
-        browserWindow.findElement(By.xpath(name_XPath)).sendKeys("Hello World");
-        browserWindow.findElement(By.xpath(mobile_XPath)).sendKeys("1234567890");
-        browserWindow.findElement(By.xpath(zipCode_XPath)).sendKeys("12346");
-        browserWindow.findElement(By.xpath(address_XPath)).sendKeys("275 Seng Rd");
-        browserWindow.findElement(By.xpath(city_XPath)).sendKeys("Testing");
-        browserWindow.findElement(By.xpath(state_XPath)).sendKeys("CA");
+        //Populate Info
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-2\"]")).sendKeys("Hello World");//Name
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")).sendKeys("1234567890");//Phone
+        browserWindow.findElement(By.xpath( "//*[@id=\"mat-input-4\"]")).sendKeys("12346");//Zip
+        browserWindow.findElement(By.xpath("//*[@id=\"address\"]")).sendKeys("275 Seng Rd");//Address
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-6\"]")).sendKeys("Testing");//City
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-7\"]")).sendKeys("CA");//State
 
+        //Submit
         browserWindow.findElement(By.id("submitButton")).click();
 
     }
