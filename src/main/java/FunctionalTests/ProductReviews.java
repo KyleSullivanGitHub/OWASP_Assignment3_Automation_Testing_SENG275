@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ProductReviews
 {
-    private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
+    private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
     String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     TestBrowser environment;

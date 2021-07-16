@@ -16,8 +16,11 @@ import static org.testng.Assert.*;
 
 public class TestFunctions
 {
+    //TODO Replace as many path strings as possible with variables
 
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
+    private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
+    static String website = "https://juice-shop.herokuapp.com/#/";
     static String constEmail;//String containing the email for the constant session
     static String constPassword = "Seng265!";//password for the constant session
     static String constAnswer = "Seng"; //answer for security question
@@ -25,12 +28,15 @@ public class TestFunctions
     static String googlePassword = "seng275@";
     static String OS = System.getProperty("os.name").toLowerCase();
     static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
-
+    static int endTestWait = 2500;
+    static String navPath = "#navbarAccount";
+    
+    
     /**
      * Pauses the test until the cookie popup on site visitation is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
      * Programmer: Kyle Sullivan
      * @param test Webdriver to pause
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
@@ -42,7 +48,7 @@ public class TestFunctions
      * Programmer: Kyle Sullivan
      * @param test Webdriver to pause
      * @param cssSelector element to look for
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSite(WebDriver test, String cssSelector) throws InterruptedException
     {
@@ -53,12 +59,11 @@ public class TestFunctions
      * Functionality for waitForSite
      * @param test Webdriver to pause
      * @param cssElement element to look for
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     private static void waitForSitePrimary(WebDriver test, String cssElement) throws InterruptedException
     {
         boolean ready = false;
-        Thread.sleep(100);
         while(!ready)
         {
             try
@@ -82,16 +87,28 @@ public class TestFunctions
         }
     }
 
+    public void openAccountMenu(WebDriver test)
+    {
+        //check if account is on header
+
+
+        //If it is
+    }
+
+
+
+    //TODO will probably need to make a method for navigating to account menu when screen is not full sized
+
     /**
      * Quick navigation to the login page from any other page.
      * Programmer: Kyle Sullivan
      * @param test web browser for test
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void navToLogin(WebDriver test) throws InterruptedException
     {
         //Find the account button
-        test.findElement(By.cssSelector("#navbarAccount")).click();
+        test.findElement(By.cssSelector(navPath)).click();
         Thread.sleep(500);
         //verify that we can access the login page
         WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
@@ -103,7 +120,7 @@ public class TestFunctions
      * Quick navigation to the registration page from any other page.
      * Programmer: Kyle Sullivan
      * @param test web browser for test
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void navToReg(WebDriver test) throws InterruptedException
     {
@@ -117,10 +134,11 @@ public class TestFunctions
 
 
     /**
-     * Creates an account that can be used for any test, using a seperate window.
+     * Creates an account that can be used for any test, using a separate window.
      * Programmer: Kyle Sullivan
-     * @throws IOException
-     * @throws InterruptedException
+     * @exception  IOException Thrown if no browser was selected for test
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+
      */
     public static void createAccount() throws IOException, InterruptedException
     {
@@ -151,7 +169,7 @@ public class TestFunctions
             navToReg(tempBrowser);
 
             //Register the Account
-            signUp.fillOutReg(tempBrowser, constEmail, constPassword, constPassword, true, constAnswer);
+            signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
             tempBrowser.findElement(By.cssSelector("#registerButton")).click();//click register button
             //close the browser
             tempBrowser.quit();
@@ -165,29 +183,42 @@ public class TestFunctions
      * Logs into the site via google and a pre-created google account.
      * Programmer: Seyedmehrad Adimi, Nicole Makarowski, Kyle Sullivan
      * @param test Test to log in to.
-     * @throws InterruptedException
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void login(WebDriver test) throws InterruptedException
     {
         navToLogin(test);
 
+        //register via google
+        waitForSite(test,"#loginButtonGoogle");
         test.findElement(By.id("loginButtonGoogle")).click();
-        waitForSite(test,"#identifierId");
-        WebElement emailUser = test.findElement(By.cssSelector("#identifierId"));
-        emailUser.click();
-        emailUser.sendKeys(googleEmail + Keys.ENTER);
-        waitForSite(test,"#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input");
-        WebElement passwordInput = test.findElement(By.cssSelector("#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input"));
-        passwordInput.click();
-        passwordInput.sendKeys(googlePassword + Keys.ENTER);
+        Thread.sleep(500);
+
+        if(!test.getCurrentUrl().startsWith(website))
+        {
+            waitForSite(test, "#identifierId");
+            WebElement emailUser = test.findElement(By.cssSelector("#identifierId"));
+            emailUser.click();
+            emailUser.sendKeys(googleEmail + Keys.ENTER);//enter email
+
+            waitForSite(test, "#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input");
+            WebElement passwordInput = test.findElement(By.cssSelector("#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)"));
+            Thread.sleep(500);
+            passwordInput.click();
+            passwordInput.sendKeys(googlePassword + Keys.ENTER);//enter password
+        }
+        while(!test.getCurrentUrl().equals(website))
+            Thread.sleep(100);
+
+        TestFunctions.waitForSite(test,navPath);//wait until the site has loaded
     }
 
     /**
      * Logs into the constant account for any test.
      * Programmer: Kyle Sullivan
      * @param test browser window to log into.
-     * @throws IOException
-     * @throws InterruptedException
+     * @exception  IOException Thrown if no Browser was selected for test
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void manualLogin(WebDriver test) throws IOException, InterruptedException
     {
@@ -200,8 +231,8 @@ public class TestFunctions
      * Programmer: Kyle Sullivan
      * @param test browser window to log into.
      * @param password alternate password to use
-     * @throws IOException
-     * @throws InterruptedException
+     * @exception  IOException Thrown if no Browser was selected for test
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void manualLogin(WebDriver test, String password) throws IOException, InterruptedException
     {
@@ -214,8 +245,8 @@ public class TestFunctions
      * Programmer: Seyedmehrad Adimi, Kyle Sullivan
      * @param test browser window to log into.
      * @param password alternate password to use
-     * @throws IOException
-     * @throws InterruptedException
+     * @exception  IOException Thrown if no Browser was selected for test
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void quickLogFill(WebDriver test, String password) throws IOException, InterruptedException
     {
@@ -232,12 +263,27 @@ public class TestFunctions
         test.findElement(By.id ("password")).sendKeys(password); //enter password
     }
 
+    public static void createAddress(WebDriver browserWindow)
+    {
+        /*
+        if(//not logged in)
+        //orders
+        //my saved address
+        if(//address already present)
+                {
+                        return
+                }
+        //add new addresss
+
+
+         */
+    }
+
     /**
      * Common regression tests performed for most regression test sets
      * Programmer: Kyle Sullivan
      * @param test the browser for the regression test
      * @param loggedIn whether the test is logged in or not
-     * @throws InterruptedException
      */
     public static void commonRegression(WebDriver test, Boolean loggedIn)
     {
