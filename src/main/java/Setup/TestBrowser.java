@@ -20,11 +20,11 @@ public abstract class TestBrowser
 
     //driver path to folder contianing all drivers for web testing. Currently only Windows compatible
     //TODO add other OS Functionality
-    protected String driverPath = "/Users/salam/Documents/School/Summer 2021/SENG 275/";
+    protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
     //Location of firefox driver within your WebDriver folder.
     protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
     //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver";
+    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
     //Location of Edge driver within your webdriver folder.
     protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
 
