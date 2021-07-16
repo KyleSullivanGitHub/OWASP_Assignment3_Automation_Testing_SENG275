@@ -1,6 +1,5 @@
 package FunctionalTests;
 import org.testng.annotations.*;
-
 import java.util.Random;
 
 public class Test_Data
@@ -25,11 +24,12 @@ public class Test_Data
     )
     public static Object[][] browserSwitch()
     {
+
         return new Object[][]{
                 {"Firefox"},
-                //{"Chrome"},
-                //{"Edge"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-                //{"Safari", email+randomNum4+"@gmail.com",password,answer}
+                {"Chrome"},
+                {"Edge"}
+                //{"Safari"}
         };
     }
 
