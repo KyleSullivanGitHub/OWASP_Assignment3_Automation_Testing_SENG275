@@ -59,7 +59,7 @@ public class CreateEnvironment
                 break;
                 /*
             case "Safari": // Safari Browser
-                passOn = new useSafari (); //TODO Add safari web driver
+                passOn = new useSafari ();
                 break;
 
                  */
