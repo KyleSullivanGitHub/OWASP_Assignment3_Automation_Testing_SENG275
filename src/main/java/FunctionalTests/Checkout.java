@@ -25,9 +25,6 @@ public class Checkout implements ITest {
     String basketIcon_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon";
     String productName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[2]";
     String checkoutButton_XPath = "//*[@id=\"checkoutButton\"]";
-    String savedAddress_XPath = "//*[@id=\"mat-radio-38\"]";
-    String shippingMethod_XPath = "//*[@id=\"mat-radio-39\"]";
-    String savedPaymentMethod_XPath = "//*[@id=\"mat-radio-47\"]";
     String addSavedAddress_XPath = "//*[@id=\"card\"]/app-address/mat-card/div/button";
     String checkoutProductName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[1]";
     String checkoutProductPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[2]";
@@ -92,25 +89,25 @@ public class Checkout implements ITest {
             Thread.sleep(1500);
 
             //Select saved Address
-            if (browserWindow.findElements(By.xpath(savedAddress_XPath)).isEmpty()) {
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
                 addSavedAddress(browserWindow);
                 Thread.sleep(500);
             }
-            browserWindow.findElement(By.xpath(savedAddress_XPath)).click();
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button")).click();
             Thread.sleep(1500);
 
             //select shipping method
-            browserWindow.findElement(By.xpath(shippingMethod_XPath)).click();
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]")).click();
             Thread.sleep(1500);
 
             //Select payment method
-            if (browserWindow.findElements(By.xpath(savedPaymentMethod_XPath)).isEmpty()) {
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
                 addSavedPayment(browserWindow);
                 Thread.sleep(500);
             }
-            browserWindow.findElement(By.xpath(savedPaymentMethod_XPath)).click();
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]")).click();
             Thread.sleep(1500);
 
