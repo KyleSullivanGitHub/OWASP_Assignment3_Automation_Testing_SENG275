@@ -12,6 +12,7 @@ import org.testng.annotations.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import static FunctionalTests.TestFunctions.*;
 import static org.testng.Assert.*;
 
 public class PasswordAlteration implements ITest
@@ -31,116 +32,8 @@ public class PasswordAlteration implements ITest
         environment = passBrowser.createBrowser();
     }
 
-    public WebDriver register(WebDriver browserWindow, String email, String password, String answer) throws InterruptedException {
-
-        browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("navbarLoginButton")).click();
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("newCustomerLink")).click();
-        Thread.sleep(1000);
-
-        browserWindow = addText(browserWindow, "emailControl", email);
-        browserWindow = addText(browserWindow, "passwordControl", password);
-        browserWindow = addText(browserWindow, "repeatPasswordControl", password);
-        browserWindow = addText(browserWindow, "securityAnswerControl", answer);
-
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("mat-select-2")).click();
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.cssSelector("#mat-option-3 > span")).click();
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("registerButton")).click();
-        Thread.sleep(1000);
-
-        return browserWindow;
-    }
-
-    public WebDriver logIn(WebDriver browserWindow, String email, String password) throws InterruptedException{
-
-        browserWindow.findElement(By.id("navbarAccount")).click();
-
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("navbarLoginButton")).click();
-
-        Thread.sleep(1000);
-
-        browserWindow = addText(browserWindow, "email", email);
-
-        Thread.sleep(1000);
-
-        browserWindow = addText(browserWindow, "password", password);
-
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.id("loginButton")).click();
-
-        return browserWindow;
-    }
-
-//    public WebDriver logInGoogle(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
-//        //Create driver and browser for this particular test
-//        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-//        WebDriver browserWindow = browser.makeDriver();
-//        browserWindow.manage().window().maximize();
-//
-//        browserWindow.get(website);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
-//
-//        Thread.sleep(1000);
-//
-//        WebElement accountBtn = browserWindow.findElement(By.id("navbarAccount"));
-//        accountBtn.click();
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.id("navbarLoginButton")).click();
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.id("loginButtonGoogle")).click();
-//
-//        Thread.sleep(2000);
-//
-//        WebElement username = browserWindow.findElement(By.id("identifierId"));
-//        username.click();
-//        username.sendKeys(email);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#identifierNext > div > button")).click();
-//
-//        Thread.sleep(1000);
-//
-//        WebElement pass = browserWindow.findElement(By.cssSelector("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-//        pass.click();
-//        pass.sendKeys(password);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#passwordNext > div > button")).click();
-//
-//        return browserWindow;
-//    }
-
-    public WebDriver addText(WebDriver browserWindow, String id, String text){
-        WebElement elem = browserWindow.findElement(By.id(id));
-        elem.click();
-        elem.sendKeys(text);
-
-        return browserWindow;
-    }
-
-    /* TODO:
+    /*
+    TODO:
     PA1
     PA2
     PA3
@@ -183,11 +76,11 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Create an account with random email and password
-        browserWindow = register(browserWindow, email, password, answer);
+        register(browserWindow, email, password, answer);
         Thread.sleep(1000);
 
         // Log in to created account
-        browserWindow = logIn(browserWindow, email, password);
+        logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
         // Initiate password reset
@@ -203,11 +96,11 @@ public class PasswordAlteration implements ITest
         browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
         Thread.sleep(1000);
 
-        browserWindow = addText(browserWindow, "currentPassword", password);
+        addText(browserWindow, "currentPassword", password);
 
-        browserWindow = addText(browserWindow, "newPassword", newPass);
+        addText(browserWindow, "newPassword", newPass);
 
-        browserWindow = addText(browserWindow, "newPasswordRepeat", newPass);
+        addText(browserWindow, "newPasswordRepeat", newPass);
         Thread.sleep(1000);
 
         browserWindow.findElement(By.id("changeButton")).click();
@@ -221,7 +114,7 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Try to log in with new password
-        browserWindow = logIn(browserWindow, email, newPass);
+        logIn(browserWindow, email, newPass);
         Thread.sleep(1000);
 
         // Check if logged in email = same email. If log in fails, test will fail
@@ -268,11 +161,11 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Create an account with random email and password
-        browserWindow = register(browserWindow, email, password, answer);
+        register(browserWindow, email, password, answer);
         Thread.sleep(1000);
 
         // Log in to created account
-        browserWindow = logIn(browserWindow, email, password);
+        logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
         // Initiate password reset
@@ -288,9 +181,9 @@ public class PasswordAlteration implements ITest
         browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
         Thread.sleep(1000);
 
-        browserWindow = addText(browserWindow, "currentPassword", password);
+        addText(browserWindow, "currentPassword", password);
 
-        browserWindow = addText(browserWindow, "newPassword", newPass);
+        addText(browserWindow, "newPassword", newPass);
 
         browserWindow.findElement(By.id("newPasswordRepeat")).click();
         Thread.sleep(1000);

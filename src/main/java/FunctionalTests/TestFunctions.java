@@ -350,5 +350,116 @@ public class TestFunctions
         assertTrue(testing.isDisplayed());
     }
 
+    public static WebDriver register(WebDriver browserWindow, String email, String password, String answer) throws InterruptedException {
+
+        browserWindow.findElement(By.id("navbarAccount")).click();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("navbarLoginButton")).click();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("newCustomerLink")).click();
+        Thread.sleep(1000);
+
+        addText(browserWindow, "emailControl", email);
+        addText(browserWindow, "passwordControl", password);
+        addText(browserWindow, "repeatPasswordControl", password);
+        addText(browserWindow, "securityAnswerControl", answer);
+
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("mat-select-2")).click();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.cssSelector("#mat-option-3 > span")).click();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("registerButton")).click();
+        Thread.sleep(1000);
+
+        return browserWindow;
+    }
+
+    public static WebDriver logIn(WebDriver browserWindow, String email, String password) throws InterruptedException{
+
+        browserWindow.findElement(By.id("navbarAccount")).click();
+
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("navbarLoginButton")).click();
+
+        Thread.sleep(1000);
+
+        addText(browserWindow, "email", email);
+
+        Thread.sleep(1000);
+
+        addText(browserWindow, "password", password);
+
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.id("loginButton")).click();
+
+        return browserWindow;
+    }
+
+    // Incomplete
+
+//    public WebDriver logInGoogle(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+//        //Create driver and browser for this particular test
+//        TestBrowser browser = chosenBrowser.createBrowser(chosenBrowser);
+//        WebDriver browserWindow = browser.makeDriver();
+//        browserWindow.manage().window().maximize();
+//
+//        browserWindow.get(website);
+//
+//        Thread.sleep(1000);
+//
+//        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
+//
+//        Thread.sleep(1000);
+//
+//        WebElement accountBtn = browserWindow.findElement(By.id("navbarAccount"));
+//        accountBtn.click();
+//
+//        Thread.sleep(1000);
+//
+//        browserWindow.findElement(By.id("navbarLoginButton")).click();
+//
+//        Thread.sleep(1000);
+//
+//        browserWindow.findElement(By.id("loginButtonGoogle")).click();
+//
+//        Thread.sleep(2000);
+//
+//        WebElement username = browserWindow.findElement(By.id("identifierId"));
+//        username.click();
+//        username.sendKeys(email);
+//
+//        Thread.sleep(1000);
+//
+//        browserWindow.findElement(By.cssSelector("#identifierNext > div > button")).click();
+//
+//        Thread.sleep(1000);
+//
+//        WebElement pass = browserWindow.findElement(By.cssSelector("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+//        pass.click();
+//        pass.sendKeys(password);
+//
+//        Thread.sleep(1000);
+//
+//        browserWindow.findElement(By.cssSelector("#passwordNext > div > button")).click();
+//
+//        return browserWindow;
+//    }
+
+    public static WebDriver addText(WebDriver browserWindow, String id, String text){
+        WebElement elem = browserWindow.findElement(By.id(id));
+        elem.click();
+        elem.sendKeys(text);
+
+        return browserWindow;
+    }
+
 
 }
