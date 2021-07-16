@@ -8,6 +8,7 @@ import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -93,7 +94,7 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke"},
+            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -162,7 +163,7 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity"},
+            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -274,15 +275,21 @@ public class PasswordComplexity implements ITest
 
         //Navigate to Forgot Password
         TestFunctions.navToLogin(browserWindow);
-        browserWindow.findElement(By.className("forgot-pw")).click();
+        browserWindow.get(TestFunctions.website+"forgot-password");
+        try
+        {
+            //Fill out form
+            browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
+            browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
 
-        //Fill out form
-        browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
-        browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
-
-        //Activate Password Advice by toggling the slider.
-        browserWindow.findElement(By.className("mat-slide-toggle")).click();
-        browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String)dataSet[0]); //enter password
+            //Activate Password Advice by toggling the slider.
+            browserWindow.findElement(By.className("mat-slide-toggle")).click();
+            browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String) dataSet[0]); //enter password
+        }
+        catch (Exception ElementNotInteractableException)
+        {
+            assertTrue(false);
+        }
 
         //Test the password
         testPassAdvice(browserWindow, dataSet, xPathLoc);
@@ -334,6 +341,12 @@ public class PasswordComplexity implements ITest
     {
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
+    }
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
     }
 
     /**

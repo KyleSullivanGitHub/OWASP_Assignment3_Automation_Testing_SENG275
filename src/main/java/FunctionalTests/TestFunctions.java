@@ -309,7 +309,7 @@ public class TestFunctions
         if(!registerOnce)
             createAccount();
         //Check if we are already on the login page
-        if(test.getCurrentUrl().equals(website+"login"))
+        if(!test.getCurrentUrl().equals(website+"login"))
             navToLogin(test);
 
         Thread.sleep(500);

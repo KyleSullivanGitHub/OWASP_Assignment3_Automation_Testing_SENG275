@@ -54,6 +54,13 @@ public abstract class TestBrowser
     public String getDriverLoc() {return driverLoc;}
 
     /**
+     * Quick check. Only Edge returns true.
+     * Programmer: Kyle Sullivan
+     * @return false
+     */
+    public boolean getType() { return false;}
+
+    /**
      * Abstract class for returning a usable web environment.
      * Programmer: Kyle Sullivan
      */
@@ -71,7 +78,10 @@ class useFireFox extends TestBrowser
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
     }
-
+    public boolean getType()
+    {
+        return false;
+    }
     /**
      * Creates and returns a new  Firefox browser window.
      * Programmer: Kyle Sullivan
@@ -94,7 +104,10 @@ class useChrome extends TestBrowser
         this.driver = "webdriver.chrome.driver";
         this.driverLoc = this.driverPath +chromeLoc;
     }
-
+    public boolean getType()
+    {
+        return false;
+    }
     /**
      * Creates and returns a new Google Chrome browser window.
      * Programmer: Kyle Sullivan
@@ -116,6 +129,10 @@ class useEdge extends TestBrowser
     {
         this.driver = "webdriver.edge.driver";
         this.driverLoc = this.driverPath +edgeLoc;
+    }
+    public boolean getType()
+    {
+        return true;
     }
 
     /**

@@ -10,7 +10,7 @@ public class Test_Data
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
-    private static String email = "helloworld" ;
+    private static String email = "helloworld7" ;
     private static String password = "Seng310@#$";
     private static String answer = "seng";
 

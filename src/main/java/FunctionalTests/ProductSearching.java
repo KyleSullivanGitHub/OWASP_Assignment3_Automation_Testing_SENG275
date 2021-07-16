@@ -5,6 +5,8 @@ import Setup.TestBrowser;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
+import static org.testng.Assert.*;
+
 
 public class ProductSearching
 {

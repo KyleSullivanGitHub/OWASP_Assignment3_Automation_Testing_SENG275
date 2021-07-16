@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -50,14 +51,11 @@ public class RecyclingBox implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-
         try
         {
             navToRecycle(browserWindow);
             fillRecycling(browserWindow,new Object[]{10,true,false,false,""});
-            browserWindow.findElement(By.cssSelector("#recycleButton")).click();
-            Thread.sleep(500);
-            assertTrue(browserWindow.findElement(By.cssSelector("#cdk-overlay-0")).isDisplayed());
+            validateRecycling(browserWindow);
         }
         finally
         {
@@ -66,8 +64,9 @@ public class RecyclingBox implements ITest
         }
     }
 
+
     @Test(
-            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box"},
+            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -146,9 +145,8 @@ public class RecyclingBox implements ITest
         {
             navToRecycle(browserWindow);
             fillRecycling(browserWindow,dataSet);
-            //validate button
-            browserWindow.findElement(By.cssSelector("#recycleButton")).click();
-            assertTrue(browserWindow.findElement(By.cssSelector("#cdk-overlay-0")).isDisplayed());
+            validateRecycling(browserWindow);
+
         }
         finally
         {
@@ -158,7 +156,7 @@ public class RecyclingBox implements ITest
     }
 
     @Test(
-            groups = {"Regression", "Recycling Box Regression", "Recycling Box"},
+            groups = {"Regression", "Recycling Box Regression", "Recycling Box","noDataProvider"},
             priority = 0,
             enabled = false
     )
@@ -208,15 +206,45 @@ public class RecyclingBox implements ITest
         TestFunctions.login(browserWindow);
         browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
         Thread.sleep(500);
-        browserWindow.findElement(By.xpath(xPathPart1+2+xPathPart2)).click();
-        Thread.sleep(500);
-        browserWindow.findElement(By.xpath(xPathPart1+3+xPathPart2)).click();
+
+        boolean notFound = true;
+        while (notFound)
+        {
+            try
+            {
+                browserWindow.findElement(By.xpath(xPathPart1 + 2 + xPathPart2)).click();
+                Thread.sleep(200);
+                browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2)).click();
+                notFound = false;
+            }
+            catch (Exception NoSuchElementException)
+            {
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
+                Thread.sleep(500);
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[2]")).click();
+                notFound = false;
+            }
+        }
     }
 
     private void fillRecycling(WebDriver browserWindow, Object[] dataSet) throws InterruptedException, IOException
     {
-        TestFunctions.waitForSite(browserWindow,TestFunctions.mInput+"2");
-        browserWindow.findElement(By.cssSelector(TestFunctions.mInput+"2")).sendKeys(""+dataSet[0]);
+        Thread.sleep(3000);
+        boolean notClicked = true;
+        while(notClicked)
+        {
+            try
+            {
+                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).click();
+                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).sendKeys("" + dataSet[0]);
+                notClicked = false;
+            } catch (Exception NoSuchElementExists)
+            {
+                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).click();
+                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).sendKeys("" + dataSet[0]);
+                notClicked = false;
+            }
+        }
         if((boolean) dataSet[1])
         {
             try
@@ -235,7 +263,11 @@ public class RecyclingBox implements ITest
         {
             if((boolean) dataSet[2])
             {
-                browserWindow.findElement(By.cssSelector("#mat-checkbox-7")).click();
+                for(int i = 0; i < 10; i++)
+                {
+                    try { browserWindow.findElement(By.cssSelector("#mat-checkbox-"+i)).click();}
+                    catch (Exception NoSuchElementException) {}
+                }
                 if((boolean) dataSet[3])
                 {
                  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-recycle/mat-card/div[1]/div/mat-form-field[3]/div/div[1]/div[4]/mat-datepicker-toggle")).click();
@@ -245,7 +277,25 @@ public class RecyclingBox implements ITest
         }
 
     }
-
+    private void validateRecycling(WebDriver browserWindow) throws InterruptedException
+    {
+        browserWindow.findElement(By.cssSelector("#recycleButton")).click();
+        Thread.sleep(1000);
+        boolean foundPopup = false;
+        for(int i = 0; i < 10; i++)
+        {
+            try
+            {
+                if(browserWindow.findElement(By.cssSelector("#cdk-overlay-"+i)).isDisplayed())
+                {
+                    foundPopup = true;
+                    break;
+                }
+            }
+            catch (Exception NoSuchElementException){}
+        }
+        assertTrue(foundPopup);
+    }
 
     /**
      * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
@@ -260,7 +310,12 @@ public class RecyclingBox implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

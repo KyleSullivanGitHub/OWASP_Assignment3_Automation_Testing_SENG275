@@ -86,7 +86,7 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown when the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Sanity", "Logout Sanity", "Logout"},
+            groups = {"Sanity", "Logout Sanity", "Logout","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -157,7 +157,7 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown if Test was interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Registration Sanity", "Registration"},
+            groups = {"Sanity", "Registration Sanity", "Registration","noDataProvider"},
             priority = 1,
             enabled = true
     )
@@ -224,6 +224,7 @@ public class Logout implements ITest
             if (element.isDisplayed())
                 logoutVisible = true;
         }
+        catch (Exception NoSuchElementException) {}
         finally
         {
             assertFalse(logoutVisible);//Ensure that while logged out, the logout button is not visible
@@ -253,7 +254,12 @@ public class Logout implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

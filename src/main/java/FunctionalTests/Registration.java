@@ -74,7 +74,7 @@ public class Registration implements ITest
 
             //Check that the user is taken back to the login page
             Thread.sleep(1000);
-            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "/#/login");
+            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "login");
             Thread.sleep(500);
         }
         finally
@@ -91,7 +91,7 @@ public class Registration implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Registration Smoke", "Registration"},
+            groups = {"Smoke", "Registration Smoke", "Registration","noDataProvider"},
             priority = 1,
             enabled = true
     )
@@ -190,7 +190,7 @@ public class Registration implements ITest
                 //...Ensure it does not accept the account details.
                 browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
                 Thread.sleep(1000);
-                assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "/#/register");//confirm that we have not left the page.
+                assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
             }
             else
             {
@@ -278,7 +278,7 @@ public class Registration implements ITest
         int optionTryLimit = 50;//Maximum amount of attempts
 
         //Ensure the test is on the registration page
-        assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "/#/register");
+        assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys((String)dataSet[0]); //Enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys((String)dataSet[1]); //Enter password
@@ -329,7 +329,12 @@ public class Registration implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

@@ -35,7 +35,7 @@
     <inspection_tool class="groupsTestNG" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="groups">
         <value>
-          <list size="13">
+          <list size="14">
             <item index="0" class="java.lang.String" itemvalue="Integration" />
             <item index="1" class="java.lang.String" itemvalue="Regression" />
             <item index="2" class="java.lang.String" itemvalue="Login" />
@@ -49,6 +49,7 @@
             <item index="10" class="java.lang.String" itemvalue="hasDataProvider" />
             <item index="11" class="java.lang.String" itemvalue="Sanity" />
             <item index="12" class="java.lang.String" itemvalue="Logout" />
+            <item index="13" class="java.lang.String" itemvalue="noDataProvider" />
           </list>
         </value>
       </option>

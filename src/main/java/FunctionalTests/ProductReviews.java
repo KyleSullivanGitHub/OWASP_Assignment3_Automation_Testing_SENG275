@@ -3,6 +3,8 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.testng.annotations.BeforeSuite;
+import static org.testng.Assert.*;
+
 
 import java.io.IOException;
 
