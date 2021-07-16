@@ -194,6 +194,18 @@ public class TestFunctions
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();//enter sign up page
     }
+    public static void navToSavedAddresses(WebDriver test) throws InterruptedException
+    {
+        String xPathPart1 = "/html/body/div[3]/div[";
+        String xPathPart2 = "]/div/div/div/button[";
+        String xPathPart3 = "]";
+
+        test.findElement(By.cssSelector(navPath)).click();
+        Thread.sleep(100);
+        test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
+        Thread.sleep(100);
+        test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+    }
 
 
     /**
@@ -341,18 +353,10 @@ public class TestFunctions
 
             try
             {
-                //Common string elements of accountMenu orders xpath
-                String xPathPart1 = "/html/body/div[3]/div[";
-                String xPathPart2 = "]/div/div/div/button[";
-                String xPathPart3 = "]";
 
                 //Login and navigate to saved addresses
                 login(test);
-                test.findElement(By.cssSelector(navPath)).click();
-                Thread.sleep(100);
-                test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
-                Thread.sleep(100);
-                test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+                navToSavedAddresses(test);
 
                 //Click on Create New Address
                 test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button")).click();

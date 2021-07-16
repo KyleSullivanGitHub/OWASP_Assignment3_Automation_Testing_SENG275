@@ -134,6 +134,37 @@ public class AddressAlteration implements ITest
         assertFalse(browserWindow.getPageSource().contains(city));
         assertFalse(browserWindow.getPageSource().contains(state));
     }
+/* Original
+    private void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
+
+        browserWindow.findElement(By.id("navbarAccount")).click();
+        Thread.sleep(1000);
+
+        Actions action = new Actions(browserWindow);
+        WebElement oAndPTab = browserWindow.findElement(By.cssSelector(
+                "#mat-menu-panel-0 > div > button:nth-child(2) > span"));
+        action.moveToElement(oAndPTab).perform();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.xpath("/html/body/div[3]/div[3]/div/div/div/button[3]")).click();
+
+    }
+
+ */
+   /*Optimized
+    private void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
+
+        String xPathPart1 = "/html/body/div[3]/div[";
+        String xPathPart2 = "]/div/div/div/button[";
+        String xPathPart3 = "]";
+
+        browserWindow.findElement(By.cssSelector(navPath)).click();
+        Thread.sleep(100);
+        browserWindow.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
+        Thread.sleep(100);
+        browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+    }
+    */
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
