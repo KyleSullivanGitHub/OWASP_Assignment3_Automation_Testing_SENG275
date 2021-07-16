@@ -22,7 +22,7 @@ public abstract class TestBrowser
     //Quick ternary operators to detrime what operating system is being used. Only Mac and Windows are supported
     private String temp = FunctionalTests.TestFunctions.OS;
     private boolean OSWin = temp.contains("win") ? true : false;
-    private boolean OSMac = !OSWin && temp.contains("Mac") ? true : false;
+    private boolean OSMac = !OSWin && temp.contains("mac") ? true : false;
 
     //Set the drivers and driver path to the correct ones for the given operating systems.
     protected String driverPath = OSWin ? "src\\main\\java\\Setup\\WebDriver\\" : OSMac ? "src/main/java/Setup/WebDriverMac/" : null;

@@ -117,9 +117,9 @@ public class Test_Data
         String password = "seng275@";
 
         return new Object[][]{
-              //  {"Firefox", new Object[]{email+"@gmail.com",password}},
+               {"Firefox", new Object[]{email+"@gmail.com",password}},
                 {"Chrome", new Object[]{email+"@gmail.com",password}},
-              //  {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+               {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                // {"Safari", new Object[]{email+"@gmail.com",password}}
         };
     }
