@@ -2,14 +2,12 @@ package Setup;
 
 
 import FunctionalTests.TestFunctions;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+
 
 import java.io.IOException;
 /**
@@ -62,7 +60,6 @@ public abstract class TestBrowser
      */
     public String getDriverLoc() {return driverLoc;}
 
-
     /**
      * Abstract class for returning a usable web environment.
      * Programmer: Kyle Sullivan
@@ -87,7 +84,6 @@ class useFireFox extends TestBrowser
         checkSupported();
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
-
     }
 
     /**
