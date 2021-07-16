@@ -66,6 +66,7 @@ public class Login implements ITest
         Thread.sleep(1000);
 
         browserWindow.findElement (By.id ("email")).sendKeys (email);
+        Thread.sleep(5000);
         browserWindow.findElement (By.id ("password")).sendKeys (password);
         Thread.sleep(500);
 
