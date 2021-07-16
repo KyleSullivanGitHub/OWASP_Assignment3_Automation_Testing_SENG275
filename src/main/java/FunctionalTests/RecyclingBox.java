@@ -16,12 +16,9 @@ import java.lang.reflect.Method;
 public class RecyclingBox implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
-
-
 
     /**
      * Create an environment for all tests using the same browser app.
@@ -41,7 +38,6 @@ public class RecyclingBox implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void RB1_Valid_Usage(String chosenBrowser) throws IOException, InterruptedException
@@ -51,17 +47,44 @@ public class RecyclingBox implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
         try
         {
+            navToRecycle(browserWindow);
+            fillRecycling(browserWindow,new Object[]{10,true,false,false,""});
+            browserWindow.findElement(By.cssSelector("#recycleButton")).click();
+            Thread.sleep(500);
+            assertTrue(browserWindow.findElement(By.cssSelector("#cdk-overlay-0")).isDisplayed());
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
 
-            fillRecycling(browserWindow,new Object[]{10,true,false,false,""},"false");
-            //hoverr over ordrs and payment
-            //add a saved address
-            //click recycle
+    @Test(
+            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box"},
+            priority = 0,
+            enabled = true
+    )
+    public void RB2_Invalid_Usage() throws InterruptedException, IOException
+    {
+        //Create Test environment and browser
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        try
+        {
+            navToRecycle(browserWindow);
+            fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
+            assertEquals(browserWindow.findElement(By.cssSelector("#recycleButton")).getAttribute("disabled"), "true");
 
         }
         finally
@@ -70,58 +93,111 @@ public class RecyclingBox implements ITest
             browserWindow.quit();
         }
 
-        //navigate to recycling box
-        //valid usage of recycling box
     }
 
-    public void RB2_Invalid_Usage() throws InterruptedException
+    @Test(
+            groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
+            priority = 0,
+            dataProvider = "RB3_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void RB3_Invalid_Usage_Comprehensive(String testing, Object[] dataSet) throws InterruptedException, IOException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        fillRecycling(browserWindow,new Object[]{0,true,false,false,""},"true");
-
-
-
+        try
+        {
+            navToRecycle(browserWindow);
+            fillRecycling(browserWindow,dataSet);
+            assertEquals(browserWindow.findElement(By.cssSelector("#recycleButton")).getAttribute("disabled"), "true");
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
-    public void RB3_Invalid_Usage_Comprehensive(String testing, Object[] dataSet) throws InterruptedException
+    @Test(
+            groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
+            priority = 0,
+            dataProvider = "RB4_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void RB4_Valid_Bulk_Usage(String testing, Object[] dataSet) throws InterruptedException, IOException
     {
-    //Create Test environment and browser
+        //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        fillRecycling(browserWindow,dataSet,"true");
+        try
+        {
+            navToRecycle(browserWindow);
+            fillRecycling(browserWindow,dataSet);
+            //validate button
+            browserWindow.findElement(By.cssSelector("#recycleButton")).click();
+            assertTrue(browserWindow.findElement(By.cssSelector("#cdk-overlay-0")).isDisplayed());
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
-    public void RB4_Valid_Bulk_Usage(String testing, Object[] dataSet) throws InterruptedException
-    {
-    //Create Test environment and browser
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        //Go to Website
-        browserWindow.get(website);
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
-
-        fillRecycling(browserWindow,dataSet,"false");
-    }
-
-    public void RB_Regression()
+    @Test(
+            groups = {"Regression", "Recycling Box Regression", "Recycling Box"},
+            priority = 0,
+            enabled = false
+    )
+    public void RB_Regression() throws InterruptedException, IOException
     {
         //TODO Recycling Regression
-        //UI
-        //standard regression
-        //quantity mandatory
+        //Create Test environment and browser
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try
+        {
+            navToRecycle(browserWindow);
+            Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
+
+            TestFunctions.commonRegression(browserWindow, UI, true);
+
+            //Test Place holder parts
+            //test for red
+            browserWindow.findElement(By.cssSelector(TestFunctions.mInput+"11")).sendKeys("");
+            //check box has gone red
+
+            //test invalid input
+            fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
+            TestFunctions.commonRegression(browserWindow, UI, true);
+
+            //test valid input
+            fillRecycling(browserWindow,new Object[]{1001,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"});
+            TestFunctions.commonRegression(browserWindow, UI, true);
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     private void navToRecycle(WebDriver browserWindow) throws InterruptedException
@@ -131,20 +207,29 @@ public class RecyclingBox implements ITest
 
         TestFunctions.login(browserWindow);
         browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
-        Thread.sleep(100);
+        Thread.sleep(500);
         browserWindow.findElement(By.xpath(xPathPart1+2+xPathPart2)).click();
-        Thread.sleep(100);
+        Thread.sleep(500);
         browserWindow.findElement(By.xpath(xPathPart1+3+xPathPart2)).click();
     }
 
-    private void fillRecycling(WebDriver browserWindow, Object[] dataSet, String submitDisabled) throws InterruptedException
+    private void fillRecycling(WebDriver browserWindow, Object[] dataSet) throws InterruptedException, IOException
     {
-        navToRecycle(browserWindow);
-        TestFunctions.waitForSite(browserWindow,"#mat-input-11");
-        browserWindow.findElement(By.cssSelector("#mat-input-11")).sendKeys((String)dataSet[0]);
+        TestFunctions.waitForSite(browserWindow,TestFunctions.mInput+"2");
+        browserWindow.findElement(By.cssSelector(TestFunctions.mInput+"2")).sendKeys(""+dataSet[0]);
         if((boolean) dataSet[1])
         {
-            browserWindow.findElement(By.cssSelector("#mat-radio-38")).click();
+            try
+            {
+                browserWindow.findElement(By.cssSelector(TestFunctions.mRadio+"38")).click();
+            }
+            catch (Exception NoSuchElementException)
+            {
+                TestFunctions.createAddress();
+                browserWindow.navigate().refresh();
+                TestFunctions.waitForSite(browserWindow,TestFunctions.mRadio+"38");
+                browserWindow.findElement(By.cssSelector(TestFunctions.mRadio+"38")).click();
+            }
         }
         if((int)dataSet[0] > 100)
         {
@@ -158,8 +243,7 @@ public class RecyclingBox implements ITest
                 }
             }
         }
-        //validate button
-        assertEquals(browserWindow.findElement(By.cssSelector("#recycleButton")).getAttribute("disabled"), submitDisabled);
+
     }
 
 

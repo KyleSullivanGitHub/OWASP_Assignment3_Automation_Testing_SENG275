@@ -9,7 +9,6 @@ import java.io.IOException;
 public class ProductViewing
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;

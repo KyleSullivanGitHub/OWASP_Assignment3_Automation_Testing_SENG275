@@ -9,11 +9,9 @@ import java.io.IOException;
 public class NavigationMenu
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
-
 
     /**
      *Create an environment for all tests using the same browser app.

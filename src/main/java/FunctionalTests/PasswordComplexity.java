@@ -20,7 +20,6 @@ import static org.testng.Assert.assertEquals;
 public class PasswordComplexity implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
@@ -62,7 +61,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS1_Password_Complexity_Valid(String chosenBrowser) throws IOException, InterruptedException
@@ -71,7 +69,7 @@ public class PasswordComplexity implements ITest
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
@@ -105,7 +103,7 @@ public class PasswordComplexity implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to the website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -134,7 +132,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS3_Password_Complexity_Invalid_Reg(String type, Object[] dataSet) throws InterruptedException
@@ -142,7 +139,7 @@ public class PasswordComplexity implements ITest
         //Create Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -174,7 +171,7 @@ public class PasswordComplexity implements ITest
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -203,7 +200,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS5_Password_Complexity_Invalid_FP(String type, Object[] dataSet) throws InterruptedException
@@ -211,7 +207,7 @@ public class PasswordComplexity implements ITest
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 

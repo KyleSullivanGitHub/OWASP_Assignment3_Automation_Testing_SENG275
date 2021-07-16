@@ -21,7 +21,6 @@ import static org.testng.Assert.*;
 public class Login implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
@@ -61,7 +60,7 @@ public class Login implements ITest
 
         fillOutReg(browserWindow, email, password, password,true, answer);
 
-        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+        browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
 
         Thread.sleep(1000);
 
@@ -69,7 +68,7 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("password")).sendKeys (password);
         Thread.sleep(500);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
+        browserWindow.findElement (By.id (TestFunctions.logButton)).click ();
         Thread.sleep(1000);
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
         browserWindow.quit();
@@ -174,7 +173,7 @@ public class Login implements ITest
 
         fillOutReg(browserWindow, email, password, password,true, answer);
 
-        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+        browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
 
         Thread.sleep(1000);
         // Test case TC_LF_004: Invalid email and Valid password
@@ -182,7 +181,7 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("password")).sendKeys (password);
         Thread.sleep(500);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
+        browserWindow.findElement (By.id (TestFunctions.logButton)).click ();
 
         Thread.sleep(1500);
         // Message Assertion?
@@ -202,7 +201,7 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("password")).sendKeys ("inv"+password);
         Thread.sleep(500);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
+        browserWindow.findElement (By.id (TestFunctions.logButton)).click ();
         // Message Assertion?
         Thread.sleep(500);
         WebElement message1 = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
@@ -219,7 +218,7 @@ public class Login implements ITest
 
 
         // Message Assertion?
-        assertTrue (browserWindow.findElement (By.id ("loginButton")).isDisplayed ());
+        assertTrue (browserWindow.findElement (By.id (TestFunctions.logButton)).isDisplayed ());
 
 
         // Test case TC_LF_010: No credentials: HOW?
@@ -344,13 +343,13 @@ public class Login implements ITest
         int optionTry = 0;
         int optionTryLimit = 50;
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -359,7 +358,7 @@ public class Login implements ITest
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();
 
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/register");
+        assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website+"/#/register");
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
@@ -398,7 +397,7 @@ public class Login implements ITest
     private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
@@ -407,7 +406,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -416,7 +415,7 @@ public class Login implements ITest
 
         browserWindow.findElement(By.id("email")).sendKeys(email); //enter email
         browserWindow.findElement(By.id ("password")).sendKeys(password); //enter password
-        browserWindow.findElement(By.id ("loginButton")).click (); //click on login
+        browserWindow.findElement(By.id (TestFunctions.logButton)).click (); //click on login
     }
 
 
@@ -424,7 +423,7 @@ public class Login implements ITest
     {
 
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
@@ -434,7 +433,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -447,7 +446,7 @@ public class Login implements ITest
 //        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
 //        Thread.sleep(500);
 
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
         emailUsr.click ();
 
@@ -474,7 +473,7 @@ public class Login implements ITest
     {
 
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         Thread.sleep(2500);
         browserWindow.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
@@ -484,7 +483,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -497,7 +496,7 @@ public class Login implements ITest
        // browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
         //Thread.sleep(500);
 
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
         emailUsr.click ();
         emailUsr.click ();

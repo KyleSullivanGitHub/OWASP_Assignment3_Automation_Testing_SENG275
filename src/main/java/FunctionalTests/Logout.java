@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 public class Logout implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
@@ -31,10 +30,9 @@ public class Logout implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
-     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @BeforeSuite
-    public void SetUp() throws IOException, InterruptedException
+    public void SetUp() throws IOException
     {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -52,7 +50,6 @@ public class Logout implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void LO1_Manual_Logout(String chosenBrowser) throws IOException, InterruptedException
@@ -62,7 +59,7 @@ public class Logout implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
         try
@@ -103,8 +100,8 @@ public class Logout implements ITest
 
 
         //Navigate both to the website
-        browserWindow.get(website);
-        browserSecondary.get(website);
+        browserWindow.get(TestFunctions.website);
+        browserSecondary.get(TestFunctions.website);
 
         //Wait for site to fully load
         TestFunctions.waitForSite(browserWindow);
@@ -118,7 +115,7 @@ public class Logout implements ITest
 
             //Browse back through history and return to website
             browserWindow.navigate().back();
-            browserWindow.get(website);
+            browserWindow.get(TestFunctions.website);
 
             //Check if the account menu has the logout button displayed. If it is displayed, then the test was passed as the user was not logged out
             TestFunctions.waitForSite(browserWindow, TestFunctions.navPath); //Wait for site to be ready
@@ -172,7 +169,7 @@ public class Logout implements ITest
         //Make the test environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
