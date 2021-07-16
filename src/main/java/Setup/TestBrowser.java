@@ -17,10 +17,24 @@ public abstract class TestBrowser
 
     //driver path to folder containing all drivers for web testing. Currently only Windows compatible
     //TODO add other OS Functionality
-    protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
+  /*  protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
+    //Location of firefox driver within your WebDriver folder.
     protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
+    //Location of chrome driver within your WebDriver folder.
     protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
-    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
+    //Location of Edge driver within your webdriver folder.
+    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";*/
+
+    //driver path to folder contianing all drivers for web testing. MAC
+    //TODO add other OS Functionality
+
+    protected String driverPath = "src/main/java/Setup/WebDriverMac/";
+    //Location of firefox driver within your WebDriver folder.
+    protected String fireFoxLoc = "geckodriver 2";
+    //Location of chrome driver within your WebDriver folder.
+    protected String chromeLoc = "chromedriver";
+    //Location of Edge driver within your webdriver folder.
+    protected String edgeLoc = "msedgedriver";
 
     //TODO Add Safari
 
@@ -53,12 +67,6 @@ public abstract class TestBrowser
      */
     public String getDriverLoc() {return driverLoc;}
 
-    /**
-     * Quick check. Only Edge returns true.
-     * Programmer: Kyle Sullivan
-     * @return false
-     */
-    public boolean getType() { return false;}
 
     /**
      * Abstract class for returning a usable web environment.
@@ -78,10 +86,7 @@ class useFireFox extends TestBrowser
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
     }
-    public boolean getType()
-    {
-        return false;
-    }
+
     /**
      * Creates and returns a new  Firefox browser window.
      * Programmer: Kyle Sullivan
@@ -104,10 +109,7 @@ class useChrome extends TestBrowser
         this.driver = "webdriver.chrome.driver";
         this.driverLoc = this.driverPath +chromeLoc;
     }
-    public boolean getType()
-    {
-        return false;
-    }
+
     /**
      * Creates and returns a new Google Chrome browser window.
      * Programmer: Kyle Sullivan
@@ -129,10 +131,6 @@ class useEdge extends TestBrowser
     {
         this.driver = "webdriver.edge.driver";
         this.driverLoc = this.driverPath +edgeLoc;
-    }
-    public boolean getType()
-    {
-        return true;
     }
 
     /**
