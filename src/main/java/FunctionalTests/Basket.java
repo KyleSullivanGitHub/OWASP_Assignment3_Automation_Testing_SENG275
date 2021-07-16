@@ -33,6 +33,23 @@ public class Basket implements ITest{
     String decreaseQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[3]/button[1]";
     String removeProduct_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[5]/button";
 
+    /**
+     *Adds a single apple juice to basket and navigates to your Basket page
+     *Programmer: Nicole Makarowski
+     */
+    public void addToBasket(WebDriver browserWindow) throws IOException, InterruptedException {
+        browserWindow.get(website);
+        TestFunctions.waitForSite(browserWindow);
+
+        //Add to cart
+        browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+        //Navigate to Basket
+        browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+        //Verify Navigation to basket page
+        Thread.sleep(1500);
+        assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
+    }
 
     /**
      *Create an environment for all tests using the same browser app.
