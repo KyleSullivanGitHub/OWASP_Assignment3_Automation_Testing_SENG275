@@ -1,10 +1,13 @@
 package Setup;
 
+
+import FunctionalTests.TestFunctions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+
 
 import java.io.IOException;
 /**
@@ -14,31 +17,28 @@ import java.io.IOException;
  */
 public abstract class TestBrowser
 {
-    /*
-     * Change the below to match your system. Store your setup in info.txt
-     */
+    //Quick ternary operators to detrime what operating system is being used. Only Mac and Windows are supported
+    private String temp = FunctionalTests.TestFunctions.OS;
+    private boolean OSWin = temp.contains("win") ? true : false;
+    private boolean OSMac = !OSWin && temp.contains("mac") ? true : false;
 
-    //driver path to folder contianing all drivers for web testing. Currently only Windows compatible
-    //TODO add other OS Functionality
-    protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
-    //Location of firefox driver within your WebDriver folder.
-    protected String fireFoxLoc = "geckodriver-v0.29.1-win64\\geckodriver.exe";
-    //Location of chrome driver within your WebDriver folder.
-    protected String chromeLoc = "chromedriver_win32\\chromedriver.exe";
-    //Location of Edge driver within your webdriver folder.
-    protected String edgeLoc = "edgedriver_win64\\msedgedriver.exe";
+    //Set the drivers and driver path to the correct ones for the given operating systems.
+    protected String driverPath = OSWin ? "src\\main\\java\\Setup\\WebDriver\\" : OSMac ? "src/main/java/Setup/WebDriverMac/" : null;
+    protected String fireFoxLoc= OSWin ? "geckodriver-v0.29.1-win64\\geckodriver.exe" : OSMac ? "geckodriver 2" : null;
+    protected String chromeLoc= OSWin ? "chromedriver_win32\\chromedriver.exe" : OSMac ? "chromedriver" : null;
+    protected String edgeLoc= OSWin ? "edgedriver_win64\\msedgedriver.exe" : OSMac ? "msedgedriver" : null;
+
 
     //TODO Add Safari
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
-    static String primaryBrowser = "Chrome";
+    static String primaryBrowser = "Firefox";
 //********************************************************************************************************************//
     //String containing driver text
     String driver;
-    //String containg driver location
+    //String containing driver location
     String driverLoc;
 
-    public TestBrowser() throws IOException {}
 
     /**
      * Used by CreateEnvironment to default to a specific browser for the majority of tests.
@@ -65,6 +65,12 @@ public abstract class TestBrowser
      * Programmer: Kyle Sullivan
      */
     public abstract WebDriver makeDriver();
+
+    /**
+     * Quick check to see if the current operating system is supported
+     * @throws IOException Thrown if the operating system is unsupported
+     */
+    public void checkSupported() throws IOException { if(!this.OSWin && !this.OSMac) throw new IOException("Unsupported Operation System");}
 }
 
 class useFireFox extends TestBrowser
@@ -75,6 +81,7 @@ class useFireFox extends TestBrowser
      */
     public useFireFox() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
     }
@@ -98,6 +105,7 @@ class useChrome extends TestBrowser
      */
     public useChrome() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.chrome.driver";
         this.driverLoc = this.driverPath +chromeLoc;
     }
@@ -121,6 +129,7 @@ class useEdge extends TestBrowser
      */
     public useEdge() throws IOException
     {
+        checkSupported();
         this.driver = "webdriver.edge.driver";
         this.driverLoc = this.driverPath +edgeLoc;
     }

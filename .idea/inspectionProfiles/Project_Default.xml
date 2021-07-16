@@ -1,6 +1,22 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="app-welcome-banner" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
     <inspection_tool class="JavaDoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="TOP_LEVEL_CLASS_OPTIONS">
         <value>
@@ -35,7 +51,7 @@
     <inspection_tool class="groupsTestNG" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="groups">
         <value>
-          <list size="13">
+          <list size="18">
             <item index="0" class="java.lang.String" itemvalue="Integration" />
             <item index="1" class="java.lang.String" itemvalue="Regression" />
             <item index="2" class="java.lang.String" itemvalue="Login" />
@@ -49,6 +65,11 @@
             <item index="10" class="java.lang.String" itemvalue="hasDataProvider" />
             <item index="11" class="java.lang.String" itemvalue="Sanity" />
             <item index="12" class="java.lang.String" itemvalue="Logout" />
+            <item index="13" class="java.lang.String" itemvalue="PA_Smoke" />
+            <item index="14" class="java.lang.String" itemvalue="PasswordAlteration" />
+            <item index="15" class="java.lang.String" itemvalue="PA_Sanity" />
+            <item index="16" class="java.lang.String" itemvalue="AddressAlteration" />
+            <item index="17" class="java.lang.String" itemvalue="AA_Smoke" />
           </list>
         </value>
       </option>

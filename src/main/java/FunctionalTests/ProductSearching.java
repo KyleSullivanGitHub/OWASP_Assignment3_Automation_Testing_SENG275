@@ -5,11 +5,12 @@ import Setup.TestBrowser;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
+import static org.testng.Assert.*;
+
 
 public class ProductSearching
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;

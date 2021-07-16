@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -20,18 +21,87 @@ public class TestFunctions
 
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
-    static String website = "https://juice-shop.herokuapp.com/#/";
-    static String constEmail;//String containing the email for the constant session
-    static String constPassword = "Seng265!";//password for the constant session
-    static String constAnswer = "Seng"; //answer for security question
-    static String googleEmail = "helloworld.owasp@gmail.com";
-    static String googlePassword = "seng275@";
-    static String OS = System.getProperty("os.name").toLowerCase();
-    static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
-    static int endTestWait = 2500;
-    static String navPath = "#navbarAccount";
-    
-    
+    public static String website = "https://juice-shop.herokuapp.com/#/";
+    public static String OS = System.getProperty("os.name").toLowerCase();
+
+    private static final String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
+    public static String navPath = "#navbarAccount";
+    public static String navbarLogin = "#navbarLoginButton";
+    public static String regButton = "#registerButton";
+    public static String loginButtonG = "#loginButtonGoogle";
+    public static String identifierID = "#identifierId";
+    public static String googlePasswordTarget = "#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)";
+    public static String logButton = "loginButton";
+    public static String mInput = "#mat-input-";
+    public static String mRadio = "#mat-radio-";
+
+    public static int endTestWait = 2500;
+
+    //Declarations for constant account values
+    private static boolean registerSetup = false;
+    public static String constEmail;//String containing the email for the constant session
+    public static String constPassword;//password for the constant session
+    public static String constAnswer; //answer for security question
+
+    //Declarations for constant google account values
+    private static boolean googleSetup = false;
+    public static String googleEmail;
+    public static String googlePassword;
+
+    //Declarations for constant address values
+    private static boolean addressSetup = false;
+    private static Object[] addressSet;
+
+
+    private static void constRandomAccount()
+    {
+        if(!registerSetup)
+        {
+            //Create a random number to add to the end of the email name
+            int emailNumRandomizer = 0;
+            Random emailRandomizer = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                emailNumRandomizer += emailRandomizer.nextInt(9);
+            }
+            //set up the constant email for this session
+            constEmail = "HelloWorld9" + emailNumRandomizer + "@gmail.com";
+            constPassword = "Seng265!";
+            constAnswer = "Seng";
+
+            registerSetup = true;
+        }
+    }
+
+    private static void constGoogleAccount()
+    {
+        if(!googleSetup)
+        {
+            googleEmail = "helloworld.owasp@gmail.com";
+            googlePassword = "seng275@";
+            googleSetup = true;
+        }
+    }
+
+    private static void constAddressValues()
+    {
+        if(!addressSetup)
+        {
+            addressSet = new Object[]
+                    {
+                            "",
+                            "Canada",//Country
+                            "Seng275",//Name
+                            "9999999",//PhoneNumber
+                            "A0A 0A0",//Zip Code
+                            "Internet",//Address
+                            "Victoria",//City
+                            "BC",//State
+                    };
+            addressSetup = true;
+        }
+    }
+
     /**
      * Pauses the test until the cookie popup on site visitation is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
      * Programmer: Kyle Sullivan
@@ -87,13 +157,6 @@ public class TestFunctions
         }
     }
 
-    public void openAccountMenu(WebDriver test)
-    {
-        //check if account is on header
-
-
-        //If it is
-    }
 
 
 
@@ -109,9 +172,9 @@ public class TestFunctions
     {
         //Find the account button
         test.findElement(By.cssSelector(navPath)).click();
-        Thread.sleep(500);
         //verify that we can access the login page
-        WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
+        waitForSite(test,navbarLogin);
+        WebElement accountMenuLogin = test.findElement(By.cssSelector(navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click(); //Go to login page
     }
@@ -144,16 +207,7 @@ public class TestFunctions
     {
         if(!registerOnce)
         {
-            //Create a random number to add to the end of the email name
-            int emailNumRandomizer = 0;
-            Random emailRandomizer = new Random();
-            for (int i = 0; i < 20; i++)
-            {
-                emailNumRandomizer += emailRandomizer.nextInt(9);
-            }
-            //set up the constant email for this session
-            constEmail = "HelloWorld9" + emailNumRandomizer + "@gmail.com";
-
+            constRandomAccount();
             //create the environment to perform a registration
             CreateEnvironment temp = new CreateEnvironment();
             Registration signUp = new Registration();
@@ -162,7 +216,7 @@ public class TestFunctions
             //make the separate browser window
             WebDriver tempBrowser = signUp.environment.makeDriver();
             tempBrowser.manage().window().maximize();
-            tempBrowser.get(signUp.website);
+            tempBrowser.get(website);
             //Ensure the site is ready for testing
             waitForSite(tempBrowser);
             //navigate to registration.
@@ -170,8 +224,9 @@ public class TestFunctions
 
             //Register the Account
             signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
-            tempBrowser.findElement(By.cssSelector("#registerButton")).click();//click register button
+            tempBrowser.findElement(By.cssSelector(regButton)).click();//click register button
             //close the browser
+            Thread.sleep(endTestWait);
             tempBrowser.quit();
 
             //mark the account as created for this session
@@ -190,19 +245,20 @@ public class TestFunctions
         navToLogin(test);
 
         //register via google
-        waitForSite(test,"#loginButtonGoogle");
-        test.findElement(By.id("loginButtonGoogle")).click();
+        waitForSite(test,loginButtonG);
+        test.findElement(By.cssSelector(loginButtonG)).click();
         Thread.sleep(500);
 
         if(!test.getCurrentUrl().startsWith(website))
         {
-            waitForSite(test, "#identifierId");
-            WebElement emailUser = test.findElement(By.cssSelector("#identifierId"));
+            constGoogleAccount();
+            waitForSite(test, identifierID);
+            WebElement emailUser = test.findElement(By.cssSelector(identifierID));
             emailUser.click();
             emailUser.sendKeys(googleEmail + Keys.ENTER);//enter email
 
-            waitForSite(test, "#password > div.aCsJod.oJeWuf > div > div,Xb9hP > input");
-            WebElement passwordInput = test.findElement(By.cssSelector("#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)"));
+            waitForSite(test, googlePasswordTarget);
+            WebElement passwordInput = test.findElement(By.cssSelector(googlePasswordTarget));
             Thread.sleep(500);
             passwordInput.click();
             passwordInput.sendKeys(googlePassword + Keys.ENTER);//enter password
@@ -223,7 +279,7 @@ public class TestFunctions
     public static void manualLogin(WebDriver test) throws IOException, InterruptedException
     {
         quickLogFill(test, constPassword);
-        test.findElement(By.id ("loginButton")).click (); //click on login
+        test.findElement(By.id (logButton)).click (); //click on login
     }
 
     /**
@@ -237,7 +293,7 @@ public class TestFunctions
     public static void manualLogin(WebDriver test, String password) throws IOException, InterruptedException
     {
         quickLogFill(test, password);
-        test.findElement(By.id ("loginButton")).click (); //click on login
+        test.findElement(By.id (logButton)).click (); //click on login
     }
 
     /**
@@ -254,7 +310,7 @@ public class TestFunctions
         if(!registerOnce)
             createAccount();
         //Check if we are already on the login page
-        if(test.getCurrentUrl().equals("https://juice-shop.herokuapp.com/#/login"))
+        if(!test.getCurrentUrl().equals(website+"login"))
             navToLogin(test);
 
         Thread.sleep(500);
@@ -263,20 +319,63 @@ public class TestFunctions
         test.findElement(By.id ("password")).sendKeys(password); //enter password
     }
 
-    public static void createAddress(WebDriver browserWindow)
+    /**
+     * Creates a new address for any tests requiring one.
+     * Programmer: Kyle Sullivan
+     * @throws InterruptedException Thrown if test is interrupted during a thread waiting period
+     */
+    public static void createAddress() throws InterruptedException, IOException
     {
-        /*
-        if(//not logged in)
-        //orders
-        //my saved address
-        if(//address already present)
+        //Check if a constant address is already made
+        if(!addressMade)
+        {
+            //Create a new setup environment to create an address in.
+            CreateEnvironment passBrowser = new CreateEnvironment();
+            TestBrowser environment = passBrowser.createBrowser();
+            WebDriver test = environment.makeDriver();
+            test.manage().window().maximize();
+            //Go to Website
+            test.get(website);
+            //Ensure the site is ready for testing
+            TestFunctions.waitForSite(test);
+
+            try
+            {
+                //Common string elements of accountMenu orders xpath
+                String xPathPart1 = "/html/body/div[3]/div[";
+                String xPathPart2 = "]/div/div/div/button[";
+                String xPathPart3 = "]";
+
+                //Login and navigate to saved addresses
+                login(test);
+                test.findElement(By.cssSelector(navPath)).click();
+                Thread.sleep(100);
+                test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
+                Thread.sleep(100);
+                test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+
+                //Click on Create New Address
+                test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button")).click();
+
+                constAddressValues();
+
+                for (int i = 1; i <= 7; i++)
                 {
-                        return
+                    if (i != 5)
+                        test.findElement(By.cssSelector(mInput + i)).sendKeys((String) addressSet[i]);
+                    else
+                        test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
                 }
-        //add new addresss
+                test.findElement(By.cssSelector("#submitButton")).click();
 
-
-         */
+                addressMade = true;
+            }
+            finally
+            {
+                Thread.sleep(endTestWait);
+                test.quit();
+            }
+        }
     }
 
     /**
@@ -285,8 +384,11 @@ public class TestFunctions
      * @param test the browser for the regression test
      * @param loggedIn whether the test is logged in or not
      */
-    public static void commonRegression(WebDriver test, Boolean loggedIn)
+    public static void commonRegression(WebDriver test, Object[] UI, Boolean loggedIn)
     {
+        //Check URL, UI[0]
+        //Check Header UI[1]
+        //Check Title UI[2]
 
         //check dropdown menu
             //check correct URLS
@@ -304,13 +406,13 @@ public class TestFunctions
         searchBar.click();
 
         //check account button
-        WebElement accountMenu = test.findElement(By.id ("navbarAccount"));
+        WebElement accountMenu = test.findElement(By.cssSelector(navPath));
         assertWebElement(accountMenu);
         accountMenu.click();
 
         if(loggedIn)
         {
-
+            //TODO replace section with an object and for loop.
             WebElement profile = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1)"));
             assertWebElement(profile);
             assertEquals(profile.getText(),constEmail);
@@ -334,7 +436,7 @@ public class TestFunctions
         }
         else
         {
-            WebElement accountMenuLogin = test.findElement(By.cssSelector("#navbarLoginButton"));
+            WebElement accountMenuLogin = test.findElement(By.cssSelector(TestFunctions.navbarLogin));
             assertWebElement(accountMenuLogin);
             assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
         }
@@ -349,6 +451,5 @@ public class TestFunctions
         assertTrue(testing.isEnabled());
         assertTrue(testing.isDisplayed());
     }
-
 
 }
