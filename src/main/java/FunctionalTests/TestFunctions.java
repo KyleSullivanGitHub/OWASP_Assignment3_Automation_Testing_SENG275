@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -171,8 +172,8 @@ public class TestFunctions
     {
         //Find the account button
         test.findElement(By.cssSelector(navPath)).click();
-        Thread.sleep(500);
         //verify that we can access the login page
+        waitForSite(test,navbarLogin);
         WebElement accountMenuLogin = test.findElement(By.cssSelector(navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click(); //Go to login page
@@ -450,6 +451,5 @@ public class TestFunctions
         assertTrue(testing.isEnabled());
         assertTrue(testing.isDisplayed());
     }
-
 
 }

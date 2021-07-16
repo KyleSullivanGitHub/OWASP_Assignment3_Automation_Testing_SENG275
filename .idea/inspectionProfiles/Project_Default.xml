@@ -51,7 +51,7 @@
     <inspection_tool class="groupsTestNG" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="groups">
         <value>
-          <list size="16">
+          <list size="18">
             <item index="0" class="java.lang.String" itemvalue="Integration" />
             <item index="1" class="java.lang.String" itemvalue="Regression" />
             <item index="2" class="java.lang.String" itemvalue="Login" />
@@ -68,6 +68,8 @@
             <item index="13" class="java.lang.String" itemvalue="PA_Smoke" />
             <item index="14" class="java.lang.String" itemvalue="PasswordAlteration" />
             <item index="15" class="java.lang.String" itemvalue="PA_Sanity" />
+            <item index="16" class="java.lang.String" itemvalue="AddressAlteration" />
+            <item index="17" class="java.lang.String" itemvalue="AA_Smoke" />
           </list>
         </value>
       </option>
