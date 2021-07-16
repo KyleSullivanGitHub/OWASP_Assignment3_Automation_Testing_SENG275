@@ -27,7 +27,6 @@ public class TestFunctions
     static String googleEmail = "helloworld.owasp@gmail.com";
     static String googlePassword = "seng275@";
     static String OS = System.getProperty("os.name").toLowerCase();
-    static String website = "https://juice-shop.herokuapp.com"; //default website URL
     static String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
     static int endTestWait = 2500;
     static String navPath = "#navbarAccount";

@@ -55,7 +55,7 @@ public class Basket implements ITest{
     @Test(
             groups = {"Smoke","Basket Smoke","Basket", "hasDataProvider"},
             priority = 1,
-            dataProvider = "webBrowserData",
+            dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
     )
