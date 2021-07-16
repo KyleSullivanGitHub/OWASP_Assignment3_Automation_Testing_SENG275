@@ -297,24 +297,15 @@ public class Login implements ITest
 
             sleep (1);
 
-            WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-            passwordInput.click ();
-            passwordInput.sendKeys ("inv" + dataSet[1].toString ());
-            sleep (1);
-            passwordInput.sendKeys (Keys.ENTER);
+            WebElement message1 = inavlidPassPlusMessage (dataSet[1], browserWindow);
 
-            sleep (1);
-            WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
-            sleep (1);
-            // Message Assertion????
+            //Assert to see if we get an error with the right message
             assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
         }finally {
             Thread.sleep(TestFunctions.endTestWait);
             browserWindow.quit();
         }
     }
-
-
 
 
 
@@ -339,27 +330,28 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
         try{
-        fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
-        sleep (2);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-        sleep (2);
-        browserWindow.navigate ().back ();
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
+            fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            sleep (2);
+            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-      /*  Thread.sleep (2000);
+            sleep (2);
+            browserWindow.navigate ().back ();
+            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-        WebDriver browserWindow1 = environment.makeDriver();
-        browserWindow1.manage().window().maximize();
-        browserWindow1.get(website);
+          /*  Thread.sleep (2000);
 
-        Thread.sleep (2000);
-        browserWindow1.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
-        Thread.sleep (1000);
-        assertTrue (browserWindow1.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isDisplayed ());
+            WebDriver browserWindow1 = environment.makeDriver();
+            browserWindow1.manage().window().maximize();
+            browserWindow1.get(website);
 
-        Thread.sleep (2000);
-        browserWindow.quit();*/
+            Thread.sleep (2000);
+            browserWindow1.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
+            Thread.sleep (1000);
+            assertTrue (browserWindow1.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isDisplayed ());
+
+            Thread.sleep (2000);
+            browserWindow.quit();*/
         }
         finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -563,6 +555,19 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("password")).sendKeys ("inv"+ dataSet[1].toString ());
         Thread.sleep (1);
         browserWindow.findElement (By.id ("loginButton")).click ();
+    }
+
+    private WebElement inavlidPassPlusMessage(Object o, WebDriver browserWindow) throws InterruptedException {
+        WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+        passwordInput.click ();
+        passwordInput.sendKeys ("inv" + o.toString ());
+        sleep (1);
+        passwordInput.sendKeys (Keys.ENTER);
+
+        sleep (1);
+        WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
+        sleep (1);
+        return message1;
     }
 
     private static void sleep(int a) throws InterruptedException {
