@@ -230,6 +230,38 @@ public class Test_Data
     //*******************************************************************************************************
 
     /**
+     * This dataProvider passes valid random country, name, mobile number, zip code, address, city, and state strings for the AA1 valid input test
+     * Programmer: Salam Fazil
+     * @return object with random country, name, mobile number, zip code, address, city, state, and the browser for that test.
+     */
+    @DataProvider(
+            name = "AA1_Input",
+            parallel = true
+    )
+    public static Object[][] AA1_Input()
+    {
+        while(randomNum1 == randomNum2 || randomNum1 == randomNum3 || randomNum2 == randomNum3)
+        {
+            randomNum1 = emailRandomizer();
+            randomNum2 = emailRandomizer();
+            randomNum3 = emailRandomizer();
+            randomNum4 = emailRandomizer();
+        }
+        String email = "helloworld" ;
+        String password = "Seng310@#$";
+        String question = "seng";
+
+        return new Object[][]{
+                {"Firefox", email+randomNum1+"@gmail.com", password, question, "Country1", "Name1", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"},
+                {"Chrome", email+randomNum2+"@gmail.com", password, question, "Country2", "Name2", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"},
+                {"Edge", email+randomNum3+"@gmail.com", password, question, "Country3", "Name3", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
+        };
+    }
+
+    //*******************************************************************************************************
+
+    /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.
      * Programmer: Kyle Sullivan
      * @return random integer.

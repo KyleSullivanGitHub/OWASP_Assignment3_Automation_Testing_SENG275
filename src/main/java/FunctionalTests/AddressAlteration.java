@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import static FunctionalTests.TestFunctions.*;
 import static org.testng.Assert.*;
 
-public class PasswordAlteration implements ITest
+public class AddressAlteration implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
@@ -34,32 +34,27 @@ public class PasswordAlteration implements ITest
 
     /*
     TODO:
-    PA1
-    PA2
-    PA3
-    (password recovery tests)
-     */
+    AA1
+    AA regression
+    */
 
 
     /**
      * Sanity test for valid password reset
      * Programmer: Salam Fazil
-     * @param email email text for test
-     * @param password password text for test
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
-            dataProvider = "LG1_Input",
+            groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
+            dataProvider = "AA1_Input",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3
     )
 
-    public void PA4_validReset(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void AA1_validAddressAdditionAndRemoval(String email, String password, String answer,
+                                                   String chosenBrowser, String country, String name,
+                                                   String phoneNumber, String postalCode, String address,
+                                                   String city, String state) throws IOException, InterruptedException
     {
-        // Reset password to this
-        String newPass = "123456";
-
         // Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -83,58 +78,48 @@ public class PasswordAlteration implements ITest
         logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
-        // Initiate password reset
-        browserWindow.findElement(By.id("navbarAccount")).click();
+        // Navigate to saved addresses page
+        navigateToSavedAddresses(browserWindow);
         Thread.sleep(1000);
 
-        Actions action = new Actions(browserWindow);
-        WebElement privacyAndSecurityTab = browserWindow.findElement(By.xpath(
-                "/html/body/div[3]/div[2]/div/div/div/button[3]"));
-        action.moveToElement(privacyAndSecurityTab).perform();
+        // Initiate valid address addition
+        browserWindow.findElement(By.xpath(
+                "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/" +
+                        "app-address/mat-card/div/button")).click();
         Thread.sleep(1000);
 
-        browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
+        addText(browserWindow, "mat-input-8", country);
+        addText(browserWindow, "mat-input-9", name);
+        addText(browserWindow, "mat-input-10", phoneNumber);
+        addText(browserWindow, "mat-input-11", postalCode);
+        addText(browserWindow, "address", address);
+        addText(browserWindow, "mat-input-13", city);
+        addText(browserWindow, "mat-input-14", state);
         Thread.sleep(1000);
 
-        addText(browserWindow, "currentPassword", password);
-
-        addText(browserWindow, "newPassword", newPass);
-
-        addText(browserWindow, "newPasswordRepeat", newPass);
+        browserWindow.findElement(By.id("submitButton")).click();
         Thread.sleep(1000);
 
-        browserWindow.findElement(By.id("changeButton")).click();
+        // Validate if address was added
+        navigateToSavedAddresses(browserWindow);
         Thread.sleep(1000);
 
-        // Log out after changing password (so we can log in again to see if it works)
-        browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
 
-        browserWindow.findElement(By.id("navbarLogoutButton")).click();
-        Thread.sleep(1000);
 
-        // Try to log in with new password
-        logIn(browserWindow, email, newPass);
-        Thread.sleep(1000);
+        // Initiate Valid address removal
 
-        // Check if logged in email = same email. If log in fails, test will fail
-        browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
-
-        WebElement emailContainer = browserWindow.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1) > span"));
-
-        assertEquals(emailContainer.getText(), email);
+        // Validate if address was removed
     }
 
     /**
-     * Sanity test for invalid password reset
+     * Sanity test for valid password reset
      * Programmer: Salam Fazil
      * @param email email text for test
      * @param password password text for test
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
+            groups = {"Smoke","PasswordAlteration","PA_Sanity","hasDataProvider"},
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3

@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -461,5 +462,20 @@ public class TestFunctions
         return browserWindow;
     }
 
+    // Assuming logged in and on home page
+    public static void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
+
+        browserWindow.findElement(By.id("navbarAccount")).click();
+        Thread.sleep(1000);
+
+        Actions action = new Actions(browserWindow);
+        WebElement oAndPTab = browserWindow.findElement(By.xpath(
+                "/html/body/div[4]/div[2]/div/div/div/button[2]"));
+        action.moveToElement(oAndPTab).perform();
+        Thread.sleep(1000);
+
+        browserWindow.findElement(By.xpath("/html/body/div[4]/div[3]/div/div/div/button[3]")).click();
+
+    }
 
 }
