@@ -57,21 +57,30 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
 
-        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
-        Thread.sleep(1000);
+        try
+        {
+            fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
 
-        browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
-        Thread.sleep(5000);
-        browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
-        Thread.sleep(500);
+            browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
-        Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
-        browserWindow.quit();
+            Thread.sleep(1000);
+
+            browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
+            Thread.sleep(5000);
+            browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
+            Thread.sleep(500);
+
+            browserWindow.findElement (By.id ("loginButton")).click ();
+            Thread.sleep(1000);
+            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
@@ -88,14 +97,18 @@ public class Login implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLog (browserWindow, "email", "pswrd");
-        Thread.sleep(2000);
-        // Check that error message appears. Keep for tmr since website is not working
-        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-        Thread.sleep(1500);
-        assertEquals (message.getText (), "Invalid email or password.");
-        Thread.sleep(3000);
-        browserWindow.quit();
+        try {
+            fillOutLog (browserWindow, "email", "pswrd");
+            Thread.sleep (2000);
+            // Check that error message appears. Keep for tmr since website is not working
+            WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+            Thread.sleep (1500);
+            assertEquals (message.getText (), "Invalid email or password.");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
     }
 
 
@@ -119,11 +132,15 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
-        Thread.sleep (4000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
-        Thread.sleep (1000);
-        browserWindow.quit();
+        try {
+            fillOutLogGoogle (browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            Thread.sleep (4000);
+            assertEquals (browserWindow.getCurrentUrl (), "https://juice-shop.herokuapp.com/#/");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
     }
 
 
@@ -141,15 +158,18 @@ public class Login implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogleInvalid (browserWindow, "email", "pswrd");
-        Thread.sleep(2000);
-        // Check that error message appears. Keep for tmr since website is not working
+        try {
+            fillOutLogGoogleInvalid (browserWindow, "email", "pswrd");
+            Thread.sleep (2000);
+            // Check that error message appears. Keep for tmr since website is not working
 
-        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
-        Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn't find your Google Account");
-        Thread.sleep(3000);
-        browserWindow.quit();
+            WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+            Thread.sleep (1000);
+            assertEquals (message.getText (), "Couldn't find your Google Account");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -170,7 +190,7 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
+        try{fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
@@ -224,8 +244,12 @@ public class Login implements ITest
 
 
         Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");
-        browserWindow.quit();
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");}
+        finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
     }
 
 
@@ -251,34 +275,38 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
 
-        // Test case TC_LF_022 : Valid password and Invalid email
-        fillOutLogGoogleInvalid (browserWindow, "email", dataSet[1].toString ());
-        Thread.sleep(2000);
+        try {
+            // Test case TC_LF_022 : Valid password and Invalid email
+
+            fillOutLogGoogleInvalid (browserWindow, "email", dataSet[1].toString ());
+            Thread.sleep (2000);
 
 
-        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
-        Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn't find your Google Account");
-        Thread.sleep(500);
+            WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+            Thread.sleep (1000);
+            assertEquals (message.getText (), "Couldn't find your Google Account");
+            Thread.sleep (500);
 
-        // Test case TC_LF_023 : Invalid password and valid email
-        fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv"+dataSet[1].toString ());
+            // Test case TC_LF_023 : Invalid password and valid email
+            fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv" + dataSet[1].toString ());
 
-        Thread.sleep(1000);
+            Thread.sleep (1000);
 
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        passwordInput.click ();
-        passwordInput.sendKeys ("inv"+dataSet[1].toString ());
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
+            WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+            passwordInput.click ();
+            passwordInput.sendKeys ("inv" + dataSet[1].toString ());
+            Thread.sleep (500);
+            passwordInput.sendKeys (Keys.ENTER);
 
-        Thread.sleep(500);
-        WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
-        Thread.sleep(500);
-        // Message Assertion????
-        assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
-        Thread.sleep(3000);
-        browserWindow.quit();
+            Thread.sleep (500);
+            WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
+            Thread.sleep (500);
+            // Message Assertion????
+            assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -305,6 +333,7 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        try{
         fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
         Thread.sleep (2000);
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
@@ -312,9 +341,6 @@ public class Login implements ITest
         Thread.sleep (2000);
         browserWindow.navigate ().back ();
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
-
-        Thread.sleep (2000);
-        browserWindow.quit();
 
       /*  Thread.sleep (2000);
 
@@ -329,6 +355,11 @@ public class Login implements ITest
 
         Thread.sleep (2000);
         browserWindow.quit();*/
+        }
+        finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -341,8 +372,11 @@ public class Login implements ITest
         int optionTryLimit = 50;
 
         browserWindow.get(website);
+
+        TestFunctions.waitForSite(browserWindow);
+
         Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+       // browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
 
         //verify that we can access the login page
