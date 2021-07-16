@@ -41,7 +41,7 @@ common imports
 
 
 Common class setup
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
+    String TestFunctions.website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
@@ -61,13 +61,13 @@ Start Browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
 
 (if you need to create  browsers of the same web type)
         WebDriver browserWindow = environment.makeDriver()
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
 
 

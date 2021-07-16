@@ -9,6 +9,7 @@ import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Random;
 
 import static org.testng.Assert.*;
 
@@ -18,7 +19,6 @@ import static org.testng.Assert.*;
 public class Registration implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
@@ -49,7 +49,6 @@ public class Registration implements ITest
             priority = 0,
             dataProvider = "RF1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void RF1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
@@ -60,7 +59,7 @@ public class Registration implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to Site
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
         try
@@ -71,11 +70,11 @@ public class Registration implements ITest
             //Fill out registration with a valid data set
             fillOutReg(browserWindow, dataSet);
 
-            browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+            browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
 
             //Check that the user is taken back to the login page
             Thread.sleep(1000);
-            assertEquals(browserWindow.getCurrentUrl(), website + "/#/login");
+            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "login");
             Thread.sleep(500);
         }
         finally
@@ -92,7 +91,7 @@ public class Registration implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Registration Smoke", "Registration"},
+            groups = {"Smoke", "Registration Smoke", "Registration","noDataProvider"},
             priority = 1,
             enabled = true
     )
@@ -102,7 +101,7 @@ public class Registration implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -114,7 +113,7 @@ public class Registration implements ITest
             fillOutReg(browserWindow, new Object[] {"email", "pswrd", "password", false, ""});
 
             //Check that the registration button cannot be clicked.
-            assertFalse(browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled());
+            assertFalse(browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).isEnabled());
         }
         finally
         {
@@ -161,7 +160,6 @@ public class Registration implements ITest
             priority = 3,
             dataProvider = "RF4_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void RF4_Invalid_Input(String testing, Object[] dataSet) throws InterruptedException
@@ -173,7 +171,7 @@ public class Registration implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -184,15 +182,15 @@ public class Registration implements ITest
             //Fill out Registration form
             fillOutReg(browserWindow, dataSet);
             //Check if the registration button is disabled.
-            disabledButton = browserWindow.findElement(By.cssSelector("#registerButton")).isEnabled();
+            disabledButton = browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).isEnabled();
 
             //If the button is enabled...
             if (disabledButton)
             {
                 //...Ensure it does not accept the account details.
-                browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+                browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
                 Thread.sleep(1000);
-                assertEquals(browserWindow.getCurrentUrl(), website + "/#/register");//confirm that we have not left the page.
+                assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
             }
             else
             {
@@ -217,9 +215,6 @@ public class Registration implements ITest
     @Test(
             groups = {"", ""},
             priority = 4,
-            dataProvider = "",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 0,
             enabled = false
     )
     public void RF_Regression() throws InterruptedException
@@ -229,20 +224,34 @@ public class Registration implements ITest
 
         try
         {
-            //Test Header
-            //Test URL
-            //Test Title
-            //Check mandatory fields
-            //check password advice
+            TestFunctions.navToReg(browserWindow);
+            Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
+
+            TestFunctions.commonRegression(browserWindow, UI, true);
             assertEquals(browserWindow.findElement(By.className("mat-slide-toggle-thumb")).getAttribute("aria-checked"), "false");
+
+            //check placeholder fields
+            //check normal color
+
+            //mandatory field check
+            fillOutReg(browserWindow, new Object[]{"","","",false,""});
+            //touch security question
+            //Check mandatory fields
+            //check out password advice
+            TestFunctions.commonRegression(browserWindow, UI, true);
+
+            //clear current fields
+
+            fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100) +"@gmail.com","aB3!aB3!", "aB3!aB3!", true, "answer"});
+            TestFunctions.commonRegression(browserWindow, UI, true);
+            //check out password advice
 
             //check password is hidden
             WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
             assertEquals(passwordField.getAttribute("type"), "password");
             WebElement repPasswordField = browserWindow.findElement(By.cssSelector("#repeatPasswordControl"));
-            assertEquals(passwordField.getAttribute("type"), "password");
+            assertEquals(repPasswordField.getAttribute("type"), "password");
 
-            //TODO RF regression
         }
         finally
         {
@@ -269,7 +278,7 @@ public class Registration implements ITest
         int optionTryLimit = 50;//Maximum amount of attempts
 
         //Ensure the test is on the registration page
-        assertEquals(browserWindow.getCurrentUrl(), website + "/#/register");
+        assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys((String)dataSet[0]); //Enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys((String)dataSet[1]); //Enter password
@@ -320,7 +329,12 @@ public class Registration implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

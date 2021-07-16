@@ -14,11 +14,8 @@ import java.io.IOException;
  */
 public abstract class TestBrowser
 {
-    /*
-     * Change the below to match your system. Store your setup in info.txt
-     */
 
-    //driver path to folder contianing all drivers for web testing. Currently only Windows compatible
+    //driver path to folder containing all drivers for web testing. Currently only Windows compatible
     //TODO add other OS Functionality
   /*  protected String driverPath = "src\\main\\java\\Setup\\WebDriver\\";
     //Location of firefox driver within your WebDriver folder.
@@ -42,14 +39,13 @@ public abstract class TestBrowser
     //TODO Add Safari
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
-    static String primaryBrowser = "Chrome";
+    static String primaryBrowser = "Firefox";
 //********************************************************************************************************************//
     //String containing driver text
     String driver;
-    //String containg driver location
+    //String containing driver location
     String driverLoc;
 
-    public TestBrowser() throws IOException {}
 
     /**
      * Used by CreateEnvironment to default to a specific browser for the majority of tests.
@@ -71,6 +67,7 @@ public abstract class TestBrowser
      */
     public String getDriverLoc() {return driverLoc;}
 
+
     /**
      * Abstract class for returning a usable web environment.
      * Programmer: Kyle Sullivan
@@ -84,7 +81,7 @@ class useFireFox extends TestBrowser
      * Sets the driver type and path for a firefox browser
      * Programmer: Kyle Sullivan
      */
-    public useFireFox() throws IOException
+    public useFireFox()
     {
         this.driver = "webdriver.gecko.driver";
         this.driverLoc = this.driverPath +fireFoxLoc;
@@ -107,7 +104,7 @@ class useChrome extends TestBrowser
      * Sets the driver type and path for a chrome browser
      * Programmer: Kyle Sullivan
      */
-    public useChrome() throws IOException
+    public useChrome()
     {
         this.driver = "webdriver.chrome.driver";
         this.driverLoc = this.driverPath +chromeLoc;
@@ -130,7 +127,7 @@ class useEdge extends TestBrowser
      * Sets the driver type and path for an edge browser
      * Programmer: Kyle Sullivan
      */
-    public useEdge() throws IOException
+    public useEdge()
     {
         this.driver = "webdriver.edge.driver";
         this.driverLoc = this.driverPath +edgeLoc;
