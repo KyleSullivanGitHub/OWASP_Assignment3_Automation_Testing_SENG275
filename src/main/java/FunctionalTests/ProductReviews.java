@@ -5,7 +5,6 @@ import Setup.TestBrowser;
 import org.testng.annotations.BeforeSuite;
 import static org.testng.Assert.*;
 
-
 import java.io.IOException;
 
 public class ProductReviews
@@ -14,7 +13,6 @@ public class ProductReviews
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
-
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -27,4 +25,5 @@ public class ProductReviews
         environment = passBrowser.createBrowser();
         TestFunctions.createAccount();
     }
+
 }

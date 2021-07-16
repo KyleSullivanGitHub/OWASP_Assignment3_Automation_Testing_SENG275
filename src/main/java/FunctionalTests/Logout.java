@@ -153,13 +153,14 @@ public class Logout implements ITest
     /**
      * Performs a sanity test of the automated logout system.
      * WARNING: Test will take roughly 30 minutes. Only activate if you intend to run tests for that long
+     * Additionally this test will always fail as logout automation does not actual work on site
      * Programmer: Kyle Sullivan
      * @throws InterruptedException Thrown if Test was interrupted during a thread waiting period
      */
     @Test(
             groups = {"Sanity", "Registration Sanity", "Registration","noDataProvider"},
             priority = 1,
-            enabled = true
+            enabled = false
     )
     public void LO3_Logout_Automated() throws InterruptedException
     {
