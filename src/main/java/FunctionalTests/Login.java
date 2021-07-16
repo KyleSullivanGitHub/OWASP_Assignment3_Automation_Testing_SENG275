@@ -38,9 +38,7 @@ public class Login implements ITest
     /**
      * Smoke test for valid inputs within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
-     * @param answer answer to security question text for test
+     * @param dataSet has email, password, and answer used to register
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -51,7 +49,7 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG1_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -59,15 +57,15 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, email, password, password,true, answer);
+        fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
         Thread.sleep(1000);
 
-        browserWindow.findElement (By.id ("email")).sendKeys (email);
+        browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
         Thread.sleep(5000);
-        browserWindow.findElement (By.id ("password")).sendKeys (password);
+        browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
         Thread.sleep(500);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
@@ -104,8 +102,7 @@ public class Login implements ITest
     /**
      * Smoke test for valid Google Login within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet has the email and password required
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -116,15 +113,15 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG3_Valid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG3_Valid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogle(browserWindow, email, password);
-        Thread.sleep (2000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+        Thread.sleep (4000);
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
         Thread.sleep (1000);
         browserWindow.quit();
     }
@@ -160,12 +157,12 @@ public class Login implements ITest
     @Test(
             groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
             priority = 0,
-            dataProvider = "LG5_Input",
+            dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG5_Invalid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -173,14 +170,14 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, email, password, password,true, answer);
+        fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
 
         browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
 
         Thread.sleep(1000);
         // Test case TC_LF_004: Invalid email and Valid password
-        browserWindow.findElement (By.id ("email")).sendKeys ("inv"+email);
-        browserWindow.findElement (By.id ("password")).sendKeys (password);
+        browserWindow.findElement (By.id ("email")).sendKeys ("inv"+dataSet[0].toString ());
+        browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
         Thread.sleep(500);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
@@ -196,11 +193,11 @@ public class Login implements ITest
         // Test case TC_LF_005: Valid email and Inalid password
         browserWindow.findElement (By.id ("email")).clear ();
         Thread.sleep(500);
-        browserWindow.findElement (By.id ("email")).sendKeys (email);
+        browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
         Thread.sleep(500);
         browserWindow.findElement (By.id ("password")).clear ();
         Thread.sleep(500);
-        browserWindow.findElement (By.id ("password")).sendKeys ("inv"+password);
+        browserWindow.findElement (By.id ("password")).sendKeys ("inv"+dataSet[1].toString ());
         Thread.sleep(500);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
@@ -236,9 +233,8 @@ public class Login implements ITest
 
     /**
      *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
-     *  @param email email text for test
-     *  @param password password text for test
-     *  @param chosenBrowser browser used for that test
+     * @param dataSet has the email and password required
+     * @param chosenBrowser browser used for that test
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
@@ -249,14 +245,14 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG6_Invalid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG6_Invalid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
 
         // Test case TC_LF_022 : Valid password and Invalid email
-        fillOutLogGoogleInvalid (browserWindow, "email", password);
+        fillOutLogGoogleInvalid (browserWindow, "email", dataSet[1].toString ());
         Thread.sleep(2000);
 
 
@@ -266,13 +262,13 @@ public class Login implements ITest
         Thread.sleep(500);
 
         // Test case TC_LF_023 : Invalid password and valid email
-        fillOutLogGoogleInvalid (browserWindow, email, "inv"+password);
+        fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv"+dataSet[1].toString ());
 
         Thread.sleep(1000);
 
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
         passwordInput.click ();
-        passwordInput.sendKeys ("inv"+password);
+        passwordInput.sendKeys ("inv"+dataSet[1].toString ());
         Thread.sleep(500);
         passwordInput.sendKeys (Keys.ENTER);
 
@@ -292,8 +288,7 @@ public class Login implements ITest
     /**
      * Smoke test for valid Login memory within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet has the email and password required
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -304,13 +299,13 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG7_Login_Memory(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG7_Login_Memory(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogle(browserWindow, email, password);
+        fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
         Thread.sleep (2000);
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
