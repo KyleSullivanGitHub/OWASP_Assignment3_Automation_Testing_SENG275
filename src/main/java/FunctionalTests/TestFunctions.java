@@ -469,12 +469,12 @@ public class TestFunctions
         Thread.sleep(1000);
 
         Actions action = new Actions(browserWindow);
-        WebElement oAndPTab = browserWindow.findElement(By.xpath(
-                "/html/body/div[4]/div[2]/div/div/div/button[2]"));
+        WebElement oAndPTab = browserWindow.findElement(By.cssSelector(
+                "#mat-menu-panel-0 > div > button:nth-child(2) > span"));
         action.moveToElement(oAndPTab).perform();
         Thread.sleep(1000);
 
-        browserWindow.findElement(By.xpath("/html/body/div[4]/div[3]/div/div/div/button[3]")).click();
+        browserWindow.findElement(By.xpath("/html/body/div[3]/div[3]/div/div/div/button[3]")).click();
 
     }
 
