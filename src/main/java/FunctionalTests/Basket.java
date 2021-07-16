@@ -73,7 +73,7 @@ public class Basket implements ITest{
         //Login/Initial steps??
         TestFunctions.login(browserWindow);
 
-        Thread.sleep(6000);
+        Thread.sleep(1000);
 
         //Add to cart
         browserWindow.findElement(By.xpath(addToCart_XPath)).click();
@@ -116,7 +116,6 @@ public class Basket implements ITest{
     public void BA2_Invalid_Usage() throws InterruptedException{
 
         browserWindow = environment.makeDriver();
-
         browserWindow.get(website);
         TestFunctions.waitForSite(browserWindow);
 
@@ -139,9 +138,10 @@ public class Basket implements ITest{
     public void BA3_Alternate_Usages() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
-
         browserWindow.get(website);
+        browserWindow.manage().window().maximize();
         TestFunctions.waitForSite(browserWindow);
+
         //Login/Initial steps??
         TestFunctions.login(browserWindow);
 
