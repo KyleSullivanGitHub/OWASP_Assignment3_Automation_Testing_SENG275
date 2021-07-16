@@ -404,55 +404,6 @@ public class TestFunctions
         return browserWindow;
     }
 
-    // Incomplete
-
-//    public WebDriver logInGoogle(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
-//        //Create driver and browser for this particular test
-//        TestBrowser browser = chosenBrowser.createBrowser(chosenBrowser);
-//        WebDriver browserWindow = browser.makeDriver();
-//        browserWindow.manage().window().maximize();
-//
-//        browserWindow.get(website);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
-//
-//        Thread.sleep(1000);
-//
-//        WebElement accountBtn = browserWindow.findElement(By.id("navbarAccount"));
-//        accountBtn.click();
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.id("navbarLoginButton")).click();
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.id("loginButtonGoogle")).click();
-//
-//        Thread.sleep(2000);
-//
-//        WebElement username = browserWindow.findElement(By.id("identifierId"));
-//        username.click();
-//        username.sendKeys(email);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#identifierNext > div > button")).click();
-//
-//        Thread.sleep(1000);
-//
-//        WebElement pass = browserWindow.findElement(By.cssSelector("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-//        pass.click();
-//        pass.sendKeys(password);
-//
-//        Thread.sleep(1000);
-//
-//        browserWindow.findElement(By.cssSelector("#passwordNext > div > button")).click();
-//
-//        return browserWindow;
-//    }
 
     public static WebDriver addText(WebDriver browserWindow, String id, String text){
         WebElement elem = browserWindow.findElement(By.id(id));
@@ -460,22 +411,6 @@ public class TestFunctions
         elem.sendKeys(text);
 
         return browserWindow;
-    }
-
-    // Assuming logged in and on home page
-    public static void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
-
-        browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
-
-        Actions action = new Actions(browserWindow);
-        WebElement oAndPTab = browserWindow.findElement(By.cssSelector(
-                "#mat-menu-panel-0 > div > button:nth-child(2) > span"));
-        action.moveToElement(oAndPTab).perform();
-        Thread.sleep(1000);
-
-        browserWindow.findElement(By.xpath("/html/body/div[3]/div[3]/div/div/div/button[3]")).click();
-
     }
 
 }
