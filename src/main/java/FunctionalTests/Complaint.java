@@ -43,8 +43,8 @@ public class Complaint implements ITest
     private final String PhotoWallCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
     private final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
     private final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
-
-
+    private final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
+    private final String CustomerTextInComplaintCSS = "#mat-form-field-label-5 > mat-label";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -290,9 +290,9 @@ public class Complaint implements ITest
             sleep (1);
 
             // Check Place Holder for Customer
-            WebElement CustomerPlaceHolder = browserWindow.findElement (By.cssSelector ("#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)"));
+            WebElement CustomerPlaceHolder = browserWindow.findElement (By.cssSelector (CustomerPlaceHolderCSS));
             assertElement (CustomerPlaceHolder);
-            WebElement Customertext = browserWindow.findElement (By.cssSelector ("#mat-form-field-label-5 > mat-label"));
+            WebElement Customertext = browserWindow.findElement (By.cssSelector (CustomerTextInComplaintCSS));
             assertEquals (Customertext.getText (), "Customer");
             sleep (1);
 
@@ -421,6 +421,11 @@ public class Complaint implements ITest
         // Check Github
         WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
         assertElement (gitHub);
+        sleep (1);
+
+        // Check Deluxe Membership
+        WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
+        assertElement (DeluxeMembership);
         sleep (1);
     }
 
