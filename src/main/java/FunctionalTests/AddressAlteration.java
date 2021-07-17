@@ -69,12 +69,8 @@ public class AddressAlteration implements ITest
                 "mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
         Thread.sleep(1000);
 
-        // Create an account with random email and password
-        register(browserWindow, email, password, answer);
-        Thread.sleep(1000);
-
-        // Log in to created account
-        logIn(browserWindow, email, password);
+        // Log in. If no account, register
+        manualLogin(browserWindow);
         Thread.sleep(1000);
 
         // Navigate to saved addresses page
@@ -87,13 +83,14 @@ public class AddressAlteration implements ITest
                         "app-address/mat-card/div/button")).click();
         Thread.sleep(1000);
 
-        addText(browserWindow, "mat-input-9", country);
-        addText(browserWindow, "mat-input-10", name);
-        addText(browserWindow, "mat-input-11", phoneNumber);
-        addText(browserWindow, "mat-input-12", postalCode);
-        addText(browserWindow, "address", address);
-        addText(browserWindow, "mat-input-14", city);
-        addText(browserWindow, "mat-input-15", state);
+        browserWindow.findElement(By.id("mat-input-9")).sendKeys(country);
+        browserWindow.findElement(By.id("mat-input-10")).sendKeys(name);
+        browserWindow.findElement(By.id("mat-input-11")).sendKeys(phoneNumber);
+        browserWindow.findElement(By.id("mat-input-12")).sendKeys(postalCode);
+        browserWindow.findElement(By.id("address")).sendKeys(address);
+        browserWindow.findElement(By.id("mat-input-14")).sendKeys(city);
+        browserWindow.findElement(By.id("mat-input-15")).sendKeys(state);
+
         Thread.sleep(1000);
 
         browserWindow.findElement(By.id("submitButton")).click();
@@ -132,21 +129,8 @@ public class AddressAlteration implements ITest
         assertFalse(browserWindow.getPageSource().contains(city));
         assertFalse(browserWindow.getPageSource().contains(state));
     }
-
-    @BeforeMethod(onlyForGroups = {"hasDataProvider"})
-    public void BeforeMethod(Method method, Object[] testData)
-    {
-        testName.set(method.getName()+"_"+testData[0]);
-    }
-
-    @Override
-    public String getTestName()
-    {
-        return testName.get();
-    }
-
-    // Assuming logged in and on home page
-    public static void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
+/* Original
+    private void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
 
         browserWindow.findElement(By.id("navbarAccount")).click();
         Thread.sleep(1000);
@@ -159,5 +143,32 @@ public class AddressAlteration implements ITest
 
         browserWindow.findElement(By.xpath("/html/body/div[3]/div[3]/div/div/div/button[3]")).click();
 
+    }
+
+ */
+    //Optimized
+    private void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
+
+        String xPathPart1 = "/html/body/div[3]/div[";
+        String xPathPart2 = "]/div/div/div/button[";
+        String xPathPart3 = "]";
+
+        browserWindow.findElement(By.cssSelector(navPath)).click();
+        Thread.sleep(100);
+        browserWindow.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
+        Thread.sleep(100);
+        browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+    }
+
+    @BeforeMethod(onlyForGroups = {"hasDataProvider"})
+    public void BeforeMethod(Method method, Object[] testData)
+    {
+        testName.set(method.getName()+"_"+testData[0]);
+    }
+
+    @Override
+    public String getTestName()
+    {
+        return testName.get();
     }
 }

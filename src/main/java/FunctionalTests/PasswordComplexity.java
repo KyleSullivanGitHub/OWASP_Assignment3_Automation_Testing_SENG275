@@ -8,6 +8,7 @@ import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -20,7 +21,6 @@ import static org.testng.Assert.assertEquals;
 public class PasswordComplexity implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
@@ -62,7 +62,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS1_Password_Complexity_Valid(String chosenBrowser) throws IOException, InterruptedException
@@ -71,7 +70,7 @@ public class PasswordComplexity implements ITest
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
@@ -95,7 +94,7 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke"},
+            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -105,7 +104,7 @@ public class PasswordComplexity implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to the website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -134,7 +133,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS3_Password_Complexity_Invalid_Reg(String type, Object[] dataSet) throws InterruptedException
@@ -142,7 +140,7 @@ public class PasswordComplexity implements ITest
         //Create Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -165,7 +163,7 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity"},
+            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -174,7 +172,7 @@ public class PasswordComplexity implements ITest
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -203,7 +201,6 @@ public class PasswordComplexity implements ITest
             priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PCS5_Password_Complexity_Invalid_FP(String type, Object[] dataSet) throws InterruptedException
@@ -211,7 +208,7 @@ public class PasswordComplexity implements ITest
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -278,15 +275,21 @@ public class PasswordComplexity implements ITest
 
         //Navigate to Forgot Password
         TestFunctions.navToLogin(browserWindow);
-        browserWindow.findElement(By.className("forgot-pw")).click();
+        browserWindow.get(TestFunctions.website+"forgot-password");
+        try
+        {
+            //Fill out form
+            browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
+            browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
 
-        //Fill out form
-        browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
-        browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
-
-        //Activate Password Advice by toggling the slider.
-        browserWindow.findElement(By.className("mat-slide-toggle")).click();
-        browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String)dataSet[0]); //enter password
+            //Activate Password Advice by toggling the slider.
+            browserWindow.findElement(By.className("mat-slide-toggle")).click();
+            browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String) dataSet[0]); //enter password
+        }
+        catch (Exception ElementNotInteractableException)
+        {
+            assertTrue(false);
+        }
 
         //Test the password
         testPassAdvice(browserWindow, dataSet, xPathLoc);
@@ -338,6 +341,12 @@ public class PasswordComplexity implements ITest
     {
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
+    }
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
     }
 
     /**

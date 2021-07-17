@@ -21,7 +21,6 @@ import static org.testng.Assert.*;
 public class Login implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
@@ -38,9 +37,7 @@ public class Login implements ITest
     /**
      * Smoke test for valid inputs within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
-     * @param answer answer to security question text for test
+     * @param dataSet has email, password, and answer used to register
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -51,7 +48,7 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG1_Valid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -59,21 +56,27 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, email, password, password,true, answer);
 
-        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+        try
+        {
+            // Navigate to registration page and register for a new account
+            fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
+            Thread.sleep (1000);
 
-        Thread.sleep(1000);
+            // Login using email and password that was just registered with
+            loginWithRecentlyRegisteredAccount (dataSet, browserWindow);
 
-        browserWindow.findElement (By.id ("email")).sendKeys (email);
-        browserWindow.findElement (By.id ("password")).sendKeys (password);
-        Thread.sleep(500);
-
-        browserWindow.findElement (By.id ("loginButton")).click ();
-        Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
-        browserWindow.quit();
+            //Assertion to check we are at the right URL if logged in properly
+            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
+
+
 
     /**
      *Smoke tests a single invalid login attempt.
@@ -89,22 +92,30 @@ public class Login implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLog (browserWindow, "email", "pswrd");
-        Thread.sleep(2000);
-        // Check that error message appears. Keep for tmr since website is not working
-        WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-        Thread.sleep(1500);
-        assertEquals (message.getText (), "Invalid email or password.");
-        Thread.sleep(3000);
-        browserWindow.quit();
+        try {
+            // Method to call to fill out the login process
+            fillOutLog (browserWindow, "email", "pswrd");
+            Thread.sleep (2000);
+
+            // Get the error message
+            WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+            Thread.sleep (2000);
+
+            // Assert and check the error message to be appropriate
+            assertEquals (message.getText (), "Invalid email or password.");
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
     }
 
 
     /**
      * Smoke test for valid Google Login within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet has the email and password required
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -115,17 +126,25 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG3_Valid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG3_Valid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogle(browserWindow, email, password);
-        Thread.sleep (2000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
-        Thread.sleep (1000);
-        browserWindow.quit();
+        try {
+            // method call to fillout logging in using Google and the valid credential provided by the data provider
+            fillOutLogGoogle (browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            Thread.sleep (4);
+
+            // Assert proper logged in and directed back to the original website
+            assertEquals (browserWindow.getCurrentUrl (), "https://juice-shop.herokuapp.com/#/");
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
     }
 
 
@@ -143,15 +162,24 @@ public class Login implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogleInvalid (browserWindow, "email", "pswrd");
-        Thread.sleep(2000);
-        // Check that error message appears. Keep for tmr since website is not working
+        try {
+            // A method to fill out with invalid credential for Google login. A different method is created because of Google website behaviour
+            // In this case, Google stops when the email is wrong
 
-        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
-        Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn't find your Google Account");
-        Thread.sleep(3000);
-        browserWindow.quit();
+            fillOutLogGoogleInvalid (browserWindow, "email", "pswrd");
+            Thread.sleep (2000);
+
+            // Find the error message
+            WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+            Thread.sleep (1);
+
+            // Make sure you get the right error for invalid credentialsentered
+            assertEquals (message.getText (), "Couldn't find your Google Account");
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -159,12 +187,12 @@ public class Login implements ITest
     @Test(
             groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
             priority = 0,
-            dataProvider = "LG5_Input",
+            dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG5_Invalid_Input(String chosenBrowser, String email, String password, String answer) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -172,72 +200,88 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutReg(browserWindow, email, password, password,true, answer);
+        try{
 
-        browserWindow.findElement(By.cssSelector("#registerButton")).click();//click register button
+        // Method call to fill out registration
+        fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
+        Thread.sleep (1000);
 
-        Thread.sleep(1000);
+
+
         // Test case TC_LF_004: Invalid email and Valid password
-        browserWindow.findElement (By.id ("email")).sendKeys ("inv"+email);
-        browserWindow.findElement (By.id ("password")).sendKeys (password);
-        Thread.sleep(500);
+        loginWithRecentlyRegisteredAccount(dataSet,browserWindow);
+        Thread.sleep (2000);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
 
-        Thread.sleep(1500);
-        // Message Assertion?
+        // Get the error message
         WebElement message = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-        Thread.sleep(500);
+        Thread.sleep (1000);
+
+        // Assert to check if we get the right message
         assertEquals (message.getText (), "Invalid email or password.");
 
 
 
-        // Test case TC_LF_005: Valid email and Inalid password
-        browserWindow.findElement (By.id ("email")).clear ();
-        Thread.sleep(500);
-        browserWindow.findElement (By.id ("email")).sendKeys (email);
-        Thread.sleep(500);
-        browserWindow.findElement (By.id ("password")).clear ();
-        Thread.sleep(500);
-        browserWindow.findElement (By.id ("password")).sendKeys ("inv"+password);
-        Thread.sleep(500);
+        // Test case TC_LF_005: Valid email and Invalid password
+         validEmailandInvalidPasswordCase (dataSet, browserWindow);
+         Thread.sleep (1);
 
-        browserWindow.findElement (By.id ("loginButton")).click ();
-        // Message Assertion?
-        Thread.sleep(500);
+
+       // Get the error message
         WebElement message1 = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-        Thread.sleep(500);
+        Thread.sleep (1);
+
+        // check the error message and see if it is right
         assertEquals (message1.getText (), "Invalid email or password.");
 
         // Test case TC_LF_006: No credentials
 
+        loginNoCredentials (browserWindow);
+        Thread.sleep (1);
+
+        // Assert that the login
+        assertFalse (browserWindow.findElement (By.id ("loginButton")).isEnabled ());
+
+
+
+        //Todo how to test inactive credentials?
+        // Test case TC_LF_010: No credentials:
+
+        Thread.sleep (1);
+
+        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");}
+        finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
+    }
+
+    private void loginNoCredentials(WebDriver browserWindow) throws InterruptedException {
         browserWindow.findElement (By.id ("email")).clear ();
         browserWindow.findElement (By.id ("email")).sendKeys ("");
         browserWindow.findElement (By.id ("password")).clear ();
         browserWindow.findElement (By.id ("password")).sendKeys ("");
         Thread.sleep(500);
-
-
-        // Message Assertion?
-        assertTrue (browserWindow.findElement (By.id ("loginButton")).isDisplayed ());
-
-
-        // Test case TC_LF_010: No credentials: HOW?
-
-
-        Thread.sleep(1000);
-        assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");
-        browserWindow.quit();
     }
 
-
+    private void validEmailandInvalidPasswordCase(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
+        browserWindow.findElement (By.id ("email")).clear ();
+        Thread.sleep (1);
+        browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
+        Thread.sleep (1);
+        browserWindow.findElement (By.id ("password")).clear ();
+        Thread.sleep (1);
+        browserWindow.findElement (By.id ("password")).sendKeys ("inv"+ dataSet[1].toString ());
+        Thread.sleep (1);
+        browserWindow.findElement (By.id ("loginButton")).click ();
+    }
 
 
     /**
      *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
-     *  @param email email text for test
-     *  @param password password text for test
-     *  @param chosenBrowser browser used for that test
+     * @param dataSet has the email and password required
+     * @param chosenBrowser browser used for that test
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
@@ -248,40 +292,44 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG6_Invalid_Input(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG6_Invalid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
 
-        // Test case TC_LF_022 : Valid password and Invalid email
-        fillOutLogGoogleInvalid (browserWindow, "email", password);
-        Thread.sleep(2000);
+        try {
+            // Test case TC_LF_022 : Valid password and Invalid email
+
+            fillOutLogGoogleInvalid (browserWindow, "email", dataSet[1].toString ());
+            Thread.sleep (2000);
 
 
-        WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
-        Thread.sleep(1000);
-        assertEquals (message.getText (), "Couldn't find your Google Account");
-        Thread.sleep(500);
+            WebElement message = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div"));
+            Thread.sleep (1000);
+            assertEquals (message.getText (), "Couldn't find your Google Account");
+            Thread.sleep (500);
 
-        // Test case TC_LF_023 : Invalid password and valid email
-        fillOutLogGoogleInvalid (browserWindow, email, "inv"+password);
+            // Test case TC_LF_023 : Invalid password and valid email
+            fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv" + dataSet[1].toString ());
 
-        Thread.sleep(1000);
+            Thread.sleep (1000);
 
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        passwordInput.click ();
-        passwordInput.sendKeys ("inv"+password);
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
+            WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+            passwordInput.click ();
+            passwordInput.sendKeys ("inv" + dataSet[1].toString ());
+            Thread.sleep (500);
+            passwordInput.sendKeys (Keys.ENTER);
 
-        Thread.sleep(500);
-        WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
-        Thread.sleep(500);
-        // Message Assertion????
-        assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
-        Thread.sleep(3000);
-        browserWindow.quit();
+            Thread.sleep (500);
+            WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
+            Thread.sleep (500);
+            // Message Assertion????
+            assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -291,8 +339,7 @@ public class Login implements ITest
     /**
      * Smoke test for valid Login memory within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet has the email and password required
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -303,22 +350,20 @@ public class Login implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void LG7_Login_Memory(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void LG7_Login_Memory(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        fillOutLogGoogle(browserWindow, email, password);
+        try{
+        fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
         Thread.sleep (2000);
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
         Thread.sleep (2000);
         browserWindow.navigate ().back ();
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
-
-        Thread.sleep (2000);
-        browserWindow.quit();
 
       /*  Thread.sleep (2000);
 
@@ -333,6 +378,11 @@ public class Login implements ITest
 
         Thread.sleep (2000);
         browserWindow.quit();*/
+        }
+        finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -344,22 +394,13 @@ public class Login implements ITest
         int optionTry = 0;
         int optionTryLimit = 50;
 
-        browserWindow.get(website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        browserWindow.findElement(By.cssSelector("#navbarAccount")).click();
+        browserWindow.get(TestFunctions.website);
 
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
+        TestFunctions.waitForSite(browserWindow);
 
-        //Verify that the sign up page is accessible
-        WebElement signUpLink = browserWindow.findElement(By.cssSelector("#newCustomerLink"));
-        assertTrue(signUpLink.isEnabled());
-        signUpLink.click();
+        Thread.sleep (1);
 
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/register");
+        TestFunctions.navToReg (browserWindow);
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
@@ -392,13 +433,15 @@ public class Login implements ITest
 
         //give security question answer
         browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //enter answer
+        Thread.sleep (1000);
+        browserWindow.findElement(By.cssSelector("#registerButton")).click();
     }
 
 
     private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
@@ -407,7 +450,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -416,7 +459,7 @@ public class Login implements ITest
 
         browserWindow.findElement(By.id("email")).sendKeys(email); //enter email
         browserWindow.findElement(By.id ("password")).sendKeys(password); //enter password
-        browserWindow.findElement(By.id ("loginButton")).click (); //click on login
+        browserWindow.findElement(By.id (TestFunctions.logButton)).click (); //click on login
     }
 
 
@@ -424,7 +467,7 @@ public class Login implements ITest
     {
 
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
@@ -434,7 +477,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -447,7 +490,7 @@ public class Login implements ITest
 //        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
 //        Thread.sleep(500);
 
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
         emailUsr.click ();
 
@@ -474,7 +517,7 @@ public class Login implements ITest
     {
 
 
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         Thread.sleep(2500);
         browserWindow.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
@@ -484,7 +527,7 @@ public class Login implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -497,7 +540,7 @@ public class Login implements ITest
        // browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
         //Thread.sleep(500);
 
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
         emailUsr.click ();
         emailUsr.click ();
@@ -509,6 +552,16 @@ public class Login implements ITest
         Thread.sleep(500);
     }
 
+    private void loginWithRecentlyRegisteredAccount(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
+        browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
+        Thread.sleep (1000);
+
+        browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
+        Thread.sleep (1000);
+
+        browserWindow.findElement (By.id ("loginButton")).click ();
+        Thread.sleep (1000);
+    }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)

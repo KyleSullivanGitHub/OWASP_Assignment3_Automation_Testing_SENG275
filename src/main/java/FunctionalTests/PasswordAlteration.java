@@ -76,11 +76,11 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Create an account with random email and password
-        register(browserWindow, email, password, answer);
+        //register(browserWindow, email, password, answer);
         Thread.sleep(1000);
 
         // Log in to created account
-        logIn(browserWindow, email, password);
+        //logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
         // Initiate password reset
@@ -96,11 +96,11 @@ public class PasswordAlteration implements ITest
         browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
         Thread.sleep(1000);
 
-        addText(browserWindow, "currentPassword", password);
+        //addText(browserWindow, "currentPassword", password);
 
-        addText(browserWindow, "newPassword", newPass);
+        //addText(browserWindow, "newPassword", newPass);
 
-        addText(browserWindow, "newPasswordRepeat", newPass);
+        //addText(browserWindow, "newPasswordRepeat", newPass);
         Thread.sleep(1000);
 
         browserWindow.findElement(By.id("changeButton")).click();
@@ -114,7 +114,7 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Try to log in with new password
-        logIn(browserWindow, email, newPass);
+        //logIn(browserWindow, email, newPass);
         Thread.sleep(1000);
 
         // Check if logged in email = same email. If log in fails, test will fail
@@ -161,11 +161,11 @@ public class PasswordAlteration implements ITest
         Thread.sleep(1000);
 
         // Create an account with random email and password
-        register(browserWindow, email, password, answer);
+        //register(browserWindow, email, password, answer);
         Thread.sleep(1000);
 
         // Log in to created account
-        logIn(browserWindow, email, password);
+        //logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
         // Initiate password reset
@@ -181,9 +181,9 @@ public class PasswordAlteration implements ITest
         browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
         Thread.sleep(1000);
 
-        addText(browserWindow, "currentPassword", password);
+        //addText(browserWindow, "currentPassword", password);
 
-        addText(browserWindow, "newPassword", newPass);
+        //addText(browserWindow, "newPassword", newPass);
 
         browserWindow.findElement(By.id("newPasswordRepeat")).click();
         Thread.sleep(1000);

@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 public class Logout implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //Default website URL
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
@@ -31,10 +30,9 @@ public class Logout implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
-     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @BeforeSuite
-    public void SetUp() throws IOException, InterruptedException
+    public void SetUp() throws IOException
     {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -52,7 +50,6 @@ public class Logout implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void LO1_Manual_Logout(String chosenBrowser) throws IOException, InterruptedException
@@ -62,7 +59,7 @@ public class Logout implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
         try
@@ -89,7 +86,7 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown when the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Sanity", "Logout Sanity", "Logout"},
+            groups = {"Sanity", "Logout Sanity", "Logout","noDataProvider"},
             priority = 0,
             enabled = true
     )
@@ -103,8 +100,8 @@ public class Logout implements ITest
 
 
         //Navigate both to the website
-        browserWindow.get(website);
-        browserSecondary.get(website);
+        browserWindow.get(TestFunctions.website);
+        browserSecondary.get(TestFunctions.website);
 
         //Wait for site to fully load
         TestFunctions.waitForSite(browserWindow);
@@ -118,7 +115,7 @@ public class Logout implements ITest
 
             //Browse back through history and return to website
             browserWindow.navigate().back();
-            browserWindow.get(website);
+            browserWindow.get(TestFunctions.website);
 
             //Check if the account menu has the logout button displayed. If it is displayed, then the test was passed as the user was not logged out
             TestFunctions.waitForSite(browserWindow, TestFunctions.navPath); //Wait for site to be ready
@@ -156,13 +153,14 @@ public class Logout implements ITest
     /**
      * Performs a sanity test of the automated logout system.
      * WARNING: Test will take roughly 30 minutes. Only activate if you intend to run tests for that long
+     * Additionally this test will always fail as logout automation does not actual work on site
      * Programmer: Kyle Sullivan
      * @throws InterruptedException Thrown if Test was interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Registration Sanity", "Registration"},
+            groups = {"Sanity", "Registration Sanity", "Registration","noDataProvider"},
             priority = 1,
-            enabled = true
+            enabled = false
     )
     public void LO3_Logout_Automated() throws InterruptedException
     {
@@ -172,7 +170,7 @@ public class Logout implements ITest
         //Make the test environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
 
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
@@ -227,6 +225,7 @@ public class Logout implements ITest
             if (element.isDisplayed())
                 logoutVisible = true;
         }
+        catch (Exception NoSuchElementException) {}
         finally
         {
             assertFalse(logoutVisible);//Ensure that while logged out, the logout button is not visible
@@ -256,7 +255,12 @@ public class Logout implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

@@ -23,7 +23,6 @@ import static org.testng.Assert.*;
 public class Complaint implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
@@ -64,7 +63,7 @@ public class Complaint implements ITest
         browserWindow.manage().window().maximize();
 
         //Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         Thread.sleep(300);
@@ -106,7 +105,7 @@ public class Complaint implements ITest
 
         // C_005 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
 
-        Message.click ();;
+        Message.click ();
         Message.sendKeys ("I have a complaint");
 
         WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
@@ -148,7 +147,7 @@ public class Complaint implements ITest
         browserWindow.manage().window().maximize();
 
         //Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         Thread.sleep(300);
@@ -198,7 +197,7 @@ public class Complaint implements ITest
         browserWindow.manage().window().maximize();
 
         //Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         Thread.sleep(2500);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         Thread.sleep(300);
@@ -234,7 +233,7 @@ public class Complaint implements ITest
 
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
-        browserWindow.get (website);
+        browserWindow.get (TestFunctions.website);
         Thread.sleep(500);
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         Thread.sleep(500);
@@ -242,7 +241,7 @@ public class Complaint implements ITest
 
 
         //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector("#navbarLoginButton"));
+        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
@@ -254,7 +253,7 @@ public class Complaint implements ITest
         Thread.sleep(1000);
 
 
-        WebElement emailUsr = browserWindow.findElement(By.cssSelector ("#identifierId"));
+        WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
         emailUsr.click ();
 

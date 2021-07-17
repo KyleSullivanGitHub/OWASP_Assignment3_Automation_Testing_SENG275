@@ -27,9 +27,7 @@ import java.util.spi.ToolProvider;
 public class AccountSafety implements ITest
 {
     private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
 
-    TestBrowser environment;
     CreateEnvironment passBrowser;
 
 
@@ -37,7 +35,6 @@ public class AccountSafety implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
-     * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @BeforeSuite
     public void SetUp() throws IOException, InterruptedException
@@ -45,7 +42,6 @@ public class AccountSafety implements ITest
         //Create an environment to set up browser specific test environments
         passBrowser = new CreateEnvironment();
         //Create a test environment of the default browser
-        environment = passBrowser.createBrowser();
         //Create a constant account to use in tests
         TestFunctions.createAccount();
     }
@@ -62,9 +58,8 @@ public class AccountSafety implements ITest
     @Test(
             groups = {"Smoke","Password Security","Password Security Smoke","hasDataProvider"},
             priority = 0,
-            dataProvider = "AS1_Input",
+            dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void AS1_Login(String chosenBrowser) throws IOException, InterruptedException, UnsupportedFlavorException
@@ -77,7 +72,7 @@ public class AccountSafety implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
         //Navigate to Website
-        browserWindow.get(website);
+        browserWindow.get(TestFunctions.website);
         //Delay until site is ready
         TestFunctions.waitForSite(browserWindow);
 
@@ -111,7 +106,7 @@ public class AccountSafety implements ITest
             //Confirm that the clipboard does not contain the password
             assertNotEquals(cb.getData(DataFlavor.stringFlavor), TestFunctions.constPassword);
 
-            browserWindow.findElement(By.id("loginButton")).click(); //click on login
+            browserWindow.findElement(By.id(TestFunctions.logButton)).click(); //click on login
 
         }
         finally
