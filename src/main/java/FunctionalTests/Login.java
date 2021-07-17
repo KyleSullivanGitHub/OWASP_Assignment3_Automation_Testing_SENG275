@@ -33,6 +33,13 @@ public class Login implements ITest
     private final String loginErrorMessageText = "Invalid email or password.";
     private final String GoogleErrMessageEmailCSS = "#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div";
     private final String GoogleErrMessageEmailText = "Couldn't find your Google Account";
+    private final String mainLogoCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img";
+    private final String searchBarCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2)";
+    private final String searchBarInputFieldCSS="#mat-input-0";
+    private final String chooseLanguageBtnCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base";
+    private  final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
+    private final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
+
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -381,7 +388,7 @@ public class Login implements ITest
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Regression","Login","Login_Regression","hasNoDataProvider"},
+            groups = {"Regression","Login","Login_Regression","hasDataProvider"},
             priority = 0,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
@@ -495,8 +502,36 @@ public class Login implements ITest
     private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus){
 
         //check Main logo
-        WebElement mainPage = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img"));
+        WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
         assertEquals( mainPage.getAttribute ("class"),"logo");
+        assertElement (mainPage);
+
+        // Check Search bar
+        WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
+        assertElement (searchBar);
+        searchBar.click ();
+        WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));
+        assertElement (searchBarInputField);
+
+        // Check account button
+        WebElement accountMenu = browserWindow.findElement(By.cssSelector(TestFunctions.navPath));
+        assertElement (accountMenu);
+
+        // Check Choose Language
+        WebElement chooselanguage = browserWindow.findElement (By.cssSelector (chooseLanguageBtnCSS));
+        assertElement (chooselanguage);
+
+        // Check Side menu
+        WebElement sideMenu = browserWindow.findElement (By.cssSelector (sideMenuCSS));
+        assertElement (sideMenu);
+        sideMenu.click ();
+
+        if (lgStatus){
+
+        }else{
+
+        }
+
 
     }
     private void assertElement(WebElement element){
@@ -590,7 +625,7 @@ public class Login implements ITest
         sleep (2);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
-       sleep (1);
+        sleep (1);
 
 
 
@@ -605,8 +640,7 @@ public class Login implements ITest
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
         sleep (1);
-//        browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
-//        Thread.sleep(500);
+
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         sleep (1);

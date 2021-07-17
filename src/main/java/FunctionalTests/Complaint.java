@@ -26,6 +26,15 @@ public class Complaint implements ITest
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
+
+    private  final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
+    private final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
+    private final String complaintMessageToSend = "I have a complaint";
+    private final String feedbackFromSiteForComplaint = "Customer support will get in touch with you soon! Your complaint reference is";
+    private final String complaintConfirmationCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > div.confirmation";
+    private final String errorMessageToProvideText = "Please provide a text.";
+
+
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -44,8 +53,7 @@ public class Complaint implements ITest
      *Smoke tests for Valid use of Complaint feature
      * Includes test cases C_001,C_002,C_003,C_005
      *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet provides email and password to login
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -56,7 +64,7 @@ public class Complaint implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void CO1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void CO1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -64,60 +72,63 @@ public class Complaint implements ITest
 
         //Website
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
-
+        TestFunctions.waitForSite(browserWindow);
 
 
         // C_001 test case: Verify  'Complaints' field is not visible before login
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep(500);
 
         try {
-            WebElement Complaint = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span"));
-            assertFalse (Complaint.isDisplayed ());
-        }catch (Exception e){
-            assertFalse (false);
+
+            try {
+                WebElement sideMenu = browserWindow.findElement(By.cssSelector (sideMenuCSS));
+                sideMenu.clear ();
+                sleep (1);
+                WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
+                assertFalse (Complaint.isDisplayed ());
+            }catch (Exception e){
+                assertFalse (false);
+            }
+
+
+            // C_002 test case: Verify navigation to complaint page
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            Thread.sleep (1000);
+            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
+            Thread.sleep (1000);
+            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
+            assertTrue (Complaint.isDisplayed ());
+            Thread.sleep (1000);
+
+
+            // C_003 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
+            Complaint.click ();
+            WebElement customer = browserWindow.findElement (By.cssSelector ("#mat-input-1"));
+            assertTrue (customer.isDisplayed ());
+
+            WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
+            assertTrue (Message.isDisplayed ());
+
+            WebElement Invoice = browserWindow.findElement (By.cssSelector ("#complaint-form > div > label"));
+            assertEquals (Invoice.getText (), "Invoice:");
+
+            // C_005 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
+
+            Message.click ();
+            Message.sendKeys (complaintMessageToSend);
+
+            WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
+            submitButton.click ();
+            Thread.sleep (500);
+
+            WebElement complaintConfirmation = browserWindow.findElement (By.cssSelector (complaintConfirmationCSS));
+            assertTrue (complaintConfirmation.getText ().startsWith (feedbackFromSiteForComplaint));
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
 
 
-        // C_002 test case: Verify navigation to complaint page
-        loginForMe (browserWindow,email,password);
-        Thread.sleep (1000);
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep (1000);
-        WebElement Complaint = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span"));
-        assertTrue (Complaint.isDisplayed ());
-        Thread.sleep (1000);
-
-
-        // C_003 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
-        Complaint.click ();
-        WebElement customer = browserWindow.findElement (By.cssSelector ("#mat-input-1"));
-        assertTrue (customer.isDisplayed ());
-
-        WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
-        assertTrue (Message.isDisplayed ());
-
-        WebElement Invoice = browserWindow.findElement (By.cssSelector ("#complaint-form > div > label"));
-        assertEquals (Invoice.getText (), "Invoice:");
-
-        // C_005 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
-
-        Message.click ();
-        Message.sendKeys ("I have a complaint");
-
-        WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
-        submitButton.click ();
-        Thread.sleep (500);
-
-        WebElement complaintConfirmation = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > div.confirmation"));
-        assertTrue (complaintConfirmation.getText ().startsWith ("Customer support will get in touch with you soon! Your complaint reference is"));
-
-
-        Thread.sleep(2000);
-        browserWindow.quit();
     }
 
 
@@ -128,8 +139,7 @@ public class Complaint implements ITest
      *Smoke (also included in Sanity) test for Invalid use of Complaint feature
      * Includes test cases C_006
      *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet provides email and password to login
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -140,7 +150,7 @@ public class Complaint implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void CO2_Invalid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void CO2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -148,28 +158,26 @@ public class Complaint implements ITest
 
         //Website
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
+        TestFunctions.waitForSite(browserWindow);
 
 
-
-        // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
-        loginForMe (browserWindow,email,password);
-        Thread.sleep (1000);
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep (1000);
-        WebElement Complaint = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span"));
-        Complaint.click ();
-        Thread.sleep (1000);
-
-
-        WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
-        assertFalse (submitButton.isEnabled ());
+        try {
+            // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            sleep (1);
+            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
+            sleep (1);
+            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
+            Complaint.click ();
+            sleep (1);
 
 
-        Thread.sleep(2000);
-        browserWindow.quit();
+            WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
+            assertFalse (submitButton.isEnabled ());
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
 
@@ -178,8 +186,7 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet provides email and password to login
      * @param chosenBrowser browser used for that test
      */
     @Test(
@@ -190,7 +197,7 @@ public class Complaint implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void CO3_Invalid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void CO3_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -198,45 +205,106 @@ public class Complaint implements ITest
 
         //Website
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+
+            // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            sleep (1);
+            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
+            sleep (1);
+            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
+            Complaint.click ();
+            sleep (1);
 
 
+            WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
+            Message.click ();
 
-        // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
-        loginForMe (browserWindow,email,password);
-        Thread.sleep (1000);
-        browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click ();
-        Thread.sleep (1000);
-        WebElement Complaint = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span"));
-        Complaint.click ();
-        Thread.sleep (1000);
+            // Click on the screen and leave Message empty, to make sure it is mandatory (gives a message to provide a text)
 
+            browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content")).click ();
 
-        WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
-        Message.click ();
+            // Error message to provide text
+            WebElement errorMessage = browserWindow.findElement (By.id ("mat-error-0"));
+            assertEquals (errorMessage.getText (), errorMessageToProvideText);
 
-        // Click on the screen and leave Message empty, to make sure it is mandatory (gives a message to provide a text)
-
-        browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content")).click ();
-
-        // Error message to provide text
-        WebElement errorMessage = browserWindow.findElement (By.id ("mat-error-0"));
-        assertEquals (errorMessage.getText (), "Please provide a text.");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
 
 
-        Thread.sleep(1000);
-        browserWindow.quit();
+    }
+
+
+    /**
+     * Regression test for Login feature within several different browsers.
+     * Considers test cases TC_C_007, TC_C_008
+     * Programmer: Seyedmehrad Adimi
+     * @param chosenBrowser browser used for that test
+     */
+    @Test(
+            groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},
+            priority = 0,
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    private void CO_Regression(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException {
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        //Website setup
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+
+//        try {
+//
+//            /* Test cases TC_LF_016, TC_LF_017: Verify the Page Heading, Page Title and Page URL of Login page, Verify the UI of the Login page*/
+//            TestFunctions.navToLogin (browserWindow);
+//            testRegressionForMe (browserWindow, false);
+//
+//            /* Test case TC_LF_008: Verify E-Mail Address and Password text fields in the Login page have the placeholder text*/
+//
+//            WebElement emailInputField = browserWindow.findElement (By.id ("email"));
+//            emailInputField.click ();
+//            assertEquals (emailInputField.getAttribute ("aria-label"), "Text field for the login email");
+//            assertElement (emailInputField);
+//
+//
+//            WebElement passwordInputField = browserWindow.findElement (By.id ("password"));
+//            passwordInputField.click ();
+//            assertEquals (passwordInputField.getAttribute ("aria-label"), "Text field for the login password");
+//            assertElement (passwordInputField);
+//
+//
+//            /* Test case TC_LF_007: Verify logging into the Application using Keyboard keys (Tab and Enter)*/
+//            // Register first since the accounts get deleted regularly.
+//            fillOutReg (browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (), true, dataSet[2].toString ());
+//            sleep (1);
+//
+//        }finally {
+//            Thread.sleep(TestFunctions.endTestWait);
+//            browserWindow.quit();
+//        }
+
+
     }
 
 
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         browserWindow.get (TestFunctions.website);
-        Thread.sleep(500);
+        sleep (1);
+
         browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
+        sleep (1);
 
 
 
@@ -244,19 +312,18 @@ public class Complaint implements ITest
         WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
-
-        Thread.sleep(500);
+        sleep (1);
 
 
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        Thread.sleep(1000);
+        sleep (1);
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        Thread.sleep(1000);
+        sleep (1);
         Login.emailPassEnter (browserWindow, email, password, emailUsr);
-        Thread.sleep(1000);
+        sleep (1);
     }
 
     private static void sleep(int a) throws InterruptedException {
