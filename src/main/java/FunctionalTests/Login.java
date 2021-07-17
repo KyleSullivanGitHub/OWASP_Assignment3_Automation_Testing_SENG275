@@ -34,13 +34,17 @@ public class Login implements ITest
     private final String GoogleErrMessageEmailCSS = "#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div";
     private final String GoogleErrMessageEmailText = "Couldn't find your Google Account";
     private final String mainLogoCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img";
-    private final String searchBarCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2)";
-    private final String searchBarInputFieldCSS="#mat-input-0";
+    private final String searchBarCSS="#searchQuery > span > mat-icon.mat-icon.notranslate.mat-ripple.mat-search_icon-search.ng-tns-c242-1.material-icons.mat-icon-no-color";
+    private final String searchBarInputFieldCSS="#searchQuery";
     private final String chooseLanguageBtnCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base";
     private  final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
     private final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
-
-
+    private final String cusFeedbackCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(6)";
+    private final String AboutUsCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(9)";
+    private final String scoreBoardCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(10)";
+    private final String PhotoWallCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
+    private final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
+    private final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -408,6 +412,7 @@ public class Login implements ITest
 
             /* Test cases TC_LF_016, TC_LF_017: Verify the Page Heading, Page Title and Page URL of Login page, Verify the UI of the Login page*/
             TestFunctions.navToLogin (browserWindow);
+            sleep (2);
             testRegressionForMe (browserWindow,false);
 
             /* Test case TC_LF_008: Verify E-Mail Address and Password text fields in the Login page have the placeholder text*/
@@ -444,9 +449,10 @@ public class Login implements ITest
 
             /* Test case TC_LF_011: Verify the number of unsuccessful login attempts  */
 
-
-            WebElement accountMenu = browserWindow.findElement (By.cssSelector (TestFunctions.navbarLogin));
+            sleep (2);
+            WebElement accountMenu = browserWindow.findElement (By.cssSelector (TestFunctions.navPath));
             accountMenu.click ();
+            sleep (2);
             WebElement logoutBtn = browserWindow.findElement (By.id ("navbarLogoutButton"));
             logoutBtn.click ();
 
@@ -458,7 +464,7 @@ public class Login implements ITest
 
         }
         finally {
-            Thread.sleep(TestFunctions.endTestWait);
+            //Thread.sleep(TestFunctions.endTestWait);
             browserWindow.quit();
         }
     }
@@ -499,17 +505,19 @@ public class Login implements ITest
     }
 
 
-    private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus){
+    private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
 
         //check Main logo
         WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
         assertEquals( mainPage.getAttribute ("class"),"logo");
         assertElement (mainPage);
 
+
         // Check Search bar
         WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
         assertElement (searchBar);
         searchBar.click ();
+        sleep (2);
         WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));
         assertElement (searchBarInputField);
 
@@ -521,19 +529,66 @@ public class Login implements ITest
         WebElement chooselanguage = browserWindow.findElement (By.cssSelector (chooseLanguageBtnCSS));
         assertElement (chooselanguage);
 
+
         // Check Side menu
         WebElement sideMenu = browserWindow.findElement (By.cssSelector (sideMenuCSS));
         assertElement (sideMenu);
-        sideMenu.click ();
+
 
         if (lgStatus){
+            sideMenu.click ();
+            sleep (1);
+
+            presentInBothLoginAndLogoutRegression (browserWindow);
+
+            // Check Complaint
+            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
+            assertElement (Complaint);
+            sleep (1);
+
+
+
+
 
         }else{
-
+            sideMenu.click ();
+            sleep (1);
+            presentInBothLoginAndLogoutRegression (browserWindow);
         }
+        WebElement bodyClick = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > div.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown"));
+        bodyClick.click ();
 
 
+        sleep (1);
     }
+
+    private void presentInBothLoginAndLogoutRegression(WebDriver browserWindow) throws InterruptedException {
+        // Check Customer Feedback
+        WebElement CusFeedback = browserWindow.findElement (By.cssSelector (cusFeedbackCSS));
+        assertElement (CusFeedback);
+        sleep (1);
+
+        // Check About Us
+        WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSS));
+        assertElement (AboutUs);
+        sleep (1);
+
+        // Check Photo Wall
+        WebElement PhotoWall = browserWindow.findElement (By.cssSelector (PhotoWallCSS));
+        assertElement (PhotoWall);
+        sleep (1);
+
+        // Check Score Board
+        WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSS));
+        assertElement (scoreBoard);
+        sleep (1);
+
+        // Check Github
+        WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
+        assertElement (gitHub);
+        sleep (1);
+    }
+
     private void assertElement(WebElement element){
         assertTrue (element.isDisplayed ());
         assertTrue (element.isEnabled ());
@@ -549,9 +604,8 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
-        TestFunctions.waitForSite(browserWindow);
 
-        sleep (1);
+        sleep (2);
 
         TestFunctions.navToReg (browserWindow);
 
@@ -654,7 +708,7 @@ public class Login implements ITest
         emailUsr.sendKeys (email);
         sleep(1);
         emailUsr.sendKeys (Keys.ENTER);
-        sleep(1);
+        sleep(2);
 
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
         sleep(1);
