@@ -48,7 +48,7 @@ public class AddressAlteration implements ITest
     /**
      * Smoke test for valid address addition
      * Programmer: Salam Fazil
-     * TODO: params
+     * @param chosenBrowser
      */
     @Test(
             groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
@@ -56,8 +56,7 @@ public class AddressAlteration implements ITest
             dataProviderClass = Test_Data.class
     )
 
-    public void AA1_validAddressAddition(String chosenBrowser) throws IOException, InterruptedException
-    {
+    public void AA1_validAddressAddition(String chosenBrowser) throws IOException, InterruptedException {
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -97,8 +96,7 @@ public class AddressAlteration implements ITest
             dataProviderClass = Test_Data.class
     )
 
-    public void AA2_invalidAddressAddition(String chosenBrowser) throws IOException, InterruptedException
-    {
+    public void AA2_invalidAddressAddition(String chosenBrowser) throws IOException, InterruptedException {
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -141,8 +139,7 @@ public class AddressAlteration implements ITest
             dataProviderClass = Test_Data.class
     )
 
-    public void AA3_addressRemoval(String chosenBrowser) throws IOException, InterruptedException
-    {
+    public void AA3_addressRemoval(String chosenBrowser) throws IOException, InterruptedException {
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -188,8 +185,7 @@ public class AddressAlteration implements ITest
             dataProviderClass = Test_Data.class
     )
 
-    public void AA4_invalidAddressAddition(String chosenBrowser) throws IOException, InterruptedException
-    {
+    public void AA4_invalidAddressAddition(String chosenBrowser) throws IOException, InterruptedException {
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();

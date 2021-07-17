@@ -20,26 +20,69 @@ public class PasswordAlteration implements ITest
     private ThreadLocal<String> testName = new ThreadLocal<>();
     String website = "https://juice-shop.herokuapp.com"; //default website URL
     TestBrowser environment;
-    CreateEnvironment passBrowser = new CreateEnvironment();
+    CreateEnvironment passBrowser;
+    String newPassword;
 
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
     @BeforeSuite
-    public void SetUp() throws IOException
-    {
+    public void SetUp() throws IOException, InterruptedException {
+        passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
+        newPassword = "123456";
+
+        TestFunctions.createAccount();
     }
 
     /*
     TODO:
-    PA1
-    PA2
-    PA3
-    (password recovery tests)
+    PA1 - Smoke - Valid password recovery from log in - STATUS: Not done
+    PA2 - Smoke - Invalid password recovery from log in - STATUS: Not done
+    PA3 - Sanity - Valid password reset - STATUS: Not done
+    PA4 - Sanity - Invalid password reset - STATUS: Not done
+    PA - Regression - STATUS: Not done, complete at end
      */
 
+    /**
+     * Smoke test for valid password recovery from log in page
+     * Programmer: Salam Fazil
+     * @param chosenBrowser
+     */
+    @Test(
+            groups = {"Smoke","PasswordAlteration","PA_Smoke","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void PA1_validPasswordReset(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        // Navigate to 'forgot password' page:
+        // 1. Go to log in page
+        // 2. Click on 'forgot your password?'
+        TestFunctions.navToLogin(browserWindow);
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/" +
+                "mat-sidenav-content/app-login/div/mat-card/div/a")).click();
+
+        browserWindow.findElement(By.id("email")).sendKeys(constEmail);
+        browserWindow.findElement(By.id("securityAnswer")).sendKeys(constAnswer);
+        browserWindow.findElement(By.id("newPassword")).sendKeys(newPassword);
+        browserWindow.findElement(By.id("newPasswordRepeat")).sendKeys(newPassword);
+
+        browserWindow.findElement(By.id("resetButton")).click();
+
+    }
 
     /**
      * Sanity test for valid password reset
