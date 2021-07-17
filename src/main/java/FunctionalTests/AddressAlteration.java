@@ -38,11 +38,11 @@ public class AddressAlteration implements ITest
 
     /*
     TODO:
-    AA1 - Smoke - Valid Addition - STATUS: Not Done
-    AA2 - Smoke - Invalid Addition - STATUS: Not Done
-    AA3 - Smoke - Address Removal - STATUS: Not Done
-    AA4 - Sanity - Invalid Addition - STATUS: Not Done
-    AA regression - STATUS: Not Done
+    AA1 - Smoke - Valid Addition - STATUS: COMPLETED (need review)
+    AA2 - Smoke - Invalid Addition - STATUS: COMPLETED (need review)
+    AA3 - Smoke - Address Removal - STATUS: Mostly done, need to ask a few questions
+    AA4 - Sanity - Invalid Addition - STATUS: COMPLETED (need review)
+    AA regression - STATUS: Not Done, complete at the end
     */
 
     /**
