@@ -69,12 +69,16 @@ public class AddressAlteration implements ITest
                 "mat-raised-button.mat-button-base.mat-primary.ng-star-inserted")).click();
         Thread.sleep(1000);
 
-        // Log in. If no account, register
-        manualLogin(browserWindow);
+        // Create an account with random email and password
+        //register(browserWindow, email, password, answer);
+        Thread.sleep(1000);
+
+        // Log in to created account
+        //logIn(browserWindow, email, password);
         Thread.sleep(1000);
 
         // Navigate to saved addresses page
-        navigateToSavedAddresses(browserWindow);
+        //navigateToSavedAddresses(browserWindow);
         Thread.sleep(1000);
 
         // Initiate valid address addition
@@ -82,15 +86,16 @@ public class AddressAlteration implements ITest
                 "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/" +
                         "app-address/mat-card/div/button")).click();
         Thread.sleep(1000);
+/*
+        addText(browserWindow, "mat-input-9", country);
+        addText(browserWindow, "mat-input-10", name);
+        addText(browserWindow, "mat-input-11", phoneNumber);
+        addText(browserWindow, "mat-input-12", postalCode);
+        addText(browserWindow, "address", address);
+        addText(browserWindow, "mat-input-14", city);
+        addText(browserWindow, "mat-input-15", state);
 
-        browserWindow.findElement(By.id("mat-input-9")).sendKeys(country);
-        browserWindow.findElement(By.id("mat-input-10")).sendKeys(name);
-        browserWindow.findElement(By.id("mat-input-11")).sendKeys(phoneNumber);
-        browserWindow.findElement(By.id("mat-input-12")).sendKeys(postalCode);
-        browserWindow.findElement(By.id("address")).sendKeys(address);
-        browserWindow.findElement(By.id("mat-input-14")).sendKeys(city);
-        browserWindow.findElement(By.id("mat-input-15")).sendKeys(state);
-
+ */
         Thread.sleep(1000);
 
         browserWindow.findElement(By.id("submitButton")).click();
@@ -146,7 +151,7 @@ public class AddressAlteration implements ITest
     }
 
  */
-    //Optimized
+   /*Optimized
     private void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
 
         String xPathPart1 = "/html/body/div[3]/div[";
@@ -159,6 +164,7 @@ public class AddressAlteration implements ITest
         Thread.sleep(100);
         browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
     }
+    */
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)

@@ -2,9 +2,7 @@ package FunctionalTests;
 
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -15,6 +13,8 @@ import java.lang.reflect.Method;
 
 import static org.testng.Assert.*;
 
+//TODO UTTERLY FUCKED
+
 
 public class NavigationMenu implements ITest
 {
@@ -24,15 +24,33 @@ public class NavigationMenu implements ITest
     CreateEnvironment passBrowser;
     String xPathNavMenu = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[1]";
     String xPathNavMenuCommon = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/";
-    String xPathNavMenu2 = "]";
-    String xPathNavMenu3 = "/div/span";
+    String xPathNavMenuEnd = "]";
+    String xPathNavMenuDesc = "/div/span";
 
     String xPathAboutButtons1 = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-about/div/mat-card/section/div/a[";
     String xPathAboutButtons2 = "]/button";
     Dimension smallScreen = new Dimension(500,1000);
 
-    Object[] menuOptions;
+    Object[][] menuOptions = new Object[][]{
+            {"Login"},
+            {"",TestFunctions.googleEmail,"Logout"},
+            {"","Orders & Payment","Privacy & Security"},
+            {"","Order History","Recycle","My saved addresses","My Payment Options","Digital Wallet"},
+            {"","Privacy Policy","Request Data Export","Request Data Erasure","Change Password","2FA Configuration","Last Login IP"},
+            {"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall","Deluxe Membership"}
+    };
     Object[] URLConfirm;
+
+    Object[] paths = new Object[]{
+            "div/a",
+            "div/a[",
+            "div/mat-list-item[",
+            "div/div/a[",
+            "div/div[2]/a[",
+            "a[",
+    };
+
+    public static Object[][] state;
 
 
     /**
@@ -51,7 +69,7 @@ public class NavigationMenu implements ITest
             priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
-            enabled = true
+            enabled = false
     )
 
     public void NM1_Nav_Menu_Basic_Functionality(String chosenBrowser) throws InterruptedException, IOException
@@ -64,14 +82,16 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+
+        state = new Object[][]{
+                {false},
+                {false},
+                {null,true,false,false,true,true,false},
+        };
+
         try
         {
-
-            TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);//click register button
-            checkNav(browserWindow);
-            TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon +1+ xPathNavMenu2,true);//click register button
-            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + "contact");
+            checkNavLinks(browserWindow);
         }
         finally
         {
@@ -83,7 +103,7 @@ public class NavigationMenu implements ITest
     @Test(
             groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
             priority = 0,
-            enabled = true
+            enabled = false
     )
     public void NM2_Nav_Menu_Logged_Out_Small() throws InterruptedException
     {
@@ -94,18 +114,19 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        menuOptions = new Object[]{"Login","Customer Feedback","About Us","Photo Wall"};
-        URLConfirm = new Object[]{"login","contact","about","photo-wall"};
+
+        state = new Object[][]{
+                {true},
+                {false},
+                {null,true,false,false,true,true,false},
+        };
 
         try
         {
 
-            TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
             checkNav(browserWindow);
-            TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/a",true);
-            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + URLConfirm[0]);
-            checkNavLinks(browserWindow);
 
+            /*
             Object[] links = new Object[]{"","","","","","",};
             TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
             TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon + 2 + xPathNavMenu2,true);
@@ -117,6 +138,8 @@ public class NavigationMenu implements ITest
                 browserWindow.get(TestFunctions.website + "about");
                 TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu);
             }
+
+             */
         }
         finally
         {
@@ -128,86 +151,32 @@ public class NavigationMenu implements ITest
     @Test(
             groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
             priority = 0,
-            enabled = true
+            enabled = false
     )
     public void NM3_Nav_Menu_Logged_In_Small() throws InterruptedException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().setSize(smallScreen);
+        browserWindow.manage().window().maximize();
         //Go to Website
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
-        URLConfirm = new Object[]{"","contact","about","photo-wall"};
 
-        //xPathNavMenu2 + xPathNavMenu3
-        String loginElement = "/div/a";
-        String loggedInElement = "/div/a["; // 1,2
-        String catagoryElement = "/div/mat-list-item["; //1 2
-        String listElement1 = "/div/div/a["; // 1, 5
-        String listElement2 = "/div/div[2]/a["; //1,6
-
-
-            //set 1: State
-                //check login " state
-            // set 2: State
-                for(int set2 = 1; set2 <= 3; set2++)
-                {
-
-                }
-
-
-            for(int element = 1; element < setLength; element++ )
-            {
-                if(//set 2 is active)
-            }
-
-
-
-        /*
-         * Type 1: !LG | !PR !LO | !OP !PS | !OH !RE !MSA !MPO !DW | !PP !RDE1 !RDE2 !CP !SF !LLIP | CF !CM !SC AU PW !DM
-         * Type 2:  LG | !PR !LO | !OP !PS | !OH !RE !MSA !MPO !DW | !PP !RDE1 !RDE2 !CP !SF !LLIP | CF !CM !SC AU PW !DM
-         * Type 3: !LG |  PR  LO .  OP  PS .  OH  RE  MSA  MPO  DW .  PP  RDE1  RDE2  CP  SF  LLIP | CF  CM  SC AU PW  DM
-         * Type 4: !LG | !PR !LO | !OP !PS | !OH !RE !MSA !MPO !DW | !PP !RDE1 !RDE2 !CP !SF !LLIP | CF !CM !SC AU PW !DM
-         * Type 5: !LG | !PR !LO | !OP !PS | !OH !RE !MSA !MPO !DW | !PP !RDE1 !RDE2 !CP !SF !LLIP | CF  CM  SC AU PW  DM
-         *
-         */
+        state = new Object[][]{
+                {false},
+                {true},
+                {null,true,true,true,true,true,true},
+        };
 
 
 
         try
-        {              //login       div/a/div/span
-            //profile                div/a[1]/div/span
-            //orders and payment     div/mat-list-item[1]/div/span
-                //order History      div/div/a[1]/div/span
-                //Recycle            div/div/a[2]/div/span
-                //My saved addresses div/div/a[3]/div/span
-                //my payment options div/div/a[4]/div/span
-                //digital wallet     div/div/a[5]/div/span
-            //privacy and security   div/mat-list-item[2]/div/span
-                //privacy Policy     div/div[2]/a[1]/div/span
-               //request Data export div/div[2]/a[2]/div/span
-             //request data Erasure  div/div[2]/a[3]/div/span
-                //chagne password    div/div[2]/a[4]/div/span
-                //SFA configuration  div/div[2]/a[5]/div/span
-                //Last Login IP      div/div[2]/a[6]/div/span
-            //logout                 div/a[2]/div/span
-
-
-            //customer feedback      a[1]/div/span
-            //complaint
-            //Support Chat
-            //about us
-            //photo wall
-            // deluxe membership
+        {
             TestFunctions.login(browserWindow);
-            TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
+            browserWindow.manage().window().setSize(smallScreen);
             checkNav(browserWindow);
-            TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/a",true);
-            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + URLConfirm[0]);
-            checkNavLinks(browserWindow);
+
         }
         finally
         {
@@ -219,7 +188,7 @@ public class NavigationMenu implements ITest
     @Test(
             groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
             priority = 0,
-            enabled = true
+            enabled = false
     )
     public void NM4_Nav_Menu_Logged_Out_FullScreen() throws InterruptedException
     {
@@ -230,8 +199,13 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
-        URLConfirm = new Object[]{"","contact","about","photo-wall"};
+
+        state = new Object[][]{
+                {false},
+                {false},
+                {null,true,false,false,true,true,false},
+        };
+
         try
         {
             checkNavLinks(browserWindow);
@@ -246,7 +220,7 @@ public class NavigationMenu implements ITest
     @Test(
             groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
             priority = 0,
-            enabled = true
+            enabled = false
     )
     public void NM5_Nav_Menu_Logged_In_FullScreen() throws InterruptedException
     {
@@ -257,8 +231,13 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall","Deluxe Membership"};
-        URLConfirm = new Object[]{"","contact","complain","chatbot","about","photo-wall","deluxe-membership"};
+
+        state = new Object[][]{
+                {false},
+                {false},
+                {null,true,true,true,true,true,true},
+        };
+
         try
         {
             TestFunctions.login(browserWindow);
@@ -271,27 +250,105 @@ public class NavigationMenu implements ITest
         }
     }
 
-    public void checkNav(WebDriver browserWindow)
-    {
-        if(menuOptions[0].equals("Login"))
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/a/div/span")).getText(),menuOptions[0]);
-        int limit = menuOptions.length-1;
-        for(int i = 1; i <= limit; i++)
-        {
-            assertEquals(browserWindow.findElement(By.xpath(xPathNavMenuCommon + i + xPathNavMenu2 + xPathNavMenu3)).getText(),menuOptions[i]);
-        }
-    }
-
     public void checkNavLinks(WebDriver browserWindow) throws InterruptedException
     {
-        int limit = URLConfirm.length-1;
-        for(int i = 1; i <= limit; i++)
+        checkNav(browserWindow);
+    }
+
+    public void checkNav(WebDriver browserWindow) throws InterruptedException
+    {
+
+        WebElement navElement;
+        TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
+        if((boolean)state[0][0])
         {
-            TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
-            checkNav(browserWindow);
-            TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon + i + xPathNavMenu2,true);
-            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + URLConfirm[i]);
+            try
+            {
+                navElement = browserWindow.findElement(By.xpath(xPathNavMenuCommon + paths[0] +xPathNavMenuDesc));
+                if (navElement.isDisplayed())
+                    assertEquals(navElement.getText(), menuOptions[0][0]);
+            } catch (NoSuchElementException exception)
+            {
+                assertFalse((Boolean) state[0][0]);
+            }
         }
+        if(!(boolean)state[1][0])
+        {
+            try
+            {
+                for(int section = 2; section <= menuOptions.length-1;section++)
+                {
+                    int limit = menuOptions[section].length;
+                    for (int i = 1; i <= limit; i++)
+                    {
+                        navElement = browserWindow.findElement(By.xpath(xPathNavMenuCommon + paths[section] + i + xPathNavMenuEnd + xPathNavMenuDesc));
+                        if (navElement.isDisplayed())
+                            assertEquals(menuOptions[section][i], navElement.getText());
+                        if(section == 2)
+                            TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenuCommon + paths[section] + i + xPathNavMenuEnd,true);
+                    }
+                }
+            } catch (NoSuchElementException exception)
+            {
+                assertFalse((Boolean) state[1][0]);
+            }
+        }
+        for(int temp = 1; temp <=6;temp++)
+        {
+            if ((boolean) state[2][temp])
+            {
+                try
+                {
+                        navElement = browserWindow.findElement(By.xpath(xPathNavMenuCommon + paths[5] + temp + xPathNavMenuEnd + xPathNavMenuDesc));
+                        if (navElement.isDisplayed())
+                            assertEquals(navElement.getText(),menuOptions[5][temp]);
+                } catch (NoSuchElementException exception)
+                {
+                    assertFalse((Boolean) state[2][temp]);
+                }
+            }
+        }
+
+/*
+        int stateIndex = 0;
+        if((boolean)state[1][0] && !browserWindow.getCurrentUrl().equals(TestFunctions.website+"about"))
+        {
+            TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon+paths[2]+1+xPathNavMenuEnd,true);
+            TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon+paths[2]+2+xPathNavMenuEnd,true);
+        }
+        for(int section = 0; section < 6; section++)
+        {
+            int index = 0;
+            WebElement navElement;
+            if(section == 0)
+            {
+                try
+                {
+                    navElement = browserWindow.findElement(By.xpath(xPathNavMenuCommon + paths[section]+xPathNavMenuDesc));
+                    if(navElement.isDisplayed())
+                        assertEquals(navElement.getText(),menuOptions[section][index]);
+                }
+            }
+            else
+            {
+                int limit = menuOptions[section].length;
+                for (int element = 1; element < limit; element++)
+                {
+                    index = element == 5 ? element : 0;
+                    try
+                    {
+                        navElement = browserWindow.findElement(By.xpath(xPathNavMenuCommon + paths[section] + element +xPathNavMenuEnd+xPathNavMenuDesc));
+                        if(navElement.isDisplayed())
+                            assertEquals(navElement.getText(), menuOptions[stateIndex][element]);
+                    }
+                    catch (NoSuchElementException exception) { assertFalse((boolean)state[stateIndex][index]); }
+                }
+            }
+            if(section == 0 || section >= 4)
+                stateIndex++;
+        }
+
+ */
     }
 
     /*

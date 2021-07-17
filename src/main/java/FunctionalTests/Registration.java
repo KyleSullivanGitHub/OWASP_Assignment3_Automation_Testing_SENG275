@@ -2,6 +2,7 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
@@ -280,7 +281,7 @@ public class Registration implements ITest
                     browserWindow.findElement(By.cssSelector("#mat-option-" + optionTry)).click();
                     notFound = false;
                 }
-                catch (Exception NoSuchElementException)
+                catch (NoSuchElementException exception)
                 {
                     //If the option was invalid, prepare to try the next one
                     notFound = true;

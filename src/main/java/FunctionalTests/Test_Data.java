@@ -27,8 +27,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                {"Chrome"},
-                {"Edge"}
+                //{"Chrome"},
+                //{"Edge"}
                 //{"Safari"}
         };
     }

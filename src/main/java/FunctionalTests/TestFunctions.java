@@ -49,7 +49,6 @@ public class TestFunctions
     private static boolean addressSetup = false;
     private static Object[] addressSet;
 
-
     private static void constRandomAccount()
     {
         if(!registerSetup)
@@ -80,7 +79,7 @@ public class TestFunctions
         }
     }
 
-    private static void constAddressValues()
+    public static void constAddressValues()
     {
         if(!addressSetup)
         {
