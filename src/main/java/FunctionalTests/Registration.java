@@ -196,6 +196,7 @@ public class Registration implements ITest
     )
     public void RF_Regression() throws InterruptedException
     {
+        //TODO RF Regression
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 

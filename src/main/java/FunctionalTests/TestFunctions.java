@@ -107,6 +107,7 @@ public class TestFunctions
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
         waitForSitePrimary(test,cookieElement, true, false);
+        waitForSiteXpath(test,"/html/body/div[1]/div/a",true);
     }
 
     /**

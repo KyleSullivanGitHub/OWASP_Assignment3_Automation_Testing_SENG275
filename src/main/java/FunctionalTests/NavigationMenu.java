@@ -77,7 +77,7 @@ public class NavigationMenu implements ITest
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
-       // browserWindow.manage().window().maximize();
+        browserWindow.manage().window().maximize();
         //Go to Website
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing

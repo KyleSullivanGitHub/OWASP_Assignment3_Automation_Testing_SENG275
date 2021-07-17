@@ -1,5 +1,9 @@
 package FunctionalTests;
+import Setup.CreateEnvironment;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
+
+import java.io.IOException;
 import java.util.Random;
 
 public class Test_Data
@@ -27,8 +31,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                //{"Chrome"},
-                //{"Edge"}
+                {"Chrome"},
+                {"Edge"}
                 //{"Safari"}
         };
     }
@@ -178,7 +182,6 @@ public class Test_Data
                 {"Bulk_Valid_Date",new Object[]{validQuantity,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"}},
         };
     }
-    //int quantity, boolean doAddress, boolean doPickup, boolean doDate, String date
 
     //*******************************************************************************************************
 
@@ -214,6 +217,26 @@ public class Test_Data
 
     //*******************************************************************************************************
 
+    @DataProvider(
+            name = "PV2_Input"
+    )
+    public static Object[][] PV2_Input() throws InterruptedException, IOException
+    {
+        CreateEnvironment passBrowser = new CreateEnvironment();
+        WebDriver browserWindow = passBrowser.createBrowser().makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        return new Object[][]{
+                {"12_Items_Per_Page", browserWindow,12},
+                {"24_Items_Per_Page", browserWindow,24},
+                {"36_Items_Per_Page", browserWindow,36},
+        };
+    }
+    //*******************************************************************************************************
     /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.
      * Programmer: Kyle Sullivan

@@ -322,11 +322,10 @@ public class PasswordComplexity implements ITest
          * If the icon is green, its color attribute is primary, which is the pass state for a standard test.
          * There are 5 standard tests to check.
          */
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[1]/mat-icon")).getAttribute("color"), (String)dataSet[1]);//Check lowercase test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[2]/mat-icon")).getAttribute("color"), (String)dataSet[2]);//Check uppercase test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[3]/mat-icon")).getAttribute("color"), (String)dataSet[3]);//check number test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[4]/mat-icon")).getAttribute("color"), (String)dataSet[4]);//check special character test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[5]/mat-icon")).getAttribute("color"), (String)dataSet[5]);//check length test
+        for(int i = 1; i <= 5; i++)
+        {
+            assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[" + i + "]/mat-icon")).getAttribute("color"), (String)dataSet[i]);//Check standard test
+        }
     }
 
     /**

@@ -12,14 +12,12 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.spi.ToolProvider;
 
 /**
  * Test classes for the privacy of users during login.
