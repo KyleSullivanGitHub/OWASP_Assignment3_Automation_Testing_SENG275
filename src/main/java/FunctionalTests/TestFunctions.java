@@ -414,6 +414,7 @@ public class TestFunctions
         assertWebElement(accountMenu);
         accountMenu.click();
 
+
         if(loggedIn)
         {
             //TODO replace section with an object and for loop.
@@ -444,6 +445,7 @@ public class TestFunctions
             assertWebElement(accountMenuLogin);
             assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
         }
+
 
         WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
         assertWebElement(changeLanguageMenu);

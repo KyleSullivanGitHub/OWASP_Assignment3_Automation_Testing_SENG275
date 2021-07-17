@@ -11,6 +11,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.ITest;
 import org.testng.annotations.*;
+import org.openqa.selenium.interactions.Actions;
+
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,6 +25,12 @@ public class Login implements ITest
     private ThreadLocal<String> testName = new ThreadLocal<>();
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
+
+
+    private final String GoogleEmail = "Hellowrold.owasp@gmail.com";
+    private final String GooglePass = "seng275@";
+
+
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -359,6 +367,129 @@ public class Login implements ITest
         }
     }
 
+    /**
+     * Regression test for Login feature within several different browsers.
+     * Considers test cases TC_LF_007, TC_LF_008, TC_LF_011, TC_LF_016, TC_LF_017
+     * Programmer: Seyedmehrad Adimi
+     * @param chosenBrowser browser used for that test
+     */
+    @Test(
+            groups = {"Regression","Login","Login_Regression","hasNoDataProvider"},
+            priority = 0,
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void LG_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+
+        try{
+
+            /* Test cases TC_LF_016, TC_LF_017: Verify the Page Heading, Page Title and Page URL of Login page, Verify the UI of the Login page*/
+            TestFunctions.navToLogin (browserWindow);
+            testRegressionForMe (browserWindow,false);
+
+            /* Test case TC_LF_008: Verify E-Mail Address and Password text fields in the Login page have the placeholder text*/
+
+            WebElement emailInputField = browserWindow.findElement (By.id ("email"));
+            emailInputField.click ();
+            assertEquals (emailInputField.getAttribute ("aria-label"),"Text field for the login email");
+            assertElement (emailInputField);
+
+
+            WebElement passwordInputField = browserWindow.findElement (By.id ("password"));
+            passwordInputField.click ();
+            assertEquals (passwordInputField.getAttribute ("aria-label"),"Text field for the login password");
+            assertElement (passwordInputField);
+
+
+            /* Test case TC_LF_007: Verify logging into the Application using Keyboard keys (Tab and Enter)*/
+            // Register first since the accounts get deleted regularly.
+            fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
+            sleep (1);
+
+
+            browserWindow.get ("https://juice-shop.herokuapp.com/#/login");
+            sleep (3);
+            Actions actionToTake = new Actions (browserWindow);
+            actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB);
+            actionToTake.perform ();
+            sleep (1);
+
+
+            actionToTake.sendKeys (dataSet[0].toString ());
+            actionToTake.sendKeys (Keys.TAB).perform ();
+
+            actionToTake.sendKeys (dataSet[1].toString ());
+            actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.ENTER).perform ();
+
+            // Verify we are logged in and in the home page
+            sleep (2);
+            assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/#/search");
+
+
+            /* Test case TC_LF_011: Verify the number of unsuccessful login attempts  */
+
+
+            WebElement accountMenu = browserWindow.findElement (By.id ("navbarAccount"));
+            accountMenu.click ();
+            WebElement logoutBtn = browserWindow.findElement (By.id ("navbarLogoutButton"));
+            logoutBtn.click ();
+
+            loginForMeThreeTimesInvalid (browserWindow,dataSet[0].toString ()+"inv",dataSet[1].toString ()+"inv");
+
+
+
+
+
+        }
+        finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    private void loginForMeThreeTimesInvalid(WebDriver chosenBrowser, String email, String password) throws InterruptedException {
+        TestFunctions.navToLogin (chosenBrowser);
+        sleep (2);
+        for (int i = 0; i < 4; i++) {
+            WebElement emailInputField = chosenBrowser.findElement (By.id ("email"));
+            WebElement passwordInputField = chosenBrowser.findElement (By.id ("password"));
+            WebElement loginBtn = chosenBrowser.findElement (By.id ("loginButton"));
+            emailInputField.click ();
+            emailInputField.sendKeys (email);
+            passwordInputField.click ();
+            passwordInputField.sendKeys (password);
+            loginBtn.click ();
+            sleep (2);
+            WebElement message = chosenBrowser.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
+            sleep (2);
+            assertEquals (message.getText (), "Invalid email or password.");
+            emailInputField.clear ();
+            passwordInputField.clear ();
+        }
+
+    }
+
+
+    private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus){
+
+        //check Main logo
+        WebElement mainPage = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img"));
+        assertEquals( mainPage.getAttribute ("class"),"logo");
+
+    }
+    private void assertElement(WebElement element){
+        assertTrue (element.isDisplayed ());
+        assertTrue (element.isEnabled ());
+    }
 
 
 
@@ -370,7 +501,7 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
-        TestFunctions.waitForSite(browserWindow);
+        //TestFunctions.waitForSite(browserWindow);
 
         sleep (1);
 
