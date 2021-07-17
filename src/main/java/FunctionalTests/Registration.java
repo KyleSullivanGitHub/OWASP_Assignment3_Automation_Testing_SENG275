@@ -70,7 +70,7 @@ public class Registration implements ITest
             //Fill out registration with a valid data set
             fillOutReg(browserWindow, dataSet);
 
-            browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+            TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
 
             //Check that the user is taken back to the login page
             Thread.sleep(1000);
@@ -125,30 +125,6 @@ public class Registration implements ITest
 
 
     /**
-     * purpose
-     * Programmer
-     *
-     * @param
-     */
-    @Test(
-            groups = {"", ""},
-            priority = 2,
-            enabled = false
-    )
-    public void RF3_Validation_Email() throws InterruptedException
-    {
-        //TODO Validation Email
-        try
-        {
-
-        }
-        finally
-        {
-            Thread.sleep(TestFunctions.endTestWait);
-        }
-    }
-
-    /**
      * Smoke tests several invalid cases for Registration, which can be found in the data provider class.
      * Programmer: Kyle Sullivan
      * @param testing Invalid case being tested
@@ -188,7 +164,7 @@ public class Registration implements ITest
             if (disabledButton)
             {
                 //...Ensure it does not accept the account details.
-                browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+                TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
                 Thread.sleep(1000);
                 assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
             }
@@ -256,6 +232,7 @@ public class Registration implements ITest
         finally
         {
             Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 

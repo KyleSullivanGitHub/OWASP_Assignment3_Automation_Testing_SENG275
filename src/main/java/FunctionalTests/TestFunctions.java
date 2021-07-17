@@ -2,10 +2,7 @@ package FunctionalTests;
 
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeSuite;
 
@@ -110,11 +107,11 @@ public class TestFunctions
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
-        waitForSitePrimary(test,cookieElement);
+        waitForSitePrimary(test,cookieElement, true, false);
     }
 
     /**
-     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
      * @param test Webdriver to pause
      * @param cssSelector element to look for
@@ -122,35 +119,78 @@ public class TestFunctions
      */
     public static void waitForSite(WebDriver test, String cssSelector) throws InterruptedException
     {
-        waitForSitePrimary(test,cssSelector);
+        waitForSitePrimary(test,cssSelector, false, false);
+    }
+    /**
+     * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param cssSelector element to look for
+     * @param interactive boolean to instruct the wait period to try clicking the element as well.
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSite(WebDriver test, String cssSelector, boolean interactive) throws InterruptedException
+    {
+        waitForSitePrimary(test,cssSelector,interactive, false);
+    }
+
+    /**
+     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param xPath element to look for
+     * @param interactive boolean to instruct the wait period to try clicking the element as well.
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSiteXpath(WebDriver test, String xPath, boolean interactive) throws InterruptedException
+    {
+        waitForSitePrimary(test,xPath,interactive, true);
+
+    }
+
+    /**
+     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param xPath element to look for
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSiteXpath(WebDriver test, String xPath) throws InterruptedException
+    {
+        waitForSitePrimary(test,xPath,false, true);
     }
 
     /**
      * Functionality for waitForSite
      * @param test Webdriver to pause
-     * @param cssElement element to look for
+     * @param path element to look for
+     * @param interactive whether to click on the element
+     * @param xPath whether to nav via xpath or not
      * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
-    private static void waitForSitePrimary(WebDriver test, String cssElement) throws InterruptedException
+    private static void waitForSitePrimary(WebDriver test, String path,boolean interactive, boolean xPath) throws InterruptedException
     {
         boolean ready = false;
+        WebElement element;
+        By find = !xPath ? By.cssSelector(path) : By.xpath(path);
         while(!ready)
         {
             try
             {
                 //find the element
-                WebElement element = test.findElement(By.cssSelector(cssElement));
+                    element = test.findElement(find);
+
                 //if the element is presented...
                 if(element.isDisplayed())
                 {
+                    if (interactive)
+                        element.click();
                     //stop the loop
                     ready = true;
-                    if(cssElement.equals(cookieElement))
-                        element.click();
                 }
             }
             //if not, catch the exception, wait a moment then try again.
-            catch(Exception NoSuchElementException)
+            catch(NoSuchElementException | ElementClickInterceptedException exception)
             {
                 Thread.sleep(100);
             }
@@ -201,10 +241,8 @@ public class TestFunctions
         String xPathPart3 = "]";
 
         test.findElement(By.cssSelector(navPath)).click();
-        Thread.sleep(100);
-        test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
-        Thread.sleep(100);
-        test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+        waitForSiteXpath(test,xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3,true);
+        waitForSiteXpath(test,xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3,true);
     }
 
 
@@ -224,23 +262,27 @@ public class TestFunctions
             CreateEnvironment temp = new CreateEnvironment();
             Registration signUp = new Registration();
             signUp.SetUp();
-
-            //make the separate browser window
             WebDriver tempBrowser = signUp.environment.makeDriver();
-            tempBrowser.manage().window().maximize();
-            tempBrowser.get(website);
-            //Ensure the site is ready for testing
-            waitForSite(tempBrowser);
-            //navigate to registration.
-            navToReg(tempBrowser);
+            try
+            {
+                //make the separate browser window
+                tempBrowser.manage().window().maximize();
+                tempBrowser.get(website);
+                //Ensure the site is ready for testing
+                waitForSite(tempBrowser);
+                //navigate to registration.
+                navToReg(tempBrowser);
 
-            //Register the Account
-            signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
-            tempBrowser.findElement(By.cssSelector(regButton)).click();//click register button
-            //close the browser
-            Thread.sleep(endTestWait);
-            tempBrowser.quit();
-
+                //Register the Account
+                signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
+                waitForSite(tempBrowser, regButton, true);
+            }
+            finally
+            {
+                //close the browser
+                Thread.sleep(endTestWait);
+                tempBrowser.quit();
+            }
             //mark the account as created for this session
             registerOnce = true;
         }
@@ -257,8 +299,7 @@ public class TestFunctions
         navToLogin(test);
 
         //register via google
-        waitForSite(test,loginButtonG);
-        test.findElement(By.cssSelector(loginButtonG)).click();
+        waitForSite(test,loginButtonG,true);
         Thread.sleep(500);
 
         if(!test.getCurrentUrl().startsWith(website))
@@ -359,8 +400,7 @@ public class TestFunctions
                 navToSavedAddresses(test);
 
                 //Click on Create New Address
-                test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button")).click();
-
+                waitForSiteXpath(test,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button",true);
                 constAddressValues();
 
                 for (int i = 1; i <= 7; i++)
@@ -370,8 +410,7 @@ public class TestFunctions
                     else
                         test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
                 }
-                test.findElement(By.cssSelector("#submitButton")).click();
-
+                waitForSite(test,"#submitButton",true);
                 addressMade = true;
             }
             finally

@@ -3,6 +3,7 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
@@ -286,7 +287,7 @@ public class PasswordComplexity implements ITest
             browserWindow.findElement(By.className("mat-slide-toggle")).click();
             browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String) dataSet[0]); //enter password
         }
-        catch (Exception ElementNotInteractableException)
+        catch (ElementNotInteractableException badCondition)
         {
             assertTrue(false);
         }

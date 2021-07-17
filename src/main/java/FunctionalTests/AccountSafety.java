@@ -84,11 +84,11 @@ public class AccountSafety implements ITest
             WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
             assertEquals(passwordField.getAttribute("type"), "password");
             //Click on the toggle setting
-            passwordField.findElement(By.xpath(toggleXpath)).click();
+            TestFunctions.waitForSiteXpath(browserWindow,toggleXpath,true);
             //Confirm that the password box has been switched to type text, and now is fully visible
             assertEquals(passwordField.getAttribute("type"), "text");
             //Toggle again
-            passwordField.findElement(By.xpath(toggleXpath)).click();
+            TestFunctions.waitForSiteXpath(browserWindow,toggleXpath,true);
 
             //Confirm that the user cannot copy and paste the password from it's section.
             Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
