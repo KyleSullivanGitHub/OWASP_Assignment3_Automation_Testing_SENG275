@@ -546,8 +546,11 @@ public class Login implements ITest
             assertElement (Complaint);
             sleep (1);
 
+            // Check Deluxe Membership
 
-
+            WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
+            assertElement (DeluxeMembership);
+            sleep (1);
 
 
         }else{
@@ -589,14 +592,14 @@ public class Login implements ITest
         sleep (1);
     }
 
-    private void assertElement(WebElement element){
+    static void assertElement(WebElement element){
         assertTrue (element.isDisplayed ());
         assertTrue (element.isEnabled ());
     }
 
 
 
-    private void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
+    static void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         boolean notFound = true;
         int optionTry = 0;
@@ -670,14 +673,17 @@ public class Login implements ITest
     }
 
 
-    private void fillOutLogGoogle(WebDriver browserWindow, String email, String password) throws InterruptedException
+    static void fillOutLogGoogle(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
 
 
         browserWindow.get(TestFunctions.website);
 
         sleep (2);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        Actions pressESC = new Actions (browserWindow);
+        pressESC.sendKeys (Keys.ESCAPE).perform ();
+        //browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
+        sleep (1);
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         sleep (1);
 
