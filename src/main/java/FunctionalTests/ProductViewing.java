@@ -3,6 +3,7 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
@@ -15,7 +16,9 @@ import java.lang.reflect.Method;
 
 import static org.testng.Assert.*;
 
-
+/**
+ * Test Class for tests relating to the main product display page.
+ */
 public class ProductViewing implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
@@ -23,8 +26,19 @@ public class ProductViewing implements ITest
     TestBrowser environment;
     CreateEnvironment passBrowser;
 
+    //Path to main header button
+    String headerButton = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]";
+    //Path to product list elements
     String listElement = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[";
+    //Path to the container of a product
+    String productContainer = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details";
+    //Path to products per page menu
+    String productAmountPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/";
+    //Path to the page navigation buttons
     String pageNav = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/button[";
+    //path to the page numbers on a page
+    String pageNumPath = "div[2]/div";
+
 
     /**
      * Create an environment for all tests using the same browser app.
@@ -37,6 +51,13 @@ public class ProductViewing implements ITest
         environment = passBrowser.createBrowser();
     }
 
+    /**
+     * Smoke test to check basic product page functionality, such as the product expanded view, and page navigation.
+     * Programmer: Kyle Sullivan
+     * @param chosenBrowser Browser for this particular test
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test(
             groups = {"Smoke", "Navigation Menu Smoke", "Navigation menu", "hasDataProvider"},
             priority = 0,
@@ -58,35 +79,44 @@ public class ProductViewing implements ITest
         try
         {
             //click on main page button
-            TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]",true);
+            TestFunctions.waitForSiteXpath(browserWindow,headerButton,true);
             Thread.sleep(500);
             //confirm user is on the product page
             assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website+"search");
 
-            //check product
-            TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[1]",true);
-            Thread.sleep(500);
-            TestFunctions.waitForSiteXpath(browserWindow,"/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details");
-            WebElement product = browserWindow.findElement(By.xpath("/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details"));
-            assertFalse(product.findElement(By.xpath("app-product-details/mat-dialog-content/div/div[1]/div[2]/h1")).getText().isEmpty());
 
+            //check product
+            TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]",true);
+            Thread.sleep(500);
+            TestFunctions.waitForSiteXpath(browserWindow, productContainer);
+            WebElement product = browserWindow.findElement(By.xpath(productContainer));
+            assertFalse(product.findElement(By.xpath(productContainer +"/mat-dialog-content/div/div[1]/div[2]/h1")).getText().isEmpty());
+            assertFalse(product.findElement(By.xpath(productContainer + "/mat-dialog-content/div/div[1]/div[2]/div[1]")).getText().isEmpty());
+            assertTrue(product.findElement(By.className("item-price")).isDisplayed());
+            product.findElement(By.className("close-dialog")).click();
             //close product window
 
-
-            TestFunctions.waitForSiteXpath(browserWindow, "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
-            TestFunctions.waitForSiteXpath(browserWindow,"//*[@id=\"mat-option-"+0+"\"]",true);
+            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath+"div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
+            try
+            {
+                //Try an potential option
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-option-"+0+"\"]")).click();
+            }
+            catch (NoSuchElementException exception)
+            {
+                //If the option was invalid, prepare to try the next one
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-option-" + 3 + "\"]")).click();
+            }
             //check that you can navigate across pages
+
             TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/div")).getText(),"13 - 24 of 36");
+            assertEquals(browserWindow.findElement(By.xpath(productAmountPath+pageNumPath)).getText(),"13 – 24 of 36");
             TestFunctions.waitForSiteXpath(browserWindow, pageNav+"1]", true);
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/div")).getText(),"1 - 12 of 36");
-
-
-
+            assertEquals(browserWindow.findElement(By.xpath(productAmountPath+pageNumPath)).getText(),"1 – 12 of 36");
         } finally
         {
             Thread.sleep(TestFunctions.endTestWait);
-           // browserWindow.quit();
+            browserWindow.quit();
         }
     }
 
@@ -108,7 +138,7 @@ public class ProductViewing implements ITest
             int pageAmount = 36/itemPerPage + (itemPerPage == 24 ? 1 : 0);
             int pagesToCheck = 2*pageAmount-1;
 
-            TestFunctions.waitForSiteXpath(browserWindow, "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
+            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath+"div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
             TestFunctions.waitForSiteXpath(browserWindow,"//*[@id=\"mat-option-"+select+"\"]",true);
 
             for(int page = 1; page <= pagesToCheck; page++)
