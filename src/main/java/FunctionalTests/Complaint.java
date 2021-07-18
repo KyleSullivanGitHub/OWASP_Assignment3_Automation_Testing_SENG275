@@ -9,7 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
@@ -45,6 +47,11 @@ public class Complaint implements ITest
     private final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
     private final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
     private final String CustomerTextInComplaintCSS = "#mat-form-field-label-5 > mat-label";
+    private final String AboutUsCSSBeforeLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(9)";
+    private final String AboutUsCSSAfterLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(11)";
+    private final String scoreBoardCSSBefore = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12)";
+    private final String scoreBoardCSSAfter = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(15)";
+    private final String ComplaintHeadingCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > h1";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -290,21 +297,22 @@ public class Complaint implements ITest
             sleep (6);
             navigateToComplaint (browserWindow);
 
+            Login.testUrlAndTitleAndHeading(browserWindow,"https://juice-shop.herokuapp.com/#/complain", "OWASP Juice Shop", "Complaint", ComplaintHeadingCSS);
 
             // Common Regression Testing
-            testRegressionForMe (browserWindow, true);
+            Login.testRegressionForMe (browserWindow, true);
 
 
             // Check Place Holder for Customer
             WebElement CustomerPlaceHolder = browserWindow.findElement (By.cssSelector (CustomerPlaceHolderCSS));
-            assertElement (CustomerPlaceHolder);
+            Login.assertElement (CustomerPlaceHolder);
             WebElement Customertext = browserWindow.findElement (By.cssSelector (CustomerTextInComplaintCSS));
             assertEquals (Customertext.getText (), "Customer");
 
 
             // Check Placeholder for Message
             WebElement messageInput = browserWindow.findElement (By.id ("complaintMessage"));
-            assertElement (messageInput);
+            Login.assertElement (messageInput);
 
             messageInput.sendKeys ("Hello");
 
@@ -312,12 +320,12 @@ public class Complaint implements ITest
 
             // Check for File Inputting
             WebElement FileInput = browserWindow.findElement (By.cssSelector ("#file"));
-            assertElement (FileInput);
+            Login.assertElement (FileInput);
 
 
             // Check Submit Button
             WebElement submitBtn = browserWindow.findElement (By.id ("submitButton"));
-            assertElement (submitBtn);
+            Login.assertElement (submitBtn);
             submitBtn.click ();
 
 
@@ -326,6 +334,8 @@ public class Complaint implements ITest
             WebElement complaintConfirmation = browserWindow.findElement (By.cssSelector (complaintConfirmationCSS));
             assertTrue (complaintConfirmation.getText ().startsWith (feedbackFromSiteForComplaint));
 
+            // Common Regression Testing again after changes
+            Login.testRegressionForMe (browserWindow, true);
 
 
         }finally {
@@ -347,99 +357,6 @@ public class Complaint implements ITest
 
     }
 
-
-    private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
-
-        //check Main logo
-        WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
-        assertEquals( mainPage.getAttribute ("class"),"logo");
-        assertElement (mainPage);
-
-
-        // Check Search bar
-        WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
-        assertElement (searchBar);
-        searchBar.click ();
-        sleep (6);
-        WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));
-        assertElement (searchBarInputField);
-
-        // Check account button
-        WebElement accountMenu = browserWindow.findElement(By.cssSelector(TestFunctions.navPath));
-        assertElement (accountMenu);
-
-        // Check Choose Language
-        WebElement chooselanguage = browserWindow.findElement (By.cssSelector (chooseLanguageBtnCSS));
-        assertElement (chooselanguage);
-
-
-        // Check Side menu
-        WebElement sideMenu = browserWindow.findElement (By.cssSelector (sideMenuCSS));
-        assertElement (sideMenu);
-
-
-        if (lgStatus){
-            sideMenu.click ();
-
-
-            presentInBothLoginAndLogoutRegression (browserWindow);
-
-            // Check Complaint
-            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
-            assertElement (Complaint);
-            sleep (1);
-
-
-
-
-
-        }else{
-            sideMenu.click ();
-            sleep (1);
-            presentInBothLoginAndLogoutRegression (browserWindow);
-        }
-        WebElement bodyClick = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > div.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown"));
-        bodyClick.click ();
-
-
-        sleep (6);
-    }
-    private void presentInBothLoginAndLogoutRegression(WebDriver browserWindow) throws InterruptedException {
-        // Check Customer Feedback
-        WebElement CusFeedback = browserWindow.findElement (By.cssSelector (cusFeedbackCSS));
-        assertElement (CusFeedback);
-        sleep (6);
-
-        // Check About Us
-        WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSS));
-        assertElement (AboutUs);
-        sleep (6);
-
-        // Check Photo Wall
-        WebElement PhotoWall = browserWindow.findElement (By.cssSelector (PhotoWallCSS));
-        assertElement (PhotoWall);
-        sleep (6);
-
-        // Check Score Board
-        WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSS));
-        assertElement (scoreBoard);
-        sleep (6);
-
-        // Check Github
-        WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
-        assertElement (gitHub);
-        sleep (6);
-
-        // Check Deluxe Membership
-        WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
-        assertElement (DeluxeMembership);
-        sleep (6);
-    }
-
-    static void assertElement(WebElement element){
-        assertTrue (element.isDisplayed ());
-        assertTrue (element.isEnabled ());
-    }
 
 
 

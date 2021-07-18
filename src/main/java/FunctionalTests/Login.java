@@ -10,6 +10,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 import org.openqa.selenium.interactions.Actions;
@@ -34,18 +36,21 @@ public class Login implements ITest
     private final String loginErrorMessageText = "Invalid email or password.";
     private final String GoogleErrMessageEmailCSS = "#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.d2CFce.cDSmF.cxMOTc > div > div.LXRPh > div.dEOOab.RxsGPe > div";
     private final String GoogleErrMessageEmailText = "Couldn't find your Google Account";
-    private final String mainLogoCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img";
-    private final String searchBarCSS="#searchQuery > span > mat-icon.mat-icon.notranslate.mat-ripple.mat-search_icon-search.ng-tns-c242-1.material-icons.mat-icon-no-color";
-    private final String searchBarInputFieldCSS="#searchQuery";
-    private final String chooseLanguageBtnCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base";
-    private  final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
-    private final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
-    private final String cusFeedbackCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(6)";
-    private final String AboutUsCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(9)";
-    private final String scoreBoardCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(10)";
-    private final String PhotoWallCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
-    private final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
-    private final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
+    public static final String mainLogoCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img";
+    public static final String searchBarCSS="#searchQuery > span > mat-icon.mat-icon.notranslate.mat-ripple.mat-search_icon-search.ng-tns-c242-1.material-icons.mat-icon-no-color";
+    public static final String searchBarInputFieldCSS="#searchQuery";
+    public static final String chooseLanguageBtnCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base";
+    public static final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
+    public static final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
+    public static final String cusFeedbackCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(6)";
+    public static final String AboutUsCSSBeforeLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(9)";
+    public static final String AboutUsCSSAfterLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(11)";
+    public static final String scoreBoardCSSBefore = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12)";
+    public static final String scoreBoardCSSAfter = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(15)";
+    public static final String PhotoWallCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
+    public static final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
+    public static final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
+    public static final String LoginHeadingCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > h1";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -77,6 +82,7 @@ public class Login implements ITest
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
+
 
 
         try
@@ -415,7 +421,9 @@ public class Login implements ITest
 
             /* Test cases TC_LF_016, TC_LF_017: Verify the Page Heading, Page Title and Page URL of Login page, Verify the UI of the Login page*/
             TestFunctions.navToLogin (browserWindow);
-            sleep (1);
+
+            testUrlAndTitleAndHeading(browserWindow,"https://juice-shop.herokuapp.com/#/login", "OWASP Juice Shop", "Login", LoginHeadingCSS );
+
             testRegressionForMe (browserWindow,false);
 
             /* Test case TC_LF_008: Verify E-Mail Address and Password text fields in the Login page have the placeholder text*/
@@ -450,6 +458,9 @@ public class Login implements ITest
             sleep (1);
             assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/#/search");
 
+            // Common regression test again after Login
+
+            testRegressionForMe (browserWindow,true);
 
             /* Test case TC_LF_011: Verify the number of unsuccessful login attempts  */
 
@@ -464,14 +475,25 @@ public class Login implements ITest
             loginForMeThreeTimesInvalid (browserWindow,dataSet[0].toString ()+"inv",dataSet[1].toString ()+"inv");
 
 
+            // Common regression test again after three times Invalid Login
 
+            testRegressionForMe (browserWindow,false);
 
 
         }
         finally {
-            //Thread.sleep(TestFunctions.endTestWait);
+            Thread.sleep(TestFunctions.endTestWait);
             browserWindow.quit();
         }
+    }
+
+    public static void testUrlAndTitleAndHeading(WebDriver browserWindow, String url, String title, String heading, String headingCSS) {
+        String URL = browserWindow.getCurrentUrl ();
+        String titleOfThis = browserWindow.getTitle ();
+        WebElement headingOfMe = browserWindow.findElement (By.cssSelector (headingCSS));
+        assertEquals (URL, url);
+        assertEquals (titleOfThis, title);
+        assertEquals (headingOfMe.getText (), heading);
     }
 
     private void LoginUsingActions(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
@@ -511,7 +533,7 @@ public class Login implements ITest
     }
 
 
-    private void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
+    public static void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
 
         //check Main logo
         WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
@@ -544,8 +566,8 @@ public class Login implements ITest
         if (lgStatus){
             sideMenu.click ();
 
-
-            presentInBothLoginAndLogoutRegression (browserWindow);
+            sleep (1);
+            presentInBothLoginAndLogoutRegression (browserWindow, true);
 
             // Check Complaint
             WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
@@ -561,8 +583,8 @@ public class Login implements ITest
 
         }else{
             sideMenu.click ();
-
-            presentInBothLoginAndLogoutRegression (browserWindow);
+            sleep (1);
+            presentInBothLoginAndLogoutRegression (browserWindow, false);
         }
         WebElement bodyClick = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > div.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown"));
         bodyClick.click ();
@@ -571,28 +593,49 @@ public class Login implements ITest
         sleep (1);
     }
 
-    private void presentInBothLoginAndLogoutRegression(WebDriver browserWindow) throws InterruptedException {
+    private static void presentInBothLoginAndLogoutRegression(WebDriver browserWindow, Boolean lgStatus)  throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+
         // Check Customer Feedback
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (cusFeedbackCSS)));
         WebElement CusFeedback = browserWindow.findElement (By.cssSelector (cusFeedbackCSS));
         assertElement (CusFeedback);
 
 
         // Check About Us
-        WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSS));
-        assertElement (AboutUs);
+        if (lgStatus){
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (AboutUsCSSAfterLogin)));
+            WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSSAfterLogin));
+            assertElement (AboutUs);
+        }else{
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (AboutUsCSSBeforeLogin)));
+            WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSSBeforeLogin));
+            assertElement (AboutUs);
+        }
 
 
         // Check Photo Wall
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (PhotoWallCSS)));
         WebElement PhotoWall = browserWindow.findElement (By.cssSelector (PhotoWallCSS));
         assertElement (PhotoWall);
 
 
-        // Check Score Board
-        WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSS));
-        assertElement (scoreBoard);
+         //Check Score Board
+        if (lgStatus){
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (scoreBoardCSSAfter)));
+            WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSSAfter));
+            assertElement (scoreBoard);
+        }else{
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (scoreBoardCSSBefore)));
+            WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSSBefore));
+            assertElement (scoreBoard);
+        }
+
 
 
         // Check Github
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (gitHubCSS)));
         WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
         assertElement (gitHub);
 
