@@ -1,6 +1,7 @@
 package FunctionalTests;
 
 import Setup.*;
+import org.checkerframework.checker.units.qual.A;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -88,7 +89,6 @@ public class Login implements ITest
             loginWithRecentlyRegisteredAccount (dataSet, browserWindow, false);
 
             //Assertion to check we are at the right URL if logged in properly
-            sleep (1);
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
         }
         finally
@@ -117,11 +117,12 @@ public class Login implements ITest
         try {
             // Method to call to fill out the login process
             fillOutLog (browserWindow, "email", "pswrd");
-            sleep (2);
+
 
             // Get the error message
+            sleep (1);
             WebElement message = browserWindow.findElement (By.cssSelector (loginErrorMessageCSS));
-            sleep (3);
+
 
             // Assert and check the error message to be appropriate
             assertEquals (message.getText (), loginErrorMessageText);
@@ -157,10 +158,11 @@ public class Login implements ITest
         try {
             // method call to fillout logging in using Google and the valid credential provided by the data provider
             fillOutLogGoogle (browserWindow, dataSet[0].toString (), dataSet[1].toString ());
-            sleep (4);
+            sleep (2);
 
             // Assert proper logged in and directed back to the original website
-            assertEquals (browserWindow.getCurrentUrl (), "https://juice-shop.herokuapp.com/#/");
+
+            assertEquals (browserWindow.getCurrentUrl (), "https://juice-shop.herokuapp.com/#/access_token");
 
         }finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -193,7 +195,7 @@ public class Login implements ITest
 
             // Find the error message
             WebElement message = browserWindow.findElement (By.cssSelector (GoogleErrMessageEmailCSS));
-            sleep (1);
+
 
             // Make sure you get the right error for invalid credentialsentered
             assertEquals (message.getText (), GoogleErrMessageEmailText);
@@ -232,12 +234,12 @@ public class Login implements ITest
 
         // Test case TC_LF_004: Invalid email and Valid password
         loginWithRecentlyRegisteredAccount(dataSet,browserWindow, true);
-        sleep (2);
+
 
 
         // Get the error message
         WebElement message = browserWindow.findElement (By.cssSelector (loginErrorMessageCSS));
-        sleep (1);
+
 
         // Assert to check if we get the right message
         assertEquals (message.getText (), loginErrorMessageText);
@@ -246,24 +248,25 @@ public class Login implements ITest
 
         // Test case TC_LF_005: Valid email and Invalid password
          validEmailandInvalidPasswordCase (dataSet, browserWindow);
-         sleep (1);
+
 
 
        // Get the error message
-        WebElement message1 = browserWindow.findElement (By.cssSelector (loginErrorMessageCSS));
         sleep (1);
+        WebElement message1 = browserWindow.findElement (By.cssSelector (loginErrorMessageCSS));
+
+
 
         // check the error message and see if it is right
         assertEquals (message1.getText (), loginErrorMessageText);
 
         // Test case TC_LF_006: No credentials
-
         loginNoCredentials (browserWindow);
-        sleep (1);
+
 
         // Assert that the login
         browserWindow.get ("https://juice-shop.herokuapp.com/#/login");
-        sleep (1);
+
         assertFalse (browserWindow.findElement (By.id ("loginButton")).isEnabled ());
 
 
@@ -271,7 +274,7 @@ public class Login implements ITest
         //Todo how to test inactive credentials?
         // Test case TC_LF_010: No credentials:
 
-        sleep (1);
+
 
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");}
         finally {
@@ -314,13 +317,13 @@ public class Login implements ITest
             WebElement message = browserWindow.findElement (By.cssSelector (GoogleErrMessageEmailCSS));
             sleep (1);
             assertEquals (message.getText (), GoogleErrMessageEmailText);
-            sleep (1);
+
 
             // Test case TC_LF_023 : Invalid password and valid email
             fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv" + dataSet[1].toString ());
 
-            sleep (1);
 
+            sleep (1);
             WebElement message1 = inavlidPassPlusMessage (dataSet[1], browserWindow);
 
             //Assert to see if we get an error with the right message
@@ -361,9 +364,9 @@ public class Login implements ITest
             sleep (2);
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
-            sleep (2);
             browserWindow.navigate ().back ();
-            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
+            sleep (1);
+            assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
 
           /*  Thread.sleep (2000);
 
@@ -412,7 +415,7 @@ public class Login implements ITest
 
             /* Test cases TC_LF_016, TC_LF_017: Verify the Page Heading, Page Title and Page URL of Login page, Verify the UI of the Login page*/
             TestFunctions.navToLogin (browserWindow);
-            sleep (2);
+            sleep (1);
             testRegressionForMe (browserWindow,false);
 
             /* Test case TC_LF_008: Verify E-Mail Address and Password text fields in the Login page have the placeholder text*/
@@ -432,27 +435,29 @@ public class Login implements ITest
             /* Test case TC_LF_007: Verify logging into the Application using Keyboard keys (Tab and Enter)*/
             // Register first since the accounts get deleted regularly.
             fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
-            sleep (1);
+            sleep (2);
 
 
             // Go to the Login Page
             browserWindow.get ("https://juice-shop.herokuapp.com/#/login");
-            sleep (3);
+
 
             // Use actions to perform TAB and ENTER press
             LoginUsingActions (dataSet, browserWindow);
+            //sleep (2);
 
             // Verify we are logged in and in the home page
-            sleep (2);
+
             assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/#/search");
 
 
             /* Test case TC_LF_011: Verify the number of unsuccessful login attempts  */
 
-            sleep (2);
+
             WebElement accountMenu = browserWindow.findElement (By.cssSelector (TestFunctions.navPath));
             accountMenu.click ();
-            sleep (2);
+
+            //sleep (2);
             WebElement logoutBtn = browserWindow.findElement (By.id ("navbarLogoutButton"));
             logoutBtn.click ();
 
@@ -607,8 +612,8 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
-
-        sleep (2);
+        Actions pressESC = new Actions (browserWindow);
+        pressESC.sendKeys (Keys.ESCAPE).perform ();
 
         TestFunctions.navToReg (browserWindow);
 
@@ -680,6 +685,7 @@ public class Login implements ITest
         browserWindow.get(TestFunctions.website);
 
         sleep (2);
+
         Actions pressESC = new Actions (browserWindow);
         pressESC.sendKeys (Keys.ESCAPE).perform ();
         //browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
@@ -730,38 +736,37 @@ public class Login implements ITest
 
 
         browserWindow.get(TestFunctions.website);
+        sleep (1);
 
-        Thread.sleep(2500);
-        browserWindow.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
+        Actions pressESC = new Actions (browserWindow);
+        pressESC.sendKeys (Keys.ESCAPE).perform ();
+
+
+        browserWindow.findElement(By.cssSelector (TestFunctions.navPath)).click ();
+
 
 
 
         //verify that we can access the login page
         WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
-        assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
-        Thread.sleep(500);
+        sleep (1);
 
 
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        Thread.sleep(1000);
+
        // browserWindow.findElement(By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div > div > ul > li.JDAKTe.eARute.W7Aapd.zpCp3.SmR8 > div")).click (); //click on login
         //Thread.sleep(500);
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        Thread.sleep(1000);
         emailUsr.click ();
         emailUsr.click ();
-        Thread.sleep(1000);
         emailUsr.clear ();
         emailUsr.sendKeys (email);
-        Thread.sleep(500);
         emailUsr.sendKeys (Keys.ENTER);
-        Thread.sleep(500);
+        sleep (1);
     }
 
     private void loginWithRecentlyRegisteredAccount(Object[] dataSet, WebDriver browserWindow, boolean invalid) throws InterruptedException {
