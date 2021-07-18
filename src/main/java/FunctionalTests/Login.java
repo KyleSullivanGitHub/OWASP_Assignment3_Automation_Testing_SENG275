@@ -317,6 +317,7 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try {
             // Test case TC_LF_022 : Valid password and Invalid email
@@ -326,7 +327,7 @@ public class Login implements ITest
 
 
             WebElement message = browserWindow.findElement (By.cssSelector (GoogleErrMessageEmailCSS));
-            sleep (1);
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (GoogleErrMessageEmailCSS)));
             assertEquals (message.getText (), GoogleErrMessageEmailText);
 
 
@@ -369,14 +370,19 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
         try{
 
             fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
-            sleep (2);
+
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/access_token"));
+
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/access_token");
 
             browserWindow.navigate ().back ();
-            sleep (1);
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/"));
+
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
 
           /*  Thread.sleep (2000);
@@ -404,6 +410,7 @@ public class Login implements ITest
      * Considers test cases TC_LF_007, TC_LF_008, TC_LF_011, TC_LF_016, TC_LF_017
      * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
+     * @param dataSet object provides email and password
      */
     @Test(
             groups = {"Regression","Login","Login_Regression","hasDataProvider"},
@@ -421,6 +428,7 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try{
 
@@ -460,7 +468,7 @@ public class Login implements ITest
 
 
             // Verify we are logged in and in the home page
-            sleep (1);
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/search"));
             assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/#/search");
 
             // Common regression test again after Login
@@ -517,6 +525,8 @@ public class Login implements ITest
     private void loginForMeThreeTimesInvalid(WebDriver chosenBrowser, String email, String password) throws InterruptedException {
         TestFunctions.navToLogin (chosenBrowser);
         sleep (1);
+        WebDriverWait wait = new WebDriverWait(chosenBrowser,10);
+
         for (int i = 0; i < 4; i++) {
             WebElement emailInputField = chosenBrowser.findElement (By.id ("email"));
             WebElement passwordInputField = chosenBrowser.findElement (By.id ("password"));
@@ -527,7 +537,7 @@ public class Login implements ITest
             passwordInputField.sendKeys (password);
             loginBtn.click ();
 
-            sleep (1);
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted")));
             WebElement message = chosenBrowser.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
 
             assertEquals (message.getText (), "Invalid email or password.");
@@ -850,10 +860,10 @@ public class Login implements ITest
 
 
         browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
-        sleep (1);
+        sleep (6);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
-        sleep (1);
+        sleep (6);
     }
 
     private void loginNoCredentials(WebDriver browserWindow) throws InterruptedException {
