@@ -36,9 +36,6 @@ public class PaymentMethodAlteration implements ITest
 
         name = "Hello World";
         cardNum = "2564234323542343";
-
-        // TestFunctions.createAccount();
-        // TestFunctions.createAddress();
     }
 
     /*
@@ -76,6 +73,9 @@ public class PaymentMethodAlteration implements ITest
         // Login and navigate to payment options page
         login(browserWindow);
         navigateToPaymentOptions(browserWindow);
+
+        // Clear all existing payment methods
+        clearPaymentMethods(browserWindow, cardNum, name);
 
         // Create a valid payment method
         boolean result = createPaymentMethod(browserWindow, name, cardNum);
@@ -152,13 +152,8 @@ public class PaymentMethodAlteration implements ITest
         clearPaymentMethods(browserWindow, cardNum, name);
 
         // Create a valid payment method
-        boolean result = createPaymentMethod(browserWindow, name, cardNum);
+        createPaymentMethod(browserWindow, name, cardNum);
         Thread.sleep(1000);
-
-        // Make sure payment method was added successfully
-        assertTrue(result);
-        assertTrue(browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())));
-        assertTrue(browserWindow.getPageSource().contains(name));
 
         // Remove the added payment method
         browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
@@ -213,7 +208,7 @@ public class PaymentMethodAlteration implements ITest
 
     private static void clearPaymentMethods(WebDriver browserWindow, String cardNum, String name){
 
-        while (browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())) &&
+        while (browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())) ||
                 browserWindow.getPageSource().contains(name))
 
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
@@ -224,7 +219,6 @@ public class PaymentMethodAlteration implements ITest
 
     private static void navigateToPaymentOptions(WebDriver browserWindow) throws InterruptedException {
         browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
 
         Actions action = new Actions(browserWindow);
         WebElement oAndPTab = browserWindow.findElement(By.cssSelector(
@@ -247,10 +241,6 @@ public class PaymentMethodAlteration implements ITest
                 "app-saved-payment-methods/mat-card/app-payment-method/div/div/mat-expansion-panel")).click();
         Thread.sleep(1000);
 
-        // Clear data from name and card number (in case other text exists)
-        browserWindow.findElement(By.id("mat-input-1")).clear();
-        browserWindow.findElement(By.id("mat-input-2")).clear();
-
         // Fill in data for name, card number, and expiry date
         browserWindow.findElement(By.id("mat-input-1")).sendKeys(name);
         browserWindow.findElement(By.id("mat-input-2")).sendKeys(cardNum);
@@ -268,59 +258,13 @@ public class PaymentMethodAlteration implements ITest
 
         WebElement submitBtn = browserWindow.findElement(By.id("submitButton"));
 
+        // If submit button is enabled, click, then return true, otherwise refresh page and return false
         if (submitBtn.isEnabled()) {
             submitBtn.click();
             return true;
-        }else
+        }else{
+            browserWindow.navigate().refresh();
             return false;
-    }
-
-    private static void cycleInvalidity(WebDriver browserWindow) throws InterruptedException {
-        for (int i = 1; i <= 7 ; i++) {
-            Object temp = invalidate(i);
-
-            // Fill in new address information with the i'th data being invalid
-            fillAddressInformation(browserWindow);
-
-            // Validate that submit button is greyed out and un-clickable
-            assertFalse(browserWindow.findElement(By.id("submitButton")).isEnabled());
-
-            revalidate(i, temp);
-        }
-    }
-
-    /**
-     * Invalidates given index in addressSet
-     * @param invalidDataIndex - The index in which we want to invalidate
-     * Return old value
-     */
-    private static Object invalidate(int invalidDataIndex){
-        Object temp = addressSet[invalidDataIndex];
-
-        boolean mobile = invalidDataIndex == 3;
-        boolean zip = invalidDataIndex == 4;
-
-        if (mobile)
-            addressSet[invalidDataIndex] = 123456; // Invalid phone number
-        else if (zip)
-            addressSet[invalidDataIndex] = 123456789; // Invalid zip code
-        else
-            addressSet[invalidDataIndex] = ""; // Input for rest
-
-        return temp;
-    }
-
-    private static void revalidate(int invalidDataIndex, Object prev){
-        addressSet[invalidDataIndex] = prev;
-    }
-
-    private static void fillAddressInformation(WebDriver browserWindow){
-        int addressIndex = 1;
-        for (int i = 1; i <= 7 ; i++) {
-            if (addressIndex == 5)
-                browserWindow.findElement(By.id(("address"))).sendKeys(addressSet[addressIndex++].toString());
-            else
-                browserWindow.findElement(By.id(("mat-input-" + i))).sendKeys(addressSet[addressIndex++].toString());
         }
     }
 

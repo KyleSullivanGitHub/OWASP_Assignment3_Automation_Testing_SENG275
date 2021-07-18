@@ -30,9 +30,6 @@ public class AddressAlteration implements ITest
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
         constAddressValues();
-
-       // TestFunctions.createAccount();
-       // TestFunctions.createAddress();
     }
 
     /*
@@ -67,16 +64,21 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
+        // Login and navigate to saved addresses
+        login(browserWindow);
+        navigateToSavedAddresses(browserWindow);
+        Thread.sleep(1000);
+
+        // Clear all existing addresses
+        clearExistingAddresses(browserWindow);
+
         // Create an address
-        TestFunctions.createAddress();
+        boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), addressSet[3].toString(),
+                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
         Thread.sleep(1000);
 
         // Validate created address exists
-        login(browserWindow);
-        Thread.sleep(500);
-        navToSavedAddresses(browserWindow);
-        Thread.sleep(1000);
-
+        assertTrue(result);
         for (int i = 1; i <= 7; i++) {
             if(i == 3)
                 continue;
@@ -113,18 +115,13 @@ public class AddressAlteration implements ITest
         // Initialize the constant address object
         constAddressValues();
 
-        // Change phone number to invalid phone number
-        invalidate(3);
-
-        // Navigate to create and address page and then fill in data
+        // Navigate to create and address page and then fill in data with incorrect phone
         navigateToSavedAddresses(browserWindow);
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
-                "app-saved-address/div/app-address/mat-card/div/button")).click();
-        fillAddressInformation(browserWindow);
+        boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), "123456",
+                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
 
-        // Validate that necessary warning shows up and submit button is greyed out and un-clickable
-        assertTrue(browserWindow.getPageSource().contains("Mobile number must match 1000000-9999999999 format."));
-        assertFalse(browserWindow.findElement(By.id("submitButton")).isEnabled());
+        // Validate that submit button is greyed out and un-clickable
+        assertFalse(result);
     }
 
     /**
@@ -206,8 +203,7 @@ public class AddressAlteration implements ITest
 
         // Navigate to the 'create an address' page and then fill in data
         navigateToSavedAddresses(browserWindow);
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
-                "app-saved-address/div/app-address/mat-card/div/button")).click();
+//        Thread.sleep(1000);
 
         // Set invalid values one by one, and validate that submit
         // button cannot be clicked when any of the data is invalid
@@ -215,16 +211,19 @@ public class AddressAlteration implements ITest
     }
 
     private static void cycleInvalidity(WebDriver browserWindow) throws InterruptedException {
-        for (int i = 1; i <= 7 ; i++) {
+        for (int i = 1; i <= 6 ; i++) {
             Object temp = invalidate(i);
 
             // Fill in new address information with the i'th data being invalid
-            fillAddressInformation(browserWindow);
+            boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(),
+                    addressSet[3].toString(), addressSet[4].toString(), addressSet[5].toString(),
+                    addressSet[6].toString(), addressSet[7].toString());
+
+            //Thread.sleep(10000);
+            revalidate(i, temp);
 
             // Validate that submit button is greyed out and un-clickable
-            assertFalse(browserWindow.findElement(By.id("submitButton")).isEnabled());
-
-            revalidate(i, temp);
+            assertFalse(result);
         }
     }
 
@@ -256,7 +255,6 @@ public class AddressAlteration implements ITest
     private static void navigateToSavedAddresses(WebDriver browserWindow) throws InterruptedException {
 
         browserWindow.findElement(By.id("navbarAccount")).click();
-        Thread.sleep(1000);
 
         Actions action = new Actions(browserWindow);
         WebElement oAndPTab = browserWindow.findElement(By.cssSelector(
@@ -272,16 +270,6 @@ public class AddressAlteration implements ITest
 
     }
 
-    private static void fillAddressInformation(WebDriver browserWindow){
-        int addressIndex = 1;
-        for (int i = 1; i <= 7 ; i++) {
-            if (addressIndex == 5)
-                browserWindow.findElement(By.id(("address"))).sendKeys(addressSet[addressIndex++].toString());
-            else
-                browserWindow.findElement(By.id(("mat-input-" + i))).sendKeys(addressSet[addressIndex++].toString());
-        }
-    }
-
     private static void clearExistingAddresses(WebDriver browserWindow){
 
         while (browserWindow.getPageSource().contains(addressSet[1].toString()))
@@ -294,19 +282,12 @@ public class AddressAlteration implements ITest
     private static boolean createAddress(WebDriver browserWindow, String country, String name, String phone, String zip,
                                          String address, String city, String state) throws InterruptedException {
 
-        // Click 'Add New Address'
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
-                "app-saved-address/div/app-address/mat-card/div/button")).click();
-        Thread.sleep(1000);
-
-        // Clear data from all fields (in case other text exists)
-        browserWindow.findElement(By.id("mat-input-1")).clear();
-        browserWindow.findElement(By.id("mat-input-2")).clear();
-        browserWindow.findElement(By.id("mat-input-3")).clear();
-        browserWindow.findElement(By.id("mat-input-4")).clear();
-        browserWindow.findElement(By.id("address")).clear();
-        browserWindow.findElement(By.id("mat-input-6")).clear();
-        browserWindow.findElement(By.id("mat-input-7")).clear();
+        // Click 'Add New Address' if available
+        try {
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
+                    "app-saved-address/div/app-address/mat-card/div/button")).click();
+            Thread.sleep(1000);
+        } catch (NoSuchElementException ignored){}
 
         // Fill in fields with given data
         browserWindow.findElement(By.id("mat-input-1")).sendKeys(country);
@@ -318,7 +299,6 @@ public class AddressAlteration implements ITest
         browserWindow.findElement(By.id("mat-input-7")).sendKeys(state);
 
         WebElement submitBtn = browserWindow.findElement(By.id("submitButton"));
-
         try {
             browserWindow.findElement(By.cssSelector(".mat-simple-snackbar-action > " +
                     "button:nth-child(1) > span:nth-child(1)")).click();
@@ -327,11 +307,15 @@ public class AddressAlteration implements ITest
 
         Thread.sleep(1000);
 
+        // If submit button is enabled, click, then return true, otherwise refresh page and return false
         if (submitBtn.isEnabled()) {
             submitBtn.click();
             return true;
-        }else
+        }else{
+            browserWindow.navigate().refresh();
             return false;
+        }
+
     }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
