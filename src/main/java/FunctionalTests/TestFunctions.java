@@ -50,7 +50,7 @@ public class TestFunctions
 
     //Declarations for constant address values
     private static boolean addressSetup = false;
-    private static Object[] addressSet;
+    public static Object[] addressSet;
 
 
     private static void constRandomAccount()
@@ -83,7 +83,7 @@ public class TestFunctions
         }
     }
 
-    private static void constAddressValues()
+    public static void constAddressValues()
     {
         if(!addressSetup)
         {
@@ -202,9 +202,9 @@ public class TestFunctions
 
         test.findElement(By.cssSelector(navPath)).click();
         Thread.sleep(100);
-        test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
+        test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click(); //Click on Orders and payments
         Thread.sleep(100);
-        test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+        test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click(); //Click on My Saved Addresses
     }
 
 
