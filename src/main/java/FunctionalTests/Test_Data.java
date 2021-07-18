@@ -31,8 +31,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                {"Chrome"},
-                {"Edge"}
+                //{"Chrome"},
+                //{"Edge"}
                 //{"Safari"}
         };
     }
@@ -236,6 +236,20 @@ public class Test_Data
                 {"36_Items_Per_Page", browserWindow,36},
         };
     }
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "RE2_Input"
+    )
+    public static Object[][] RE3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Review_Over_Char_Limit","spam"},
+        };
+    }
+
     //*******************************************************************************************************
     /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.

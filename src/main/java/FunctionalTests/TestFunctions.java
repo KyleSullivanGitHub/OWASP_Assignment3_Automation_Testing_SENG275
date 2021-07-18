@@ -21,6 +21,8 @@ public class TestFunctions
     public static String website = "https://juice-shop.herokuapp.com/#/";
     public static String OS = System.getProperty("os.name").toLowerCase();
 
+    private static String siteTitle = "OWASP Juice Shop";
+
     private static final String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
     public static String navPath = "#navbarAccount";
     public static String navbarLogin = "#navbarLoginButton";
@@ -427,35 +429,38 @@ public class TestFunctions
      * @param test the browser for the regression test
      * @param loggedIn whether the test is logged in or not
      */
-    public static void commonRegression(WebDriver test, Object[] UI, Boolean loggedIn)
+    public static void commonRegression(WebDriver test, String expectedURL, Boolean loggedIn) throws InterruptedException
     {
-        //Check URL, UI[0]
-        //Check Header UI[1]
-        //Check Title UI[2]
+        assertEquals(test.getCurrentUrl(), expectedURL);
+        assertEquals(test.getTitle(),siteTitle);
 
-        //check dropdown menu
-            //check correct URLS
+        //check dropdown nav menu
         WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
         assertWebElement(navMenu);
-        navMenu.click();
+        if(loggedIn)
+            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+        else
+            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+        NavigationMenu.checkNav(test);
+
 
         //check Main logo
-        WebElement mainPage = test.findElement(By.cssSelector("button.buttons:nth-child(2)"));
-        assertEquals(mainPage.getAttribute("routerlink"),"/search");
+        WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
+        assertWebElement(mainPageLink);
+        assertEquals(mainPageLink.getAttribute("aria-label"),"Back to homepage");
+        WebElement mainPageLogo = test.findElement(By.className("logo"));
+        assertWebElement(mainPageLogo);
+        assertEquals(mainPageLogo.getAttribute("src"),"assets/public/images/JuiceShop_Logo.png");
 
         //check Search tools
-        WebElement searchBar = test.findElement(By.cssSelector("#searchQuery"));
-        assertWebElement(searchBar);
-        searchBar.click();
 
         //check account button
         WebElement accountMenu = test.findElement(By.cssSelector(navPath));
         assertWebElement(accountMenu);
         accountMenu.click();
-
         if(loggedIn)
         {
-            //TODO replace section with an object and for loop.
+
             WebElement profile = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1)"));
             assertWebElement(profile);
             assertEquals(profile.getText(),constEmail);
@@ -484,9 +489,14 @@ public class TestFunctions
             assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
         }
 
-        WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
-        assertWebElement(changeLanguageMenu);
-        changeLanguageMenu.click();
+        if(loggedIn)
+        {
+            //check basket
+        }
+
+        //Change Language
+        WebElement changeLanguageMenu; //= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
+        //assertWebElement(changeLanguageMenu);
     }
 
     private static void assertWebElement(WebElement testing)

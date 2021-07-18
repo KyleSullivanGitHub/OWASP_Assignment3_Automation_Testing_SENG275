@@ -91,16 +91,9 @@ public class AccountSafety implements ITest
             //Confirm that the user cannot copy and paste the password from it's section.
             Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
             //Try to copy the contents of the password field
-            if (TestFunctions.OS.contains("win"))//For copying via Windows
-            {
-                passwordField.sendKeys(Keys.CONTROL + "a");
-                passwordField.sendKeys(Keys.CONTROL + "c");
-            }
-            else if (TestFunctions.OS.contains("mac"))//For Copying via Mac
-            {
-                passwordField.sendKeys(Keys.COMMAND + "a");
-                passwordField.sendKeys(Keys.COMMAND + "c");
-            }
+            Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
+            passwordField.sendKeys(OSspecific + "a");
+            passwordField.sendKeys(OSspecific + "c");
             //Confirm that the clipboard does not contain the password
             assertNotEquals(cb.getData(DataFlavor.stringFlavor), TestFunctions.constPassword);
 
