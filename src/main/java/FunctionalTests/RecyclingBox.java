@@ -177,7 +177,7 @@ public class RecyclingBox implements ITest
             navToRecycle(browserWindow);
             Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
 
             //Test Place holder parts
             //test for red
@@ -186,11 +186,11 @@ public class RecyclingBox implements ITest
 
             //test invalid input
             fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow,TestFunctions.website+"recycle", true);
 
             //test valid input
             fillRecycling(browserWindow,new Object[]{1001,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
         }
         finally
         {

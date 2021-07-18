@@ -205,7 +205,7 @@ public class Registration implements ITest
             TestFunctions.navToReg(browserWindow);
             Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
             assertEquals(browserWindow.findElement(By.className("mat-slide-toggle-thumb")).getAttribute("aria-checked"), "false");
 
             //check placeholder fields
@@ -216,12 +216,12 @@ public class Registration implements ITest
             //touch security question
             //Check mandatory fields
             //check out password advice
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
 
             //clear current fields
 
             fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100) +"@gmail.com","aB3!aB3!", "aB3!aB3!", true, "answer"});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
             //check out password advice
 
             //check password is hidden
