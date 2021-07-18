@@ -51,6 +51,11 @@ public class Login implements ITest
     public static final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
     public static final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
     public static final String LoginHeadingCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > h1";
+    public static final String profileCSS = "#mat-menu-panel-0 > div > button:nth-child(1)";
+    public static final String ordersAndPaymentsCSS = "#mat-menu-panel-0 > div > button:nth-child(2) > span";
+    public static final String privacyAndSecurityCSS = "button.mat-menu-trigger:nth-child(3)";
+
+
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -534,6 +539,7 @@ public class Login implements ITest
 
 
     public static void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         //check Main logo
         WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
@@ -564,6 +570,26 @@ public class Login implements ITest
 
 
         if (lgStatus){
+            accountMenu.click ();
+            //Web Elements Required
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (profileCSS)));
+            WebElement profile = browserWindow.findElement (By.cssSelector (profileCSS));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (ordersAndPaymentsCSS)));
+            WebElement ordersAndPayments = browserWindow.findElement (By.cssSelector (ordersAndPaymentsCSS));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (privacyAndSecurityCSS)));
+            WebElement privacyAndSecurity = browserWindow.findElement (By.cssSelector (privacyAndSecurityCSS));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id ("navbarLogoutButton")));
+            WebElement logOutbtn = browserWindow.findElement (By.id ("navbarLogoutButton"));
+
+
+            assertElement (profile);
+            assertElement (ordersAndPayments);
+            assertElement (privacyAndSecurity);
+            assertElement (logOutbtn);
+
+            Actions escape = new Actions (browserWindow);
+            escape.sendKeys (Keys.ESCAPE).perform ();
+
             sideMenu.click ();
 
             sleep (1);
@@ -691,9 +717,12 @@ public class Login implements ITest
         }
 
         //give security question answer
+        Thread.sleep (500);
         browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //enter answer
         sleep (1);
         browserWindow.findElement(By.cssSelector("#registerButton")).click();
+
+
     }
 
 
