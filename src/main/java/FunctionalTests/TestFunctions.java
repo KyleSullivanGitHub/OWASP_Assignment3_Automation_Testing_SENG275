@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.testng.Assert.*;
@@ -231,6 +232,8 @@ public class TestFunctions
             tempBrowser.get(website);
             //Ensure the site is ready for testing
             waitForSite(tempBrowser);
+            tempBrowser.navigate().refresh();
+
             //navigate to registration.
             navToReg(tempBrowser);
 

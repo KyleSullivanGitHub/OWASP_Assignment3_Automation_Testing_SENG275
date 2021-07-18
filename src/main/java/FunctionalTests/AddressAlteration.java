@@ -270,12 +270,15 @@ public class AddressAlteration implements ITest
 
     }
 
-    private static void clearExistingAddresses(WebDriver browserWindow){
+    private static void clearExistingAddresses(WebDriver browserWindow) throws InterruptedException {
 
-        while (browserWindow.getPageSource().contains(addressSet[1].toString()))
+        while (browserWindow.getPageSource().contains(addressSet[1].toString())) {
 
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
                     "app-saved-address/div/app-address/mat-card/mat-table/mat-row[1]/mat-cell[5]/button")).click();
+
+            Thread.sleep(1000);
+        }
 
     }
 
