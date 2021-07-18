@@ -383,57 +383,6 @@ public class TestFunctions
     }
 
     /**
-     * Creates a new address for any tests requiring one, using manual log in.
-     * Programmers: Kyle Sullivan, Salam Fazil
-     * @throws InterruptedException Thrown if test is interrupted during a thread waiting period
-     */
-    public static void createAddressManualLogin() throws InterruptedException, IOException
-    {
-        //Check if a constant address is already made
-        if(!addressMade)
-        {
-            //Create a new setup environment to create an address in.
-            CreateEnvironment passBrowser = new CreateEnvironment();
-            TestBrowser environment = passBrowser.createBrowser();
-            WebDriver test = environment.makeDriver();
-            test.manage().window().maximize();
-            //Go to Website
-            test.get(website);
-            //Ensure the site is ready for testing
-            TestFunctions.waitForSite(test);
-
-            try
-            {
-
-                //Login and navigate to saved addresses
-                manualLogin(test);
-                navToSavedAddresses(test);
-
-                //Click on Create New Address
-                test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button")).click();
-
-                constAddressValues();
-
-                for (int i = 1; i <= 7; i++)
-                {
-                    if (i != 5)
-                        test.findElement(By.cssSelector(mInput + i)).sendKeys((String) addressSet[i]);
-                    else
-                        test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
-                }
-                test.findElement(By.cssSelector("#submitButton")).click();
-
-                addressMade = true;
-            }
-            finally
-            {
-                Thread.sleep(endTestWait);
-                test.quit();
-            }
-        }
-    }
-
-    /**
      * Common regression tests performed for most regression test sets
      * Programmer: Kyle Sullivan
      * @param test the browser for the regression test

@@ -1,12 +1,10 @@
 package FunctionalTests;
 
 import Setup.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
@@ -31,6 +29,7 @@ public class AddressAlteration implements ITest
     public void SetUp() throws IOException, InterruptedException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
+        constAddressValues();
 
        // TestFunctions.createAccount();
        // TestFunctions.createAddress();
@@ -40,9 +39,9 @@ public class AddressAlteration implements ITest
     TODO:
     AA1 - Smoke - Valid Addition - STATUS: COMPLETED (need review)
     AA2 - Smoke - Invalid Addition - STATUS: COMPLETED (need review)
-    AA3 - Smoke - Address Removal - STATUS: Mostly done, need to ask a few questions
+    AA3 - Smoke - Address Removal - STATUS: COMPLETED (need review)
     AA4 - Sanity - Invalid Addition - STATUS: COMPLETED (need review)
-    AA regression - STATUS: Not Done, complete at the end
+    AA - regression - STATUS: Not Done, complete at the end
     */
 
     /**
@@ -151,22 +150,24 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Register
-        TestFunctions.createAccount();
-
-        // Login and create an address
-        TestFunctions.createAddressManualLogin();
-
-        // Navigate to saved addresses page
-        manualLogin(browserWindow);
+        // Login and navigate to saved addresses
+        login(browserWindow);
         navigateToSavedAddresses(browserWindow);
+
+        // Initialize address set then clear all existing addresses
+        clearExistingAddresses(browserWindow);
+
+        // Create an address
+        createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), addressSet[3].toString(),
+                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
+        Thread.sleep(1000);
 
         // Remove added address
         browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content" +
                 "/app-saved-address/div/app-address/mat-card/mat-table/mat-row/mat-cell[5]/button")).click();
         Thread.sleep(1000);
 
-        // Validate if address was removed
+        // Validate address was removed
         for (int i = 1; i <= 7; i++) {
             if(i == 3)
                 continue;
@@ -279,6 +280,58 @@ public class AddressAlteration implements ITest
             else
                 browserWindow.findElement(By.id(("mat-input-" + i))).sendKeys(addressSet[addressIndex++].toString());
         }
+    }
+
+    private static void clearExistingAddresses(WebDriver browserWindow){
+
+        while (browserWindow.getPageSource().contains(addressSet[1].toString()))
+
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
+                    "app-saved-address/div/app-address/mat-card/mat-table/mat-row[1]/mat-cell[5]/button")).click();
+
+    }
+
+    private static boolean createAddress(WebDriver browserWindow, String country, String name, String phone, String zip,
+                                         String address, String city, String state) throws InterruptedException {
+
+        // Click 'Add New Address'
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
+                "app-saved-address/div/app-address/mat-card/div/button")).click();
+        Thread.sleep(1000);
+
+        // Clear data from all fields (in case other text exists)
+        browserWindow.findElement(By.id("mat-input-1")).clear();
+        browserWindow.findElement(By.id("mat-input-2")).clear();
+        browserWindow.findElement(By.id("mat-input-3")).clear();
+        browserWindow.findElement(By.id("mat-input-4")).clear();
+        browserWindow.findElement(By.id("address")).clear();
+        browserWindow.findElement(By.id("mat-input-6")).clear();
+        browserWindow.findElement(By.id("mat-input-7")).clear();
+
+        // Fill in fields with given data
+        browserWindow.findElement(By.id("mat-input-1")).sendKeys(country);
+        browserWindow.findElement(By.id("mat-input-2")).sendKeys(name);
+        browserWindow.findElement(By.id("mat-input-3")).sendKeys(phone);
+        browserWindow.findElement(By.id("mat-input-4")).sendKeys(zip);
+        browserWindow.findElement(By.id("address")).sendKeys(address);
+        browserWindow.findElement(By.id("mat-input-6")).sendKeys(city);
+        browserWindow.findElement(By.id("mat-input-7")).sendKeys(state);
+
+        WebElement submitBtn = browserWindow.findElement(By.id("submitButton"));
+
+        try {
+            browserWindow.findElement(By.cssSelector(".mat-simple-snackbar-action > " +
+                    "button:nth-child(1) > span:nth-child(1)")).click();
+
+        } catch (NoSuchElementException | ElementNotInteractableException ignored){}
+
+        Thread.sleep(1000);
+
+        if (submitBtn.isEnabled()) {
+            submitBtn.click();
+            return true;
+        }else
+            return false;
     }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
