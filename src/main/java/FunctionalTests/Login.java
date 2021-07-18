@@ -444,10 +444,10 @@ public class Login implements ITest
 
             // Use actions to perform TAB and ENTER press
             LoginUsingActions (dataSet, browserWindow);
-            //sleep (2);
+
 
             // Verify we are logged in and in the home page
-
+            sleep (1);
             assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/#/search");
 
 
@@ -477,7 +477,7 @@ public class Login implements ITest
     private void LoginUsingActions(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
         Actions actionToTake = new Actions (browserWindow);
         actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB).perform ();
-        sleep (1);
+
 
 
         actionToTake.sendKeys (dataSet[0].toString ());
@@ -489,7 +489,7 @@ public class Login implements ITest
 
     private void loginForMeThreeTimesInvalid(WebDriver chosenBrowser, String email, String password) throws InterruptedException {
         TestFunctions.navToLogin (chosenBrowser);
-        sleep (2);
+        sleep (1);
         for (int i = 0; i < 4; i++) {
             WebElement emailInputField = chosenBrowser.findElement (By.id ("email"));
             WebElement passwordInputField = chosenBrowser.findElement (By.id ("password"));
@@ -499,9 +499,10 @@ public class Login implements ITest
             passwordInputField.click ();
             passwordInputField.sendKeys (password);
             loginBtn.click ();
-            sleep (2);
+
+            sleep (1);
             WebElement message = chosenBrowser.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div > mat-card > div.error.ng-star-inserted"));
-            sleep (2);
+
             assertEquals (message.getText (), "Invalid email or password.");
             emailInputField.clear ();
             passwordInputField.clear ();
@@ -522,7 +523,7 @@ public class Login implements ITest
         WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
         assertElement (searchBar);
         searchBar.click ();
-        sleep (2);
+
         WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));
         assertElement (searchBarInputField);
 
@@ -542,25 +543,25 @@ public class Login implements ITest
 
         if (lgStatus){
             sideMenu.click ();
-            sleep (1);
+
 
             presentInBothLoginAndLogoutRegression (browserWindow);
 
             // Check Complaint
             WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
             assertElement (Complaint);
-            sleep (1);
+
 
             // Check Deluxe Membership
 
             WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
             assertElement (DeluxeMembership);
-            sleep (1);
+
 
 
         }else{
             sideMenu.click ();
-            sleep (1);
+
             presentInBothLoginAndLogoutRegression (browserWindow);
         }
         WebElement bodyClick = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > div.mat-drawer-backdrop.ng-star-inserted.mat-drawer-shown"));
@@ -574,27 +575,27 @@ public class Login implements ITest
         // Check Customer Feedback
         WebElement CusFeedback = browserWindow.findElement (By.cssSelector (cusFeedbackCSS));
         assertElement (CusFeedback);
-        sleep (1);
+
 
         // Check About Us
         WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSS));
         assertElement (AboutUs);
-        sleep (1);
+
 
         // Check Photo Wall
         WebElement PhotoWall = browserWindow.findElement (By.cssSelector (PhotoWallCSS));
         assertElement (PhotoWall);
-        sleep (1);
+
 
         // Check Score Board
         WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSS));
         assertElement (scoreBoard);
-        sleep (1);
+
 
         // Check Github
         WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
         assertElement (gitHub);
-        sleep (1);
+
     }
 
     static void assertElement(WebElement element){
@@ -657,10 +658,10 @@ public class Login implements ITest
     {
 
         browserWindow.get(TestFunctions.website);
-        sleep (2);
+        sleep (1);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
-        sleep (1);
+
 
 
 
@@ -684,12 +685,12 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
-        sleep (2);
+        sleep (1);
 
         Actions pressESC = new Actions (browserWindow);
         pressESC.sendKeys (Keys.ESCAPE).perform ();
         //browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        sleep (1);
+
         browserWindow.findElement(By.id ("navbarAccount")).click ();
         sleep (1);
 
@@ -700,33 +701,31 @@ public class Login implements ITest
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
+
+
+
         sleep (1);
-
-
-
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        sleep (1);
+
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        sleep (1);
+
         emailPassEnter (browserWindow, email, password, emailUsr);
 
     }
 
     static void emailPassEnter(WebDriver browserWindow, String email, String password, WebElement emailUsr) throws InterruptedException {
         emailUsr.click ();
-
         emailUsr.sendKeys (email);
-        sleep(1);
         emailUsr.sendKeys (Keys.ENTER);
-        sleep(2);
+        sleep (2);
 
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        sleep(1);
+        sleep (6);
         passwordInput.click ();
         passwordInput.sendKeys (password);
-        sleep (1);
+
         passwordInput.sendKeys (Keys.ENTER);
     }
 
@@ -770,18 +769,19 @@ public class Login implements ITest
     }
 
     private void loginWithRecentlyRegisteredAccount(Object[] dataSet, WebDriver browserWindow, boolean invalid) throws InterruptedException {
+        sleep (1);
         if (invalid){
             browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ()+"inv");
         }else{
             browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
         }
-        Thread.sleep (1000);
+
 
         browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
-        Thread.sleep (1000);
+        sleep (1);
 
         browserWindow.findElement (By.id ("loginButton")).click ();
-        Thread.sleep (1000);
+        sleep (1);
     }
 
     private void loginNoCredentials(WebDriver browserWindow) throws InterruptedException {
@@ -794,13 +794,13 @@ public class Login implements ITest
 
     private void validEmailandInvalidPasswordCase(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
         browserWindow.findElement (By.id ("email")).clear ();
-        Thread.sleep (1);
+
         browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ());
-        Thread.sleep (1);
+
         browserWindow.findElement (By.id ("password")).clear ();
-        Thread.sleep (1);
+
         browserWindow.findElement (By.id ("password")).sendKeys ("inv"+ dataSet[1].toString ());
-        Thread.sleep (1);
+
         browserWindow.findElement (By.id ("loginButton")).click ();
     }
 
@@ -808,7 +808,7 @@ public class Login implements ITest
         WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
         passwordInput.click ();
         passwordInput.sendKeys ("inv" + o.toString ());
-        sleep (1);
+
         passwordInput.sendKeys (Keys.ENTER);
 
         sleep (1);
@@ -835,6 +835,8 @@ public class Login implements ITest
             case 5:
                 Thread.sleep (5000);
                 break;
+            case 6:
+                Thread.sleep (500);
 
         }
     }

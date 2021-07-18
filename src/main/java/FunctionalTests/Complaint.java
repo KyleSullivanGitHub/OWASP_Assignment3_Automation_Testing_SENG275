@@ -102,12 +102,13 @@ public class Complaint implements ITest
 
             // C_002 test case: Verify navigation to complaint page
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            Thread.sleep (1000);
+            sleep (2);
             browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
-            Thread.sleep (1000);
+
+            sleep (6);
             WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
             assertTrue (Complaint.isDisplayed ());
-            Thread.sleep (1000);
+
 
 
             // C_003 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
@@ -128,9 +129,10 @@ public class Complaint implements ITest
 
             WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
             submitButton.click ();
-            Thread.sleep (500);
+
 
             WebElement complaintConfirmation = browserWindow.findElement (By.cssSelector (complaintConfirmationCSS));
+            sleep (6);
             assertTrue (complaintConfirmation.getText ().startsWith (feedbackFromSiteForComplaint));
 
         }finally {
@@ -174,12 +176,13 @@ public class Complaint implements ITest
         try {
             // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            sleep (1);
+            sleep (2);
             browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
-            sleep (1);
+
+            sleep (6);
             WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
             Complaint.click ();
-            sleep (1);
+
 
 
             WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
@@ -221,12 +224,14 @@ public class Complaint implements ITest
 
             // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            sleep (1);
+            sleep (2);
+
             browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
+
             sleep (1);
             WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
             Complaint.click ();
-            sleep (1);
+
 
 
             WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
@@ -279,43 +284,45 @@ public class Complaint implements ITest
             /* Test cases TC_LF_007, TC_LF_008: Verify the Page Heading, Page Title and Page URL of Complaint page, Verify the UI of the Complaint page*/
             // Login First
             Login.fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
-            sleep (1);
+            sleep (3);
 
             // Navigate to Complaint Page
+            sleep (6);
             navigateToComplaint (browserWindow);
-            sleep (1);
+
 
             // Common Regression Testing
             testRegressionForMe (browserWindow, true);
-            sleep (1);
+
 
             // Check Place Holder for Customer
             WebElement CustomerPlaceHolder = browserWindow.findElement (By.cssSelector (CustomerPlaceHolderCSS));
             assertElement (CustomerPlaceHolder);
             WebElement Customertext = browserWindow.findElement (By.cssSelector (CustomerTextInComplaintCSS));
             assertEquals (Customertext.getText (), "Customer");
-            sleep (1);
+
 
             // Check Placeholder for Message
             WebElement messageInput = browserWindow.findElement (By.id ("complaintMessage"));
             assertElement (messageInput);
-            sleep (1);
+
             messageInput.sendKeys ("Hello");
-            sleep (1);
+
 
 
             // Check for File Inputting
             WebElement FileInput = browserWindow.findElement (By.cssSelector ("#file"));
             assertElement (FileInput);
-            sleep (1);
+
 
             // Check Submit Button
             WebElement submitBtn = browserWindow.findElement (By.id ("submitButton"));
             assertElement (submitBtn);
             submitBtn.click ();
-            sleep (1);
+
 
             //Check Confirmation Message
+            sleep (6);
             WebElement complaintConfirmation = browserWindow.findElement (By.cssSelector (complaintConfirmationCSS));
             assertTrue (complaintConfirmation.getText ().startsWith (feedbackFromSiteForComplaint));
 
@@ -330,14 +337,14 @@ public class Complaint implements ITest
     }
 
     private void navigateToComplaint(WebDriver browserWindow) throws InterruptedException {
-        sleep (1);
+
         WebElement sideMenu = browserWindow.findElement (By.cssSelector (sideMenuCSS));
         sideMenu.click ();
-        sleep (1);
 
+        sleep (1);
         WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
         Complaint.click ();
-        sleep (1);
+
     }
 
 
@@ -353,7 +360,7 @@ public class Complaint implements ITest
         WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
         assertElement (searchBar);
         searchBar.click ();
-        sleep (2);
+        sleep (6);
         WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));
         assertElement (searchBarInputField);
 
@@ -373,7 +380,7 @@ public class Complaint implements ITest
 
         if (lgStatus){
             sideMenu.click ();
-            sleep (1);
+
 
             presentInBothLoginAndLogoutRegression (browserWindow);
 
@@ -395,38 +402,38 @@ public class Complaint implements ITest
         bodyClick.click ();
 
 
-        sleep (1);
+        sleep (6);
     }
     private void presentInBothLoginAndLogoutRegression(WebDriver browserWindow) throws InterruptedException {
         // Check Customer Feedback
         WebElement CusFeedback = browserWindow.findElement (By.cssSelector (cusFeedbackCSS));
         assertElement (CusFeedback);
-        sleep (2);
+        sleep (6);
 
         // Check About Us
         WebElement AboutUs = browserWindow.findElement (By.cssSelector (AboutUsCSS));
         assertElement (AboutUs);
-        sleep (1);
+        sleep (6);
 
         // Check Photo Wall
         WebElement PhotoWall = browserWindow.findElement (By.cssSelector (PhotoWallCSS));
         assertElement (PhotoWall);
-        sleep (1);
+        sleep (6);
 
         // Check Score Board
         WebElement scoreBoard = browserWindow.findElement (By.cssSelector (scoreBoardCSS));
         assertElement (scoreBoard);
-        sleep (1);
+        sleep (6);
 
         // Check Github
         WebElement gitHub = browserWindow.findElement (By.cssSelector (gitHubCSS));
         assertElement (gitHub);
-        sleep (1);
+        sleep (6);
 
         // Check Deluxe Membership
         WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
         assertElement (DeluxeMembership);
-        sleep (1);
+        sleep (6);
     }
 
     static void assertElement(WebElement element){
@@ -442,7 +449,7 @@ public class Complaint implements ITest
         sleep (1);
 
         browserWindow.findElement(By.id ("navbarAccount")).click ();
-        sleep (1);
+        sleep (6);
 
 
 
@@ -450,18 +457,18 @@ public class Complaint implements ITest
         WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
-        sleep (1);
+        sleep (6);
 
 
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        sleep (1);
+
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        sleep (1);
+        sleep (2);
         Login.emailPassEnter (browserWindow, email, password, emailUsr);
-        sleep (1);
+
     }
 
     private static void sleep(int a) throws InterruptedException {
@@ -482,6 +489,8 @@ public class Complaint implements ITest
             case 5:
                 Thread.sleep (5000);
                 break;
+            case 6:
+                Thread.sleep (500);
 
         }
     }
