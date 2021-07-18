@@ -55,7 +55,7 @@ public class ProductViewing implements ITest
      * Smoke test to check basic product page functionality, such as the product expanded view, and page navigation.
      * Programmer: Kyle Sullivan
      * @param chosenBrowser Browser for this particular test
-     * @throws IOException
+     * @throws IOException Thrown if a browser is not set for the test
      * @throws InterruptedException
      */
     @Test(
