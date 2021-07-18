@@ -49,7 +49,7 @@ public class TestFunctions
 
     //Declarations for constant address values
     private static boolean addressSetup = false;
-    private static Object[] addressSet;
+    public static Object[] addressSet;
 
     private static void constRandomAccount()
     {
