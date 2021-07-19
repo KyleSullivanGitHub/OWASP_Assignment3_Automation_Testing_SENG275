@@ -151,7 +151,14 @@ public class ProductViewing implements ITest
             int select;
             //determine which web element to pick for the test
             try { select = itemPerPage == 12 ? 0 : itemPerPage == 24 ? 1 : itemPerPage == 36 ? 2 : null;}
-            catch (NullPointerException exception){ throw new IOException("No Product per page Amount Set");}
+            catch (NullPointerException exception)
+            {
+                try
+                {
+                    select = itemPerPage == 12 ? 3 : itemPerPage == 24 ? 4 : itemPerPage == 36 ? 5 : null;
+                }
+                catch (NullPointerException badTest){ throw new IOException("No Product per page Amount Set");}
+            }
 
             //amount of pages available
             int pageAmount = 36/itemPerPage + (itemPerPage == 24 ? 1 : 0);

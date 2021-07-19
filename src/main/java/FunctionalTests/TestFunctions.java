@@ -424,6 +424,16 @@ public class TestFunctions
         }
     }
 
+    //Regression Constants
+    static String[] menuOption = new String[]{constEmail,"Orders & Payment","Privacy & Security","Logout"};
+    static String[] ordersPay = new String[]{"Order History","Recycle","My saved addresses","My Payment Options", "Digital Wallet"};
+    static String[] privSec = new String[]{"Privacy Policy","Request Data Export","Request Data Erasure","Change Password", "2FA Configuration", "Last Login IP"};
+    static Object[] navbarLoggedIn = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+    static Object[] navbarLoggedOut = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+    private static boolean languageListCreated = false;
+    private static Object[] languageList;
+
+
     /**
      * Common regression tests performed for most regression test sets
      * Programmer: Kyle Sullivan
@@ -434,85 +444,104 @@ public class TestFunctions
     {
         assertEquals(test.getCurrentUrl(), expectedURL);
         assertEquals(test.getTitle(),siteTitle);
-
-        //check dropdown nav menu
-        WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
-        assertWebElement(navMenu);
-        if(loggedIn)
-            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
-        else
-            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
-        NavigationMenu.checkNav(test);
-        test.findElement(By.className("mat-drawer-shown")).click();
-
-        //check Main logo
-        WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
-        assertWebElement(mainPageLink);
-        assertEquals(mainPageLink.getAttribute("aria-label"),"Back to homepage");
-        WebElement mainPageLogo = test.findElement(By.className("logo"));
-        assertWebElement(mainPageLogo);
-        assertEquals(mainPageLogo.getAttribute("src"),"https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
-
-        //check Search tools
-
-        //check account button
-        waitForSite(test,navPath);
-        WebElement accountMenu = test.findElement(By.cssSelector(navPath));
-        assertWebElement(accountMenu);
-        accountMenu.click();
-        if(loggedIn)
+        try
         {
+            //check dropdown nav menu
+            WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
+            assertWebElement(navMenu);
+            if (loggedIn)
+                NavigationMenu.menuOptions = navbarLoggedIn;
+            else
+                NavigationMenu.menuOptions = navbarLoggedOut;
+            NavigationMenu.checkNav(test);
+            test.findElement(By.className("mat-drawer-shown")).click();
 
-            WebElement profile = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1)"));
-            assertWebElement(profile);
-            assertEquals(profile.getText(),constEmail);
+            //check Main logo
+            WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
+            assertWebElement(mainPageLink);
+            assertEquals(mainPageLink.getAttribute("aria-label"), "Back to homepage");
+            WebElement mainPageLogo = test.findElement(By.className("logo"));
+            assertWebElement(mainPageLogo);
+            assertEquals(mainPageLogo.getAttribute("src"), "https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
-            WebElement ordPayMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(2)"));
-            assertWebElement(ordPayMenu);
-            assertEquals(ordPayMenu.getText(),"Orders & Payment");
+            //check Search tools
 
-            WebElement privMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(3)"));
-            assertWebElement(privMenu);
-            assertEquals(privMenu.getText(),"Privacy & Security");
+            //check account button
+            waitForSite(test, navPath);
+            WebElement accountMenu = test.findElement(By.cssSelector(navPath));
+            assertWebElement(accountMenu);
+            accountMenu.click();
+            if (loggedIn)
+            {
+                WebElement menu;
+                for (String lookingFor : menuOption)
+                {
 
-            WebElement logoutMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(4)"));
-            assertWebElement(logoutMenu);
-            assertEquals(logoutMenu.getText(),"Logout");
+                    try
+                    {
+                        menu = accountMenu.findElement(By.linkText(lookingFor));
+                        assertWebElement(menu);
+                        if (lookingFor.equals("Orders & Payment") || lookingFor.equals("Privacy & Security"))
+                        {
+                            try
+                            {
+                                menu.click();
+                            } catch (ElementClickInterceptedException ignore)
+                            {
+                            }
+                            for (String subMenu : (lookingFor.equals("Privacy & Security") ? privSec : ordersPay))
+                            {
+                                try
+                                {
+                                    WebElement subMenuElement = menu.findElement(By.linkText(subMenu));
+                                    assertWebElement(subMenuElement);
+                                } catch (NoSuchElementException noSubMenu) { assertEquals(subMenu, "No Such Submenu Element");}
+                            }
+                        }
+                    } catch (NoSuchElementException noMenu) { assertEquals(lookingFor, "No Such element"); }
+                }
+            }
+            else
+            {
+                WebElement accountMenuLogin = test.findElement(By.cssSelector(TestFunctions.navbarLogin));
+                assertWebElement(accountMenuLogin);
+            }
+
+            test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
+
+            if (loggedIn)
+            {
+                WebElement basket = test.findElement(By.xpath(basketXpath));
+                assertWebElement(basket);
+                WebElement basketIcon = test.findElement(By.xpath(Basket.basketIcon_XPath));
+                assertWebElement(basketIcon);
+                WebElement basketCounter = test.findElement(By.xpath(Basket.basketIconQuantity_XPath));
+                assertWebElement(basketCounter);
+            }
+            test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
+
+            //Change Language
+            WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
+            assertWebElement(changeLanguageMenu);
+            changeLanguageMenu.click();
+            if (!languageListCreated)
+                createLanguageList();
+            for (int i = 1; i <= 37; i++)
+            {
+                try
+                {
+                    test.findElement(By.linkText((String) languageList[i]));
+                } catch (NoSuchElementException missingLanguage)
+                {
+                    assertEquals(languageList[i], "No Such Element");
+                }
+            }
+            test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
         }
-        else
-        {
-            WebElement accountMenuLogin = test.findElement(By.cssSelector(TestFunctions.navbarLogin));
-            assertWebElement(accountMenuLogin);
-            assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
-        }
-
-        if(loggedIn)
-        {
-            WebElement basket = test.findElement(By.xpath(basketXpath));
-            assertWebElement(basket);
-            WebElement basketIcon = test.findElement(By.xpath(Basket.basketIcon_XPath));
-            assertWebElement(basketIcon);
-            WebElement basketCounter = test.findElement(By.xpath(Basket.basketIconQuantity_XPath));
-            assertWebElement(basketCounter);
-        }
-        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
-
-        //Change Language
-        WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
-        assertWebElement(changeLanguageMenu);
-        changeLanguageMenu.click();
-        if(!languageListCreated)
-            createLanguageList();
-        for(int i = 1; i <= 37; i++)
-        {
-            assertEquals(test.findElement(By.cssSelector(mRadio+i)).getText(),languageList[i]);
-        }
-        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
-
+        catch (NoSuchElementException elementNotFound) { assertEquals("Missing","Header Bar Option");}
     }
 
-    private static boolean languageListCreated = false;
-    private static Object[] languageList;
+
     private static void createLanguageList()
     {
         languageList = new Object[]{

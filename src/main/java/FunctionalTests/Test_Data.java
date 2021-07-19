@@ -251,6 +251,20 @@ public class Test_Data
     }
 
     //*******************************************************************************************************
+
+    @DataProvider(
+            name = "SC3_Input"
+    )
+    public static Object[][] SC3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Bad Input","jarbagarad"},
+        };
+    }
+
+    //*******************************************************************************************************
     /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.
      * Programmer: Kyle Sullivan
