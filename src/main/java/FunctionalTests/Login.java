@@ -76,10 +76,11 @@ public class Login implements ITest
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Login","Login Smoke","hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke","Login","hasDataProvider"},
+            priority = 5,
             dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void LG1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
@@ -117,8 +118,9 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Login", "hasNoDataProvider"},
-            priority = 1
+            groups = {"Smoke","Login", "noDataProvider"},
+            priority = 6,
+            enabled = true
     )
     public void LG2_Invalid_Input() throws InterruptedException
     {
@@ -152,8 +154,11 @@ public class Login implements ITest
 
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login Smoke","hasNoDataProvider"},
-            priority = 0
+            groups = {"Smoke","Login","hasDataProvider"},
+            priority = 7,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void LG3_Valid_Input() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -185,8 +190,9 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Google_Login", "hasNoDataProvider"},
-            priority = 1
+            groups = {"Smoke","Login", "noDataProvider"},
+            priority = 8,
+            enabled = true
     )
     public void LG4_Invalid_Input() throws InterruptedException
     {
@@ -216,10 +222,11 @@ public class Login implements ITest
 
 
     @Test(
-            groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG_RandomInput",
-            dataProviderClass = Test_Data.class
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 55,
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void LG5_Invalid_Input(Object[] dataSet) throws IOException, InterruptedException
     {
@@ -298,9 +305,11 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Sanity","Login Sanity","Google_Login"},
-            priority = 0,
-            dataProviderClass = Test_Data.class
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 56,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void LG6_Invalid_Input() throws InterruptedException, IOException {
         //Create the Test Environment
@@ -343,8 +352,11 @@ public class Login implements ITest
      * Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login_Memory","Login Sanity","hasNoDataProvider"},
-            priority = 0
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 58,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
 
     //todo closing and opening does not work
@@ -396,10 +408,11 @@ public class Login implements ITest
      * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Regression","Login","Login_Regression","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG_RandomInput",
-            dataProviderClass = Test_Data.class
+            groups = {"Regression","Login","hasDataProvider"},
+            priority = 76,
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void LG_Regression(Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -933,12 +946,31 @@ public class Login implements ITest
         }
     }
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

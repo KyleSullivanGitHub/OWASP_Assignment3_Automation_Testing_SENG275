@@ -54,10 +54,11 @@ public class Support_Chat implements ITest
      * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Valid_Support_Chat"},
+            groups = {"Smoke","Support_Chat","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class
+            priority = 29,
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void SC1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -117,9 +118,9 @@ public class Support_Chat implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
-            priority = 1,
-            dataProviderClass = Test_Data.class
+            groups = {"Smoke","Support_Chat","noDataProvider"},
+            priority = 30,
+            enabled = true
     )
     public void SC2_Invalid_Use() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -167,8 +168,9 @@ public class Support_Chat implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Regression","Support_Chat Regression","hasNoDataProvider"},
-            priority = 1
+            groups = {"Regression","Support_Chat","noDataProvider"},
+            priority = 85
+
     )
     public void SC_Regression() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -274,13 +276,31 @@ public class Support_Chat implements ITest
 
         }
     }
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

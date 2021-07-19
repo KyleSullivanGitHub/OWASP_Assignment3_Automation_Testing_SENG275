@@ -58,11 +58,10 @@ public class Choose_Language implements ITest
      * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Smoke","Choose_Language Smoke","Valid_Choose_Language", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke","Choose_Language", "hasDataProvider"},
+            priority = 44,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void CL1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
@@ -98,14 +97,18 @@ public class Choose_Language implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Regression","Choose_Language Regression", "hasNoDataProvider"},
-            priority = 0
+            groups = {"Regression","Choose_Language", "noDataProvider"},
+            priority = 999,
+            dataProvider = "LG1_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
 
     public void CL_Regression() throws InterruptedException, IOException {
         // No title for choose language
         //Create driver and browser for this particular test
 
+        WebDriver browserWindow = environment.makeDriver();
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(TestFunctions.website);
@@ -161,16 +164,31 @@ public class Choose_Language implements ITest
     }
 
 
-
-
-
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

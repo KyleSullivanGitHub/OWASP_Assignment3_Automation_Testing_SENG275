@@ -48,15 +48,15 @@ public class Account_Management implements ITest
      */
     //TODO Check MA_005 and how to apply it
     @Test(
-            groups = {"Smoke","Account_Management Smoke","Valid_Account_Management"},
+            groups = {"Smoke","Account_Management","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 35,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void MA1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Create driver and browser for this particular test
+    public void MA1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+        //TODO remove all paramaters except for chosen browser. Use hard coded inputs for smoke tests.
+        //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
@@ -107,14 +107,15 @@ public class Account_Management implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
+     * @param email email text for test
+     * @param password password text for test
      * link: https://ibb.co/6gBdXKJ
      */
     @Test(
             groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 36,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void MA2_Update_Profile(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
@@ -179,24 +180,20 @@ public class Account_Management implements ITest
 
 
     @Test(
-            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Regression","Account_Management","noDataProvider"},
+            priority = 87,
             enabled = true
     )
 
     public void MA3_Update(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void MA3_Update(String email, String password) throws InterruptedException, IOException {
+        //TODO one regression per test class
 
     }
 
     @Test(
-            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Regression","Account_Management","hasDataProvider"},
+            priority =87 ,
             enabled = true
     )
 
@@ -268,12 +265,31 @@ public class Account_Management implements ITest
     }
 
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

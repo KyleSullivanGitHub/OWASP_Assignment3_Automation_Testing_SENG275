@@ -62,10 +62,11 @@ public class Complaint implements ITest
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Valid_Complaint", "has_Data_Provider"},
+            groups = {"Smoke","Complaint","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class
+            priority = 27,
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void CO1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
 
@@ -152,7 +153,7 @@ public class Complaint implements ITest
      */
     @Test(
             groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
-            priority = 1,
+            priority = 28,
             dataProviderClass = Test_Data.class
     )
     public void CO2_Invalid_Use() throws InterruptedException, IOException {
@@ -191,11 +192,18 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
+     * @param dataSet provides email and password to login
      */
     @Test(
+            groups = {"Sanity","Complaint", "hasDataProvider"},
+            dataProvider = "LG3_Input",
+            priority = 66,
+            dataProviderClass = Test_Data.class,
+            enabled = true
             groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
             priority = 1
     )
+
     public void CO3_Invalid_Use() throws InterruptedException, IOException {
 
         //Create the Test Environment
@@ -246,8 +254,11 @@ public class Complaint implements ITest
      * Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Regression","Complaint","Login_Complaint","hasNoDataProvider"},
-            priority = 0
+            groups = {"Regression","Complaint"},
+            priority = 84,
+            dataProvider = "LG3_Input",
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
     public void CO_Regression() throws IOException, InterruptedException {
 
@@ -380,15 +391,31 @@ public class Complaint implements ITest
         }
     }
 
-
-
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {
