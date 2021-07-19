@@ -282,7 +282,7 @@ public class RecyclingBox implements ITest
             {
                 for(int i = 0; i < 10; i++)
                 {
-                    try {TestFunctions.waitForSite(browserWindow,"#mat-checkbox-"+i,true);}
+                    try {browserWindow.findElement(By.cssSelector( "#mat-checkbox-"+i)).click(); break;}
                     catch (NoSuchElementException ignored ) {}
                 }
                 if((boolean) dataSet[3])

@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -136,9 +137,15 @@ public class Logout implements ITest
             TestFunctions.waitForSite(browserSecondary, TestFunctions.navPath,true);
             Thread.sleep(100);
 
+            String actualResult = "Second browser is not logged out";
+            String validResult = "Second browser is logged out";
             boolean secondaryIsLoggedOut = browserSecondary.findElement(By.cssSelector("#navbarLogoutButton")).isDisplayed();
-            assertFalse(secondaryIsLoggedOut);
+            if(secondaryIsLoggedOut)
+            {
+                actualResult = "Second browser is logged out";
 
+            }
+            assertEquals(actualResult,validResult);
         }
         finally
         {
@@ -227,9 +234,6 @@ public class Logout implements ITest
         {
             assertFalse(logoutVisible);//Ensure that while logged out, the logout button is not visible
         }
-
-        //Find the overlay blocking the account menu button and remove it
-        TestFunctions.waitForSite(browserWindow,"body > div.cdk-overlay-container.bluegrey-lightgreen-theme > div.cdk-overlay-backdrop.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing",true);
 
         //Log the user back in via google
         TestFunctions.login(browserWindow);

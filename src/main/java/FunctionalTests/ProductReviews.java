@@ -83,7 +83,7 @@ public class ProductReviews implements ITest
             product.findElement(By.className("close-dialog")).click();
 
             TestFunctions.waitForSiteXpath(browserWindow, listElement,true);
-
+            Thread.sleep(1000);
             browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-1")).click();
 
             TestFunctions.waitForSiteXpath(browserWindow,reviewNumPath);
@@ -185,17 +185,17 @@ public class ProductReviews implements ITest
         //check product
         TestFunctions.waitForSiteXpath(browserWindow, listElement,true);
         //confirm the expanded view is on display
-        TestFunctions.waitForSiteXpath(browserWindow, productContainer);
+        TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-dialog-0\"]");
         //fill Review
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(input);
     }
 
     public static void submitReview(WebDriver browserWindow) throws InterruptedException
     {
-        browserWindow.findElement(By.cssSelector("#submitButton")).click();
+        TestFunctions.waitForSite(browserWindow,"#submitButton",true);
 
         TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
-
+        Thread.sleep(1000);
         numOfReviews2 = getNumOfReviews(browserWindow);
         checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
 
@@ -218,14 +218,16 @@ public class ProductReviews implements ITest
     }
 
 
-    public static int getNumOfReviews(WebDriver browserWindow)
+    public static int getNumOfReviews(WebDriver browserWindow) throws InterruptedException
     {
+        TestFunctions.waitForSiteXpath(browserWindow,reviewNumPath);
         String reviewAmount = browserWindow.findElement(By.xpath(reviewNumPath)).getText();
         return Integer.parseInt(reviewAmount.substring(1,reviewAmount.length()-1));
     }
 
-    public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString)
+    public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString) throws InterruptedException
     {
+        Thread.sleep(1000);
         assertEquals(actual, previous);
         assertEquals(browserWindow.findElement(By.xpath(reviewPath+actual+reviewContents)).getText(),expectedString);
     }

@@ -152,7 +152,7 @@ public class ProductSearching implements ITest
             searching(browserWindow, input);
             if(input == "")
             {
-                TestFunctions.waitForSite(browserWindow,"#search-results-heading");
+                TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[1]/div[1]");
                 assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website+"search");
             }
             else
@@ -214,7 +214,7 @@ public class ProductSearching implements ITest
 
                     for (int i = 1; i <= pages; i++)
                     {
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website + "search?p=" + input, false);
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website + "search?q=" + input, false);
                         int limit = i == temp ? resultAmount % perPage : perPage;
                         for (int j = 1; j <= limit; j++)
                             assertTrue(browserWindow.findElement(By.xpath(listElement + j + "]")).isDisplayed());

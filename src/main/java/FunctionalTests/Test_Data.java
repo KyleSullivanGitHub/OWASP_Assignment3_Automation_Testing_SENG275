@@ -12,7 +12,7 @@ public class Test_Data
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
-    private static String email = "helloworld8" ;
+    private static String email = "helloworld568" ;
     private static String password = "Seng310@#$";
     private static String answer = "seng";
 
@@ -29,8 +29,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                //{"Chrome"},
-                //{"Edge"}
+                {"Chrome"},
+                {"Edge"}
                 //{"Safari"}
         };
     }
@@ -260,7 +260,7 @@ public class Test_Data
 
         return new Object[][]{
                 {"No_Inputs", ""},
-                {"Bad Input","jarbagarad"},
+                {"Bad Input","jarbagard"},
         };
     }
 
