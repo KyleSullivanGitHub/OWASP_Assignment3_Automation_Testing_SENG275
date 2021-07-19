@@ -8,8 +8,6 @@ import java.util.Random;
 
 public class Test_Data
 {
-//TODO maybe switch from multiple parameters to a builder pattern or an object?
-
     private static int randomNum1 = emailRandomizer();
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
@@ -97,9 +95,9 @@ public class Test_Data
         Random randomNum = new Random ();
         int randomInteger = randomNum.nextInt(1000);
         return new Object[][]{
-               // {"Firefox", new Object[]{email+randomNum1+"@gmail.com",password,answer}},
+                {"Firefox", new Object[]{email+randomNum1+randomInteger+"@gmail.com",password,answer}},
                 {"Chrome", new Object[]{email+randomNum2+randomInteger+"@gmail.com",password,answer}},
-               // {"Edge", new Object[]{email+randomNum3+"@gmail.com",password,answer}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Edge", new Object[]{email+randomNum3+randomInteger+"@gmail.com",password,answer}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                // {"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
@@ -126,7 +124,7 @@ public class Test_Data
                 {"Firefox", new Object[]{email+"@gmail.com",password}},
                 {"Chrome", new Object[]{email+"@gmail.com",password}},
                 {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-               {"Safari", new Object[]{email+"@gmail.com",password}}
+              // {"Safari", new Object[]{email+"@gmail.com",password}}
         };
     }
 
@@ -249,6 +247,20 @@ public class Test_Data
         return new Object[][]{
                 {"No_Inputs", ""},
                 {"Review_Over_Char_Limit","spam"},
+        };
+    }
+
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "SC3_Input"
+    )
+    public static Object[][] SC3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Bad Input","jarbagarad"},
         };
     }
 

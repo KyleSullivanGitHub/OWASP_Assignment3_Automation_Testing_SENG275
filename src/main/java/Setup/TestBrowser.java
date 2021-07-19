@@ -29,8 +29,6 @@ public abstract class TestBrowser
     protected String edgeLoc= OSWin ? "edgedriver_win64\\msedgedriver.exe" : OSMac ? "msedgedriver" : null;
 
 
-    //TODO Add Safari
-
     //preferred driver to run all tests on. Change to whatever suits your fancy
     static String primaryBrowser = "Firefox";
 //********************************************************************************************************************//

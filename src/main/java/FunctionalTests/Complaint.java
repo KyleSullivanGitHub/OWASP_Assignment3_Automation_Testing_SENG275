@@ -29,15 +29,15 @@ public class Complaint implements ITest
     CreateEnvironment passBrowser = new CreateEnvironment();
 
 
-    private  final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
-    private final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
-    private final String complaintMessageToSend = "I have a complaint";
-    private final String feedbackFromSiteForComplaint = "Customer support will get in touch with you soon! Your complaint reference is";
-    private final String complaintConfirmationCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > div.confirmation";
-    private final String errorMessageToProvideText = "Please provide a text.";
-       private final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
-    private final String CustomerTextInComplaintCSS = "#mat-form-field-label-5 > mat-label";
-    private final String ComplaintHeadingCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > h1";
+    public final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
+    public final String ComplaintCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(7) > div > span";
+    public final String complaintMessageToSend = "I have a complaint";
+    public final String feedbackFromSiteForComplaint = "Customer support will get in touch with you soon! Your complaint reference is";
+    public final String complaintConfirmationCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > div.confirmation";
+    public final String errorMessageToProvideText = "Please provide a text.";
+    public final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
+    public final String CustomerTextInComplaintCSS = "#mat-form-field-label-5 > mat-label";
+    public final String ComplaintHeadingCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > h1";
     public static final String titleCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-search-result > div > div > div.heading.mat-elevation-z6 > div.ng-star-inserted";
 
     /**
@@ -255,6 +255,7 @@ public class Complaint implements ITest
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
+     * @param dataSet provides email and password to Login
      */
     @Test(
             groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},

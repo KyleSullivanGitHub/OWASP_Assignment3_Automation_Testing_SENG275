@@ -220,6 +220,13 @@ public class Basket implements ITest{
         testName.set(method.getName()+"_"+testData[0]);
     }
 
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+
     @Override
     public String getTestName()
     {

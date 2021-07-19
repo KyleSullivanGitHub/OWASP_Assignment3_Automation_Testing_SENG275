@@ -310,7 +310,7 @@ public class PasswordComplexity implements ITest
      *      Whether the password should pass the length test
      * @param xPathLoc      common xpath to the password advice icons.
      */
-    public void testPassAdvice(WebDriver browserWindow, Object[] dataSet, String xPathLoc)
+    public static void testPassAdvice(WebDriver browserWindow, Object[] dataSet, String xPathLoc)
     {
         //common HTML element containing results of password complexity standards
         String iconPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-" + xPathLoc + "/div/mat-card/div[2]/mat-password-strength-info/mat-card/mat-card-content/";
