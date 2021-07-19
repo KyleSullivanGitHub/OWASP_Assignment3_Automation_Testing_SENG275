@@ -43,10 +43,6 @@ public class Photo_Wall implements ITest
 
 
 
-
-
-
-
     /**
      *Smoke tests for Valid use of Photo_Wall feature and posting picture
      * Includes test cases PW_001, PW_004,PW_008
@@ -314,20 +310,30 @@ public class Photo_Wall implements ITest
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
         Thread.sleep(1000);
-        emailUsr.click ();
-
-        emailUsr.sendKeys (email);
-        Thread.sleep(500);
-        emailUsr.sendKeys (Keys.ENTER);
+        Login.emailPassEnter (browserWindow, email, password, emailUsr);
         Thread.sleep(1000);
+    }
 
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        Thread.sleep(500);
-        passwordInput.click ();
-        passwordInput.sendKeys (password);
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
+    private static void sleep(int a) throws InterruptedException {
+
+        switch (a) {
+            case 1:
+                Thread.sleep (1000);
+                break;
+            case 2:
+                Thread.sleep (2000);
+                break;
+            case 3:
+                Thread.sleep (3000);
+                break;
+            case 4:
+                Thread.sleep (4000);
+                break;
+            case 5:
+                Thread.sleep (5000);
+                break;
+
+        }
     }
 
 

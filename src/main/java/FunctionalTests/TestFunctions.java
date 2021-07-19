@@ -17,6 +17,7 @@ public class TestFunctions
 {
     //TODO Replace as many path strings as possible with variables
 
+
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
     public static String website = "https://juice-shop.herokuapp.com/#/";
@@ -461,6 +462,8 @@ public class TestFunctions
         WebElement accountMenu = test.findElement(By.cssSelector(navPath));
         assertWebElement(accountMenu);
         accountMenu.click();
+
+
         if(loggedIn)
         {
 
@@ -499,6 +502,7 @@ public class TestFunctions
         test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
 
         //Change Language
+
         WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
         assertWebElement(changeLanguageMenu);
         changeLanguageMenu.click();
