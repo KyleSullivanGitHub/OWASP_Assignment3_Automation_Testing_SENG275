@@ -171,6 +171,7 @@ public class Account_Management implements ITest
         browserWindow.quit();
     }
 
+
     @Test(
             groups = {"Regression","Account_Management_Regression","hasDataProvider"},
             dataProvider = "LG3_Input",
@@ -179,6 +180,20 @@ public class Account_Management implements ITest
             threadPoolSize = 3,
             enabled = true
     )
+
+    public void MA3_Update(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+
+    }
+
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
+            dataProvider = "LG3_Input",
+            priority = 1,
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+
     public void MA_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
 
     }
