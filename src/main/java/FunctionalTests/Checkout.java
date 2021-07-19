@@ -244,8 +244,35 @@ public class Checkout implements ITest {
             priority = 1,
             enabled = true
     )
-    public void CO3_Invalid_Usage(String chosenBrowser) throws InterruptedException, IOException
-    {}
+    public void CO3_Invalid_Usage() throws InterruptedException, IOException
+    {
+
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Verify Navigation to basket page
+            Thread.sleep(500);
+            assertEquals(browserWindow.getCurrentUrl(), website + "/#/basket");
+
+            //Verify Checkout Button Disabled
+            assertFalse(browserWindow.findElement(By.xpath(checkoutButton_XPath)).isEnabled());
+
+        }
+        finally {
+            browserWindow.quit();
+        }
+    }
 
 
     /**
