@@ -12,14 +12,12 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
-
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.spi.ToolProvider;
 
 /**
  * Test classes for the privacy of users during login.
@@ -84,25 +82,18 @@ public class AccountSafety implements ITest
             WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
             assertEquals(passwordField.getAttribute("type"), "password");
             //Click on the toggle setting
-            passwordField.findElement(By.xpath(toggleXpath)).click();
+            TestFunctions.waitForSiteXpath(browserWindow,toggleXpath,true);
             //Confirm that the password box has been switched to type text, and now is fully visible
             assertEquals(passwordField.getAttribute("type"), "text");
             //Toggle again
-            passwordField.findElement(By.xpath(toggleXpath)).click();
+            TestFunctions.waitForSiteXpath(browserWindow,toggleXpath,true);
 
             //Confirm that the user cannot copy and paste the password from it's section.
             Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
             //Try to copy the contents of the password field
-            if (TestFunctions.OS.contains("win"))//For copying via Windows
-            {
-                passwordField.sendKeys(Keys.CONTROL + "a");
-                passwordField.sendKeys(Keys.CONTROL + "c");
-            }
-            else if (TestFunctions.OS.contains("mac"))//For Copying via Mac
-            {
-                passwordField.sendKeys(Keys.COMMAND + "a");
-                passwordField.sendKeys(Keys.COMMAND + "c");
-            }
+            Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
+            passwordField.sendKeys(OSspecific + "a");
+            passwordField.sendKeys(OSspecific + "c");
             //Confirm that the clipboard does not contain the password
             assertNotEquals(cb.getData(DataFlavor.stringFlavor), TestFunctions.constPassword);
 

@@ -2,15 +2,13 @@ package FunctionalTests;
 
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.testng.Assert.*;
@@ -24,6 +22,8 @@ public class TestFunctions
     public static String website = "https://juice-shop.herokuapp.com/#/";
     public static String OS = System.getProperty("os.name").toLowerCase();
 
+    private static String siteTitle = "OWASP Juice Shop";
+
     private static final String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
     public static String navPath = "#navbarAccount";
     public static String navbarLogin = "#navbarLoginButton";
@@ -34,6 +34,7 @@ public class TestFunctions
     public static String logButton = "loginButton";
     public static String mInput = "#mat-input-";
     public static String mRadio = "#mat-radio-";
+    public static String basketXpath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]";
 
     public static int endTestWait = 2500;
 
@@ -50,8 +51,7 @@ public class TestFunctions
 
     //Declarations for constant address values
     private static boolean addressSetup = false;
-    private static Object[] addressSet;
-
+    public static Object[] addressSet;
 
     private static void constRandomAccount()
     {
@@ -83,7 +83,7 @@ public class TestFunctions
         }
     }
 
-    private static void constAddressValues()
+    public static void constAddressValues()
     {
         if(!addressSetup)
         {
@@ -110,11 +110,12 @@ public class TestFunctions
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
-        waitForSitePrimary(test,cookieElement);
+        waitForSitePrimary(test,cookieElement, true, false);
+        waitForSiteXpath(test,"/html/body/div[1]/div/a",true);
     }
 
     /**
-     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
      * @param test Webdriver to pause
      * @param cssSelector element to look for
@@ -122,35 +123,78 @@ public class TestFunctions
      */
     public static void waitForSite(WebDriver test, String cssSelector) throws InterruptedException
     {
-        waitForSitePrimary(test,cssSelector);
+        waitForSitePrimary(test,cssSelector, false, false);
+    }
+    /**
+     * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param cssSelector element to look for
+     * @param interactive boolean to instruct the wait period to try clicking the element as well.
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSite(WebDriver test, String cssSelector, boolean interactive) throws InterruptedException
+    {
+        waitForSitePrimary(test,cssSelector,interactive, false);
+    }
+
+    /**
+     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param xPath element to look for
+     * @param interactive boolean to instruct the wait period to try clicking the element as well.
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSiteXpath(WebDriver test, String xPath, boolean interactive) throws InterruptedException
+    {
+        waitForSitePrimary(test,xPath,interactive, true);
+
+    }
+
+    /**
+     * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
+     * Programmer: Kyle Sullivan
+     * @param test Webdriver to pause
+     * @param xPath element to look for
+     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     */
+    public static void waitForSiteXpath(WebDriver test, String xPath) throws InterruptedException
+    {
+        waitForSitePrimary(test,xPath,false, true);
     }
 
     /**
      * Functionality for waitForSite
      * @param test Webdriver to pause
-     * @param cssElement element to look for
+     * @param path element to look for
+     * @param interactive whether to click on the element
+     * @param xPath whether to nav via xpath or not
      * @exception  InterruptedException Thrown if test was interrupted during a wait period
      */
-    private static void waitForSitePrimary(WebDriver test, String cssElement) throws InterruptedException
+    private static void waitForSitePrimary(WebDriver test, String path,boolean interactive, boolean xPath) throws InterruptedException
     {
         boolean ready = false;
+        WebElement element;
+        By find = !xPath ? By.cssSelector(path) : By.xpath(path);
         while(!ready)
         {
             try
             {
                 //find the element
-                WebElement element = test.findElement(By.cssSelector(cssElement));
+                    element = test.findElement(find);
+
                 //if the element is presented...
                 if(element.isDisplayed())
                 {
+                    if (interactive)
+                        element.click();
                     //stop the loop
                     ready = true;
-                    if(cssElement.equals(cookieElement))
-                        element.click();
                 }
             }
             //if not, catch the exception, wait a moment then try again.
-            catch(Exception NoSuchElementException)
+            catch(NoSuchElementException | ElementClickInterceptedException exception)
             {
                 Thread.sleep(100);
             }
@@ -194,6 +238,16 @@ public class TestFunctions
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();//enter sign up page
     }
+    public static void navToSavedAddresses(WebDriver test) throws InterruptedException
+    {
+        String xPathPart1 = "/html/body/div[3]/div[";
+        String xPathPart2 = "]/div/div/div/button[";
+        String xPathPart3 = "]";
+
+        test.findElement(By.cssSelector(navPath)).click();
+        waitForSiteXpath(test,xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3,true);
+        waitForSiteXpath(test,xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3,true);
+    }
 
 
     /**
@@ -212,23 +266,27 @@ public class TestFunctions
             CreateEnvironment temp = new CreateEnvironment();
             Registration signUp = new Registration();
             signUp.SetUp();
-
-            //make the separate browser window
             WebDriver tempBrowser = signUp.environment.makeDriver();
-            tempBrowser.manage().window().maximize();
-            tempBrowser.get(website);
-            //Ensure the site is ready for testing
-            waitForSite(tempBrowser);
-            //navigate to registration.
-            navToReg(tempBrowser);
+            try
+            {
+                //make the separate browser window
+                tempBrowser.manage().window().maximize();
+                tempBrowser.get(website);
+                //Ensure the site is ready for testing
+                waitForSite(tempBrowser);
+                //navigate to registration.
+                navToReg(tempBrowser);
 
-            //Register the Account
-            signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
-            tempBrowser.findElement(By.cssSelector(regButton)).click();//click register button
-            //close the browser
-            Thread.sleep(endTestWait);
-            tempBrowser.quit();
-
+                //Register the Account
+                signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
+                waitForSite(tempBrowser, regButton, true);
+            }
+            finally
+            {
+                //close the browser
+                Thread.sleep(endTestWait);
+                tempBrowser.quit();
+            }
             //mark the account as created for this session
             registerOnce = true;
         }
@@ -245,8 +303,7 @@ public class TestFunctions
         navToLogin(test);
 
         //register via google
-        waitForSite(test,loginButtonG);
-        test.findElement(By.cssSelector(loginButtonG)).click();
+        waitForSite(test,loginButtonG,true);
         Thread.sleep(500);
 
         if(!test.getCurrentUrl().startsWith(website))
@@ -341,22 +398,13 @@ public class TestFunctions
 
             try
             {
-                //Common string elements of accountMenu orders xpath
-                String xPathPart1 = "/html/body/div[3]/div[";
-                String xPathPart2 = "]/div/div/div/button[";
-                String xPathPart3 = "]";
 
                 //Login and navigate to saved addresses
                 login(test);
-                test.findElement(By.cssSelector(navPath)).click();
-                Thread.sleep(100);
-                test.findElement(By.xpath(xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3)).click();//Click on Orders and payments
-                Thread.sleep(100);
-                test.findElement(By.xpath(xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3)).click();//Click on My Saved Addresses
+                navToSavedAddresses(test);
 
                 //Click on Create New Address
-                test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button")).click();
-
+                waitForSiteXpath(test,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button",true);
                 constAddressValues();
 
                 for (int i = 1; i <= 7; i++)
@@ -366,8 +414,7 @@ public class TestFunctions
                     else
                         test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
                 }
-                test.findElement(By.cssSelector("#submitButton")).click();
-
+                waitForSite(test,"#submitButton",true);
                 addressMade = true;
             }
             finally
@@ -384,35 +431,39 @@ public class TestFunctions
      * @param test the browser for the regression test
      * @param loggedIn whether the test is logged in or not
      */
-    public static void commonRegression(WebDriver test, Object[] UI, Boolean loggedIn)
+    public static void commonRegression(WebDriver test, String expectedURL, Boolean loggedIn) throws InterruptedException
     {
-        //Check URL, UI[0]
-        //Check Header UI[1]
-        //Check Title UI[2]
+        assertEquals(test.getCurrentUrl(), expectedURL);
+        assertEquals(test.getTitle(),siteTitle);
 
-        //check dropdown menu
-            //check correct URLS
+        //check dropdown nav menu
         WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
         assertWebElement(navMenu);
-        navMenu.click();
+        if(loggedIn)
+            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+        else
+            NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+        NavigationMenu.checkNav(test);
+        test.findElement(By.className("mat-drawer-shown")).click();
 
         //check Main logo
-        WebElement mainPage = test.findElement(By.cssSelector("button.buttons:nth-child(2)"));
-        assertEquals(mainPage.getAttribute("routerlink"),"/search");
+        WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
+        assertWebElement(mainPageLink);
+        assertEquals(mainPageLink.getAttribute("aria-label"),"Back to homepage");
+        WebElement mainPageLogo = test.findElement(By.className("logo"));
+        assertWebElement(mainPageLogo);
+        assertEquals(mainPageLogo.getAttribute("src"),"https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
         //check Search tools
-        WebElement searchBar = test.findElement(By.cssSelector("#searchQuery"));
-        assertWebElement(searchBar);
-        searchBar.click();
 
         //check account button
+        waitForSite(test,navPath);
         WebElement accountMenu = test.findElement(By.cssSelector(navPath));
         assertWebElement(accountMenu);
         accountMenu.click();
-
         if(loggedIn)
         {
-            //TODO replace section with an object and for loop.
+
             WebElement profile = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(1)"));
             assertWebElement(profile);
             assertEquals(profile.getText(),constEmail);
@@ -428,11 +479,6 @@ public class TestFunctions
             WebElement logoutMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(4)"));
             assertWebElement(logoutMenu);
             assertEquals(logoutMenu.getText(),"Logout");
-
-            WebElement basketMenu = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]"));
-            assertWebElement(basketMenu);
-            basketMenu.click();
-
         }
         else
         {
@@ -441,9 +487,76 @@ public class TestFunctions
             assertEquals(accountMenuLogin.getAttribute("routerlink"),"/login");
         }
 
+        if(loggedIn)
+        {
+            WebElement basket = test.findElement(By.xpath(basketXpath));
+            assertWebElement(basket);
+            WebElement basketIcon = test.findElement(By.xpath(Basket.basketIcon_XPath));
+            assertWebElement(basketIcon);
+            WebElement basketCounter = test.findElement(By.xpath(Basket.basketIconQuantity_XPath));
+            assertWebElement(basketCounter);
+        }
+        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
+
+        //Change Language
         WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
         assertWebElement(changeLanguageMenu);
         changeLanguageMenu.click();
+        if(!languageListCreated)
+            createLanguageList();
+        for(int i = 1; i <= 37; i++)
+        {
+            assertEquals(test.findElement(By.cssSelector(mRadio+i)).getText(),languageList[i]);
+        }
+        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
+
+    }
+
+    private static boolean languageListCreated = false;
+    private static Object[] languageList;
+    private static void createLanguageList()
+    {
+        languageList = new Object[]{
+                "",
+                "Azərbaycanca",
+                "Bahasa Indonesia",
+                "Catalan",
+                "Česky",
+                "Dansk",
+                "Deutsch",
+                "Eesti",
+                "English",
+                "Español",
+                "Français",
+                "Italiano",
+                "Język Polski",
+                "Latvijas",
+                "Magyar",
+                "Nederlands",
+                "Norsk",
+                "Português",
+                "Português (Brasil)",
+                "Pусский",
+                "Românesc",
+                "Schwizerdütsch",
+                "Suomalainen",
+                "Svenska",
+                "Türkçe",
+                "Ελληνικά",
+                "български (език)",
+                "ქართული",
+                "עברית",
+                "عربي",
+                "हिंदी",
+                "ไทย",
+                "ျမန္မာ",
+                "한국어",
+                "中文",
+                "日本の",
+                "繁體中文",
+                "繁體中文",
+        };
+        languageListCreated = true;
     }
 
     private static void assertWebElement(WebElement testing)

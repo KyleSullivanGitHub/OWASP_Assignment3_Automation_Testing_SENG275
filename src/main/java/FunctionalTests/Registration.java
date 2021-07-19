@@ -2,6 +2,7 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
@@ -70,7 +71,7 @@ public class Registration implements ITest
             //Fill out registration with a valid data set
             fillOutReg(browserWindow, dataSet);
 
-            browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+            TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
 
             //Check that the user is taken back to the login page
             Thread.sleep(1000);
@@ -125,30 +126,6 @@ public class Registration implements ITest
 
 
     /**
-     * purpose
-     * Programmer
-     *
-     * @param
-     */
-    @Test(
-            groups = {"", ""},
-            priority = 2,
-            enabled = false
-    )
-    public void RF3_Validation_Email() throws InterruptedException
-    {
-        //TODO Validation Email
-        try
-        {
-
-        }
-        finally
-        {
-            Thread.sleep(TestFunctions.endTestWait);
-        }
-    }
-
-    /**
      * Smoke tests several invalid cases for Registration, which can be found in the data provider class.
      * Programmer: Kyle Sullivan
      * @param testing Invalid case being tested
@@ -188,7 +165,7 @@ public class Registration implements ITest
             if (disabledButton)
             {
                 //...Ensure it does not accept the account details.
-                browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+                TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
                 Thread.sleep(1000);
                 assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
             }
@@ -219,6 +196,7 @@ public class Registration implements ITest
     )
     public void RF_Regression() throws InterruptedException
     {
+        //TODO RF Regression
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
@@ -227,7 +205,7 @@ public class Registration implements ITest
             TestFunctions.navToReg(browserWindow);
             Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
             assertEquals(browserWindow.findElement(By.className("mat-slide-toggle-thumb")).getAttribute("aria-checked"), "false");
 
             //check placeholder fields
@@ -238,12 +216,12 @@ public class Registration implements ITest
             //touch security question
             //Check mandatory fields
             //check out password advice
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
 
             //clear current fields
 
             fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100) +"@gmail.com","aB3!aB3!", "aB3!aB3!", true, "answer"});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", true);
             //check out password advice
 
             //check password is hidden
@@ -256,6 +234,7 @@ public class Registration implements ITest
         finally
         {
             Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 
@@ -303,7 +282,7 @@ public class Registration implements ITest
                     browserWindow.findElement(By.cssSelector("#mat-option-" + optionTry)).click();
                     notFound = false;
                 }
-                catch (Exception NoSuchElementException)
+                catch (NoSuchElementException exception)
                 {
                     //If the option was invalid, prepare to try the next one
                     notFound = true;
