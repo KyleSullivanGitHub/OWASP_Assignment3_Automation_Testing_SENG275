@@ -11,6 +11,7 @@ import org.testng.annotations.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import static FunctionalTests.PasswordAlteration.verifyTopBarElements;
 import static FunctionalTests.TestFunctions.*;
 import static org.testng.Assert.*;
 
@@ -30,7 +31,7 @@ public class PaymentMethodAlteration implements ITest
      *Programmer: Salam Fazil
      */
     @BeforeSuite
-    public void SetUp() throws IOException, InterruptedException {
+    public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
 
@@ -38,19 +39,10 @@ public class PaymentMethodAlteration implements ITest
         cardNum = "2564234323542343";
     }
 
-    /*
-    TODO:
-    PMA1 - Smoke - Valid Addition - STATUS: COMPLETED (need review)
-    PMA2 - Smoke - Invalid Addition - STATUS: COMPLETED (need review)
-    PMA3 - Smoke - Payment method Removal - STATUS: COMPLETED (need review)
-    PMA4 - Sanity - Invalid Addition - STATUS: COMPLETED (need review)
-    PMA - regression - STATUS: Not Done, complete at the end
-    */
-
     /**
      * Smoke test for valid payment method addition
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","hasDataProvider"},
@@ -59,38 +51,48 @@ public class PaymentMethodAlteration implements ITest
     )
 
     public void PMA1_validPaymentAddition(String chosenBrowser) throws IOException, InterruptedException {
-        //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
 
-        //Go to Website
-        browserWindow.get(TestFunctions.website);
+            //Create Test environment and browser
+            TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+            WebDriver browserWindow = browser.makeDriver();
+            browserWindow.manage().window().maximize();
 
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
+            //Go to Website
+            browserWindow.get(TestFunctions.website);
 
-        // Login and navigate to payment options page
-        login(browserWindow);
-        navigateToPaymentOptions(browserWindow);
+            //Ensure the site is ready for testing
+            TestFunctions.waitForSite(browserWindow);
 
-        // Clear all existing payment methods
-        clearPaymentMethods(browserWindow, cardNum, name);
+        try {
+            // Login and navigate to payment options page
+            login(browserWindow);
+            navigateToPaymentOptions(browserWindow);
 
-        // Create a valid payment method
-        boolean result = createPaymentMethod(browserWindow, name, cardNum);
-        Thread.sleep(1000);
+            // Clear all existing payment methods
+            clearPaymentMethods(browserWindow, cardNum, name);
 
-        // Validate created payment method exists
-        assertTrue(result);
-        assertTrue(browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())));
-        assertTrue(browserWindow.getPageSource().contains(name));
+            // Create a valid payment method
+            boolean result = createPaymentMethod(browserWindow, name, cardNum);
+            Thread.sleep(1000);
+
+            // Validate created payment method exists
+            assertTrue(browserWindow.getPageSource().contains("Your card ending with "
+                    + cardNum.subSequence(cardNum.length() - 4, cardNum.length()) +
+                    " has been saved for your convenience."));
+            assertTrue(result);
+            assertTrue(browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())));
+            assertTrue(browserWindow.getPageSource().contains(name));
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Smoke test for invalid payment method addition
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","hasDataProvider"},
@@ -110,22 +112,28 @@ public class PaymentMethodAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login and navigate to payment options page
-        login(browserWindow);
-        navigateToPaymentOptions(browserWindow);
+        try {
+            // Login and navigate to payment options page
+            login(browserWindow);
+            navigateToPaymentOptions(browserWindow);
 
-        // Fill in payment method information with invalid card num
-        boolean result = createPaymentMethod(browserWindow, name, "123456789112345");
-        Thread.sleep(1000);
+            // Fill in payment method information with invalid card num
+            boolean result = createPaymentMethod(browserWindow, name, "123456789112345");
+            Thread.sleep(1000);
 
-        // Validate that submit button was disabled
-        assertFalse(result);
+            // Validate that submit button was disabled
+            assertFalse(result);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Smoke test for payment method removal
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","hasDataProvider"},
@@ -144,32 +152,38 @@ public class PaymentMethodAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login and navigate to payment options page
-        login(browserWindow);
-        navigateToPaymentOptions(browserWindow);
+        try {
+            // Login and navigate to payment options page
+            login(browserWindow);
+            navigateToPaymentOptions(browserWindow);
 
-        // Clear all existing payment methods
-        clearPaymentMethods(browserWindow, cardNum, name);
+            // Clear all existing payment methods
+            clearPaymentMethods(browserWindow, cardNum, name);
 
-        // Create a valid payment method
-        createPaymentMethod(browserWindow, name, cardNum);
-        Thread.sleep(1000);
+            // Create a valid payment method
+            createPaymentMethod(browserWindow, name, cardNum);
+            Thread.sleep(1000);
 
-        // Remove the added payment method
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
-                "app-saved-payment-methods/mat-card/app-payment-method/div/div[1]/mat-table/mat-row/mat-cell[4]/" +
-                "button")).click();
-        Thread.sleep(5000); // Need to give it time to process removal
+            // Remove the added payment method
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
+                    "app-saved-payment-methods/mat-card/app-payment-method/div/div[1]/mat-table/mat-row/mat-cell[4]/" +
+                    "button")).click();
+            Thread.sleep(5000); // Need to give it time to process removal
 
-        // Validate that added card was removed
-        assertFalse(browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())));
-        assertFalse(browserWindow.getPageSource().contains(name));
+            // Validate that added card was removed
+            assertFalse(browserWindow.getPageSource().contains(cardNum.subSequence(cardNum.length() - 4, cardNum.length())));
+            assertFalse(browserWindow.getPageSource().contains(name));
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for invalid payment method addition
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Sanity","PaymentMethodAlteration","PMA_Sanity","hasDataProvider"},
@@ -189,22 +203,98 @@ public class PaymentMethodAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login and navigate to payment options page
-        login(browserWindow);
-        navigateToPaymentOptions(browserWindow);
+        try {
+            // Login and navigate to payment options page
+            login(browserWindow);
+            navigateToPaymentOptions(browserWindow);
 
-        boolean result;
-        // Fill in payment method information with invalid name and validate that submit button is disabled in that case
-        result = createPaymentMethod(browserWindow,"", cardNum);
-        assertFalse(result);
+            boolean result;
+            // Fill in payment method information with invalid name and validate that submit button is disabled in that case
+            result = createPaymentMethod(browserWindow, "", cardNum);
+            assertFalse(result);
 
-        // Fill in payment method information with invalid card numbers and validate that submit button is disabled in those case
-        result = createPaymentMethod(browserWindow, name, "123456789112345");
-        assertFalse(result);
+            // Fill in payment method information with invalid card numbers and validate that submit button is disabled in those case
+            result = createPaymentMethod(browserWindow, name, "123456789112345");
+            assertFalse(result);
 
-        result = createPaymentMethod(browserWindow, name, "12345678911234567");
-        assertFalse(result);
+            result = createPaymentMethod(browserWindow, name, "12345678911234567");
+            assertFalse(result);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
+
+    @Test(
+            groups = {"Regression","PaymentMethodAlteration","PMA_Regression","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void PMA_regression(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+            // Log in then go to my payment options page
+            login(browserWindow);
+            navigateToPaymentOptions(browserWindow);
+
+            // Verify URL, title, and page heading
+            String url = browserWindow.getCurrentUrl();
+            String title = browserWindow.getTitle();
+            String heading = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                    "mat-sidenav-content > app-saved-payment-methods > mat-card > app-payment-method > div > h1")).getText();
+
+            assertEquals(url, "https://juice-shop.herokuapp.com/#/saved-payment-methods");
+            assertEquals(title, "OWASP Juice Shop");
+            assertEquals(heading, "My Payment Options");
+
+            // Verify top bar elements exist (logged in)
+            verifyTopBarElements(browserWindow, true);
+
+            // Verify place holder text
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/" +
+                    "app-saved-payment-methods/mat-card/app-payment-method/div/div/mat-expansion-panel")).click(); // Click 'Add new card'
+            Thread.sleep(1000);
+
+            WebElement nameContainer = browserWindow.findElement(By.id("mat-input-1"));
+            nameContainer.click();
+            String namePlaceholder = nameContainer.getAttribute("placeholder");
+
+            WebElement cardNumberContainer = browserWindow.findElement(By.id("mat-input-2"));
+            cardNumberContainer.click();
+            String cardNumberPlaceholder = cardNumberContainer.getAttribute("placeholder");
+
+            WebElement expiryMonthContainer = browserWindow.findElement(By.id("mat-input-3"));
+            expiryMonthContainer.click();
+            String expiryMonthPlaceholder = expiryMonthContainer.getAttribute("placeholder");
+
+            WebElement expiryYearContainer = browserWindow.findElement(By.id("mat-input-4"));
+            expiryYearContainer.click();
+            String expiryYearPlaceholder = expiryYearContainer.getAttribute("placeholder");
+
+            assertEquals(namePlaceholder, "");
+            assertEquals(cardNumberPlaceholder, "");
+            assertNull(expiryMonthPlaceholder);
+            assertNull(expiryYearPlaceholder);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    /* Start of helper methods */
 
     private static void clearPaymentMethods(WebDriver browserWindow, String cardNum, String name){
 
