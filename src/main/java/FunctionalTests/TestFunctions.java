@@ -16,7 +16,7 @@ import static org.testng.Assert.*;
 public class TestFunctions
 {
     //TODO Replace as many path strings as possible with variables
-    //TODO change email randomizer
+
 
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
