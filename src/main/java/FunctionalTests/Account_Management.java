@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -67,6 +68,7 @@ public class Account_Management implements ITest
         try {
             // MA_001 test case: Verify that the Profile page is hidden while logged out
 
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (TestFunctions.navPath)));
             browserWindow.findElement(By.cssSelector (TestFunctions.navPath)).click ();
 
 
@@ -77,15 +79,14 @@ public class Account_Management implements ITest
                 assertFalse (false);
             }
 
+            Actions ESCAPE = new Actions (browserWindow);
+            ESCAPE.sendKeys (Keys.ESCAPE).perform ();
+
             // MA_002 test case: Verify navigating to 'Profile' page
 
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id (TestFunctions.navPath)));
-            browserWindow.findElement(By.id (TestFunctions.navPath)).click ();
 
-            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)")));
-            WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
-            AccountManagement.click ();
+            navToAccountManagement (browserWindow, wait, By.cssSelector (TestFunctions.navPath));
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#card > div > h1")));
             WebElement profileTitle = browserWindow.findElement (By.cssSelector ("#card > div > h1"));
@@ -96,13 +97,7 @@ public class Account_Management implements ITest
         }
 
 
-
-
     }
-
-
-
-
 
 
     // TODO How to upload a picture and how to check if the pic is uploaded
@@ -110,8 +105,7 @@ public class Account_Management implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
      *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
      * link: https://ibb.co/6gBdXKJ
      */
@@ -123,56 +117,64 @@ public class Account_Management implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void MA2_Update_Profile(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
-        //Browser setup
+    public void MA2_Update_Profile(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Website
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
 
-        loginForMe (browserWindow,email,password);
-        Thread.sleep (1000);
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep (1000);
+        try {
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
 
+            //Navigate to Account Management
+            navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("username")));
+            WebElement profileUserName = browserWindow.findElement (By.id ("username"));
+
+            profileUserName.clear ();
+            profileUserName.sendKeys ("IamHelloWorld");
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#submit")));
+            WebElement setUsernameBtn = browserWindow.findElement (By.cssSelector ("#submit"));
+            setUsernameBtn.click ();
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#card > div > div:nth-child(2) > p")));
+            WebElement checkUsername = browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > p"));
+            assertEquals (checkUsername.getText (), "\\IamHelloWorld");
+
+
+
+            WebElement profilePicUrl = browserWindow.findElement (By.id ("url"));
+            Thread.sleep (1000);
+            profilePicUrl.sendKeys ("https://ibb.co/6gBdXKJ");
+
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#submitUrl")));
+            WebElement setPicture = browserWindow.findElement (By.cssSelector ("#submitUrl"));
+
+            setPicture.click ();
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
+
+    }
+
+    private void navToAccountManagement(WebDriver browserWindow, WebDriverWait wait, By navbarAccount) {
+        wait.until (ExpectedConditions.visibilityOfElementLocated (navbarAccount));
+        browserWindow.findElement (navbarAccount).click ();
+
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)")));
         WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
         AccountManagement.click ();
-        Thread.sleep (1000);
-
-        WebElement profileUserName = browserWindow.findElement (By.id ("username"));
-        Thread.sleep (1000);
-        profileUserName.sendKeys ("IamHelloWorld");
-        WebElement setUsernameBtn = browserWindow.findElement (By.cssSelector ("#submit"));
-        Thread.sleep (1000);
-        setUsernameBtn.click ();
-        Thread.sleep (1000);
-        WebElement checkUsername = browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > p"));
-        assertEquals (checkUsername.getText (), "\\IamHelloWorld");
-
-
-
-        WebElement profilePicUrl = browserWindow.findElement (By.id ("url"));
-        Thread.sleep (1000);
-        profilePicUrl.sendKeys ("https://ibb.co/6gBdXKJ");
-        Thread.sleep (1000);
-
-        WebElement setPicture = browserWindow.findElement (By.cssSelector ("#submitUrl"));
-        Thread.sleep (1000);
-        setPicture.click ();
-        Thread.sleep (1000);
-
-
-
-
-
-        Thread.sleep(2500);
-        browserWindow.quit();
     }
 
 
@@ -185,7 +187,7 @@ public class Account_Management implements ITest
             enabled = true
     )
 
-    public void MA3_Update(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void MA3_Update(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
 
     }
 
@@ -198,8 +200,29 @@ public class Account_Management implements ITest
             enabled = true
     )
 
-    public void MA_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+    public void MA_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
 
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+        try {
+            Login.testRegressionForMe (browserWindow,false);
+
+            // Login
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+
+            // Navigate to Account Management
+            navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
+
+        }finally {
+            Thread.sleep (TestFunctions.endTestWait);
+            browserWindow.quit ();
+        }
     }
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
