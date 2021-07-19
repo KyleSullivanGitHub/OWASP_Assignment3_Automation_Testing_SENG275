@@ -54,6 +54,7 @@ public class Login implements ITest
     public static final String profileCSS = "#mat-menu-panel-0 > div > button:nth-child(1)";
     public static final String ordersAndPaymentsCSS = "#mat-menu-panel-0 > div > button:nth-child(2) > span";
     public static final String privacyAndSecurityCSS = "button.mat-menu-trigger:nth-child(3)";
+    public static final String supportChatCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(8)";
 
 
     /**
@@ -615,6 +616,10 @@ public class Login implements ITest
             WebElement DeluxeMembership = browserWindow.findElement (By.cssSelector (DeluxeMembershipCSS));
             assertElement (DeluxeMembership);
 
+            // Check Support Chat
+
+            WebElement supportChat = browserWindow.findElement (By.cssSelector (supportChatCSS));
+            assertElement (supportChat);
 
 
         }else{
@@ -686,6 +691,9 @@ public class Login implements ITest
 
     static void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+
         boolean notFound = true;
         int optionTry = 0;
         int optionTryLimit = 50;
@@ -727,9 +735,10 @@ public class Login implements ITest
         }
 
         //give security question answer
-        Thread.sleep (500);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector("#securityAnswerControl")));
         browserWindow.findElement(By.cssSelector("#securityAnswerControl")).sendKeys(answer); //enter answer
-        sleep (1);
+
+        wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector("#registerButton")));
         browserWindow.findElement(By.cssSelector("#registerButton")).click();
 
 
@@ -738,6 +747,8 @@ public class Login implements ITest
 
     private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
+
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         browserWindow.get(TestFunctions.website);
         sleep (1);
@@ -752,8 +763,8 @@ public class Login implements ITest
         assertTrue(accountMenuLogin.isEnabled());
         accountMenuLogin.click();
 
-        sleep (1);
-
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id("email")));
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("password")));
 
         browserWindow.findElement(By.id("email")).sendKeys(email); //enter email
         browserWindow.findElement(By.id ("password")).sendKeys(password); //enter password
@@ -763,7 +774,7 @@ public class Login implements ITest
 
     static void fillOutLogGoogle(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
-
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         browserWindow.get(TestFunctions.website);
 
@@ -786,7 +797,9 @@ public class Login implements ITest
 
 
 
-        sleep (1);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
+        wait.until (ExpectedConditions.elementToBeClickable (By.id ("loginButtonGoogle")));
+
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
 
 
@@ -798,23 +811,26 @@ public class Login implements ITest
     }
 
     static void emailPassEnter(WebDriver browserWindow, String email, String password, WebElement emailUsr) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
         emailUsr.click ();
         emailUsr.sendKeys (email);
         emailUsr.sendKeys (Keys.ENTER);
-        sleep (2);
 
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input")));
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        sleep (6);
-        passwordInput.click ();
-        passwordInput.sendKeys (password);
 
+        wait.until (ExpectedConditions.elementToBeClickable (passwordInput));
+        passwordInput.click ();
+
+        passwordInput.sendKeys (password);
         passwordInput.sendKeys (Keys.ENTER);
     }
 
 
     private void fillOutLogGoogleInvalid(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
-
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         browserWindow.get(TestFunctions.website);
         sleep (1);
@@ -832,8 +848,8 @@ public class Login implements ITest
         WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
         accountMenuLogin.click();
 
-        sleep (1);
-
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
+        wait.until (ExpectedConditions.elementToBeClickable (By.id ("loginButtonGoogle")));
 
 
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
@@ -851,7 +867,9 @@ public class Login implements ITest
     }
 
     private void loginWithRecentlyRegisteredAccount(Object[] dataSet, WebDriver browserWindow, boolean invalid) throws InterruptedException {
-        sleep (1);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("email")));
+
         if (invalid){
             browserWindow.findElement (By.id ("email")).sendKeys (dataSet[0].toString ()+"inv");
         }else{
@@ -859,8 +877,10 @@ public class Login implements ITest
         }
 
 
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("password")));
         browserWindow.findElement (By.id ("password")).sendKeys (dataSet[1].toString ());
-        sleep (6);
+
+        wait.until (ExpectedConditions.elementToBeClickable (By.id ("loginButton")));
 
         browserWindow.findElement (By.id ("loginButton")).click ();
         sleep (6);
@@ -871,7 +891,7 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("email")).sendKeys ("");
         browserWindow.findElement (By.id ("password")).clear ();
         browserWindow.findElement (By.id ("password")).sendKeys ("");
-        Thread.sleep(500);
+        sleep (6);
     }
 
     private void validEmailandInvalidPasswordCase(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
@@ -887,13 +907,19 @@ public class Login implements ITest
     }
 
     private WebElement inavlidPassPlusMessage(Object o, WebDriver browserWindow) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input")));
+
         WebElement passwordInput = browserWindow.findElement (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
+
+        wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input")));
         passwordInput.click ();
         passwordInput.sendKeys ("inv" + o.toString ());
 
         passwordInput.sendKeys (Keys.ENTER);
 
-        sleep (1);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)")));
         WebElement message1 = browserWindow.findElement (By.cssSelector ("#view_container > div > div > div.pwWryf.bxPAYd > div > div.WEQkZc > div > form > span > section > div > div > div.SdBahf.VxoKGd.Jj6Lae > div.OyEIQ.uSvLId > div:nth-child(2)"));
         sleep (1);
         return message1;
