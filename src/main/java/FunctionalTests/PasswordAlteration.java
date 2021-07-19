@@ -38,19 +38,10 @@ public class PasswordAlteration implements ITest
         newInvalidPassword = "1234";
     }
 
-    /*
-    TODO:
-    PA1 - Smoke - Valid password recovery from log in - STATUS: COMPLETED (needs review)
-    PA2 - Smoke - Invalid password recovery from log in - STATUS: COMPLETED (needs review)
-    PA3 - Sanity - Valid password reset (from change password page) - STATUS: COMPLETED (needs review)
-    PA4 - Sanity - Invalid password reset (from change password page) - STATUS: COMPLETED (needs review)
-    PA - Regression - STATUS: Not done, complete at end
-     */
-
     /**
      * Smoke test for valid password recovery from log in page
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","PasswordAlteration","PA_Smoke","hasDataProvider"},
@@ -70,21 +61,28 @@ public class PasswordAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Navigate to 'forgot password' page:
-        navigateToForgotPassword(browserWindow);
+        try {
+            // Navigate to 'forgot password' page:
+            navigateToForgotPassword(browserWindow);
 
-        // Fill in form with data and invalid new password
-        fillForgotPasswordData(browserWindow, newValidPassword);
+            // Fill in form with data and invalid new password
+            Thread.sleep(1000);
+            fillForgotPasswordData(browserWindow, newValidPassword);
 
-        // If fields were successfully filled out, proceed to reset
-        assertTrue(browserWindow.findElement(By.id("resetButton")).isEnabled());
-        browserWindow.findElement(By.id("resetButton")).click();
+            // If fields were successfully filled out, proceed to reset
+            assertTrue(browserWindow.findElement(By.id("resetButton")).isEnabled());
+            browserWindow.findElement(By.id("resetButton")).click();
 
-        // Login with new password to validate that it was reset
-        logIn(browserWindow, constEmail, constPassword);
+            // Login with new password to validate that it was reset
+            logIn(browserWindow, constEmail, constPassword);
 
-        // Validate logged in successfully
-        validateLoggedIn(browserWindow);
+            // Validate logged in successfully
+            validateLoggedIn(browserWindow);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
@@ -110,20 +108,26 @@ public class PasswordAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Navigate to 'forgot password' page:
-        navigateToForgotPassword(browserWindow);
+        try {
+            // Navigate to 'forgot password' page:
+            navigateToForgotPassword(browserWindow);
 
-        // Fill in form with data and invalid new password
-        fillForgotPasswordData(browserWindow, newInvalidPassword);
+            // Fill in form with data and invalid new password
+            fillForgotPasswordData(browserWindow, newInvalidPassword);
 
-        // If fields were successfully filled out, verify that rest button is disabled
-        assertFalse(browserWindow.findElement(By.id("resetButton")).isEnabled());
+            // If fields were successfully filled out, verify that rest button is disabled
+            assertFalse(browserWindow.findElement(By.id("resetButton")).isEnabled());
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for valid password reset from change password page
      * Programmer: Salam Fazil
-     * @param chosenBrowser browser used for that test
+     * @param chosenBrowser browser used for test
      */
     @Test(
             groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
@@ -143,30 +147,36 @@ public class PasswordAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Log in
-        logIn(browserWindow, constEmail, constPassword);
+        try {
+            // Log in
+            logIn(browserWindow, constEmail, constPassword);
 
-        // Change password and store whether it was successful or not in result
-        boolean result = changePassword(browserWindow, constPassword, newValidPassword);
-        assertTrue(result); // Should be successful since entered valid password
+            // Change password and store whether it was successful or not in result
+            boolean result = changePassword(browserWindow, constPassword, newValidPassword);
+            assertTrue(result); // Should be successful since entered valid password
 
-        // Log out then log back in with new password
-        logOut(browserWindow);
-        logIn(browserWindow, constEmail, newValidPassword);
-        Thread.sleep(1000);
+            // Log out then log back in with new password
+            logOut(browserWindow);
+            logIn(browserWindow, constEmail, newValidPassword);
+            Thread.sleep(1000);
 
-        // Validate logged in successfully
-        validateLoggedIn(browserWindow);
-        Thread.sleep(1000);
+            // Validate logged in successfully
+            validateLoggedIn(browserWindow);
+            Thread.sleep(1000);
 
-        // Reset password back to original for next browser
-        changePassword(browserWindow, newValidPassword, constPassword);
+            // Reset password back to original for next browser
+            changePassword(browserWindow, newValidPassword, constPassword);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Sanity test for invalid password reset from change password page
      * Programmer: Salam Fazil
-     * @param chosenBrowser browser used for that test
+     * @param chosenBrowser browser used for test
      */
     @Test(
             groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
@@ -186,12 +196,183 @@ public class PasswordAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Log in
-        logIn(browserWindow, constEmail, constPassword);
+        try {
+            // Log in
+            logIn(browserWindow, constEmail, constPassword);
 
-        // Change password and store whether it was successful or not in result
-        boolean result = changePassword(browserWindow, constPassword, newInvalidPassword);
-        assertFalse(result); // Should not be successful since entered invalid password
+            // Change password and store whether it was successful or not in result
+            boolean result = changePassword(browserWindow, constPassword, newInvalidPassword);
+            assertFalse(result); // Should not be successful since entered invalid password
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    @Test(
+            groups = {"Regression","PasswordAlteration","PA_Regression","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void PA_regressionForgetPasswordPage(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+            // Go to forgot password page
+            navigateToForgotPassword(browserWindow);
+
+            // Verify URL, title, and page heading
+            String url = browserWindow.getCurrentUrl();
+            String title = browserWindow.getTitle();
+            String heading = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                    "mat-sidenav-content > app-forgot-password > div > mat-card > h1")).getText();
+
+            assertEquals(url, "https://juice-shop.herokuapp.com/#/forgot-password");
+            assertEquals(title, "OWASP Juice Shop");
+            assertEquals(heading, "Forgot Password");
+
+            // Verify top bar elements exist (logged out)
+            verifyTopBarElements(browserWindow, false);
+
+            // Verify place holder text
+            WebElement emailContainer = browserWindow.findElement(By.id("email"));
+            emailContainer.click();
+            String emailPlaceholder = emailContainer.getAttribute("placeholder");
+
+            WebElement securityQuestionContainer = browserWindow.findElement(By.id("securityAnswer"));
+            securityQuestionContainer.click();
+            String securityQuestionPlaceholder = securityQuestionContainer.getAttribute("placeholder");
+
+            WebElement newPasswordContainer = browserWindow.findElement(By.id("newPassword"));
+            newPasswordContainer.click();
+            String newPasswordPlaceholder = newPasswordContainer.getAttribute("placeholder");
+
+            WebElement newPasswordRepeatContainer = browserWindow.findElement(By.id("newPasswordRepeat"));
+            newPasswordRepeatContainer.click();
+            String newPasswordRepeatPlaceholder = newPasswordRepeatContainer.getAttribute("placeholder");
+
+            assertEquals(emailPlaceholder, "Enter your email");
+            assertEquals(securityQuestionPlaceholder, "Enter Security Question");
+            assertEquals(newPasswordPlaceholder, "Enter a New Password");
+            assertEquals(newPasswordRepeatPlaceholder, "Repeat New Password");
+
+            // Verify password entered is hidden
+            assertEquals(newPasswordContainer.getAttribute("type"), "password");
+            assertEquals(newPasswordRepeatContainer.getAttribute("type"), "password");
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
+    }
+
+    @Test(
+            groups = {"Regression","PasswordAlteration","PA_Regression","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void PA_regressionChangePasswordPage(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+            // Log in then go to change password page
+            logIn(browserWindow, constEmail, constPassword);
+            navigateToChangePassword(browserWindow);
+
+            // Verify URL, title, and page heading
+            String url = browserWindow.getCurrentUrl();
+            String title = browserWindow.getTitle();
+            String heading = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                    "mat-sidenav-content > app-privacy-security > mat-sidenav-container > mat-sidenav-content > " +
+                    "app-change-password > div > mat-card > h1")).getText();
+
+            assertEquals(url, "https://juice-shop.herokuapp.com/#/privacy-security/change-password");
+            assertEquals(title, "OWASP Juice Shop");
+            assertEquals(heading, "Change Password");
+
+            // Verify top bar elements exist (logged in)
+            verifyTopBarElements(browserWindow, true);
+
+            // Verify place holder text
+            WebElement currentPasswordContainer = browserWindow.findElement(By.id("currentPassword"));
+            currentPasswordContainer.click();
+            String currentPasswordPlaceholder = currentPasswordContainer.getAttribute("placeholder");
+
+            WebElement newPasswordContainer = browserWindow.findElement(By.id("newPassword"));
+            newPasswordContainer.click();
+            String newPasswordPlaceholder = newPasswordContainer.getAttribute("placeholder");
+
+            WebElement newPasswordRepeatContainer = browserWindow.findElement(By.id("newPasswordRepeat"));
+            newPasswordRepeatContainer.click();
+            String newPasswordRepeatPlaceholder = newPasswordRepeatContainer.getAttribute("placeholder");
+
+            assertEquals(currentPasswordPlaceholder, "Please provide your current password.");
+            assertEquals(newPasswordPlaceholder, "");
+            assertEquals(newPasswordRepeatPlaceholder, "");
+
+            // Verify password entered is hidden
+            assertEquals(newPasswordContainer.getAttribute("type"), "password");
+            assertEquals(newPasswordRepeatContainer.getAttribute("type"), "password");
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    /* Start of helper methods */
+
+    public static void verifyTopBarElements(WebDriver browserWindow, boolean loggedIn){
+        boolean logoExists = !browserWindow.findElements(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                "mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > " +
+                "span.mat-button-wrapper > img")).isEmpty();
+
+        boolean searchBtnExists = !browserWindow.findElements(By.cssSelector("#searchQuery")).isEmpty();
+        boolean accountBtnExists = !browserWindow.findElements(By.cssSelector("#navbarAccount")).isEmpty();
+
+        boolean languageBtnExists = !browserWindow.findElements(By.cssSelector("body > app-root > div > " +
+                "mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > " +
+                "button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base")).isEmpty();
+
+        boolean openSideNavBtnExists = !browserWindow.findElements(By.cssSelector("body > app-root > div > " +
+                "mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row " +
+                "> button:nth-child(1)")).isEmpty();
+
+        assertTrue(logoExists);
+        assertTrue(searchBtnExists);
+        assertTrue(accountBtnExists);
+        assertTrue(languageBtnExists);
+        assertTrue(openSideNavBtnExists);
+
+        if (loggedIn){
+            boolean yourBasketBtnExists = !browserWindow.findElements(By.cssSelector("body > app-root > div > " +
+                    "mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > " +
+                    "button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isEmpty();
+
+            assertTrue(yourBasketBtnExists);
+        }
     }
 
     private static boolean changePassword(WebDriver browserWindow, String currPassword, String newPassword) throws InterruptedException {
@@ -247,7 +428,7 @@ public class PasswordAlteration implements ITest
         browserWindow.navigate().refresh();
     }
 
-    private static void navigateToForgotPassword(WebDriver browserWindow) throws InterruptedException {
+    private static void navigateToForgotPassword(WebDriver browserWindow){
 
         // Go to log in page
         navigateToLogin(browserWindow);

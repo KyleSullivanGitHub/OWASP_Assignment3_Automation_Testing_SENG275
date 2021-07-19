@@ -11,6 +11,7 @@ import org.testng.annotations.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import static FunctionalTests.PasswordAlteration.verifyTopBarElements;
 import static FunctionalTests.TestFunctions.*;
 import static org.testng.Assert.*;
 
@@ -26,25 +27,16 @@ public class AddressAlteration implements ITest
      *Programmer: Salam Fazil
      */
     @BeforeSuite
-    public void SetUp() throws IOException, InterruptedException {
+    public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
         constAddressValues();
     }
 
-    /*
-    TODO:
-    AA1 - Smoke - Valid Addition - STATUS: COMPLETED (need review)
-    AA2 - Smoke - Invalid Addition - STATUS: COMPLETED (need review)
-    AA3 - Smoke - Address Removal - STATUS: COMPLETED (need review)
-    AA4 - Sanity - Invalid Addition - STATUS: COMPLETED (need review)
-    AA - regression - STATUS: Not Done, complete at the end
-    */
-
     /**
      * Smoke test for valid address addition
      * Programmer: Salam Fazil
-     * @param chosenBrowser
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
@@ -64,32 +56,41 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login and navigate to saved addresses
-        login(browserWindow);
-        navigateToSavedAddresses(browserWindow);
-        Thread.sleep(1000);
+        try {
+            // Login and navigate to saved addresses
+            login(browserWindow);
+            navigateToSavedAddresses(browserWindow);
+            Thread.sleep(1000);
 
-        // Clear all existing addresses
-        clearExistingAddresses(browserWindow);
+            // Clear all existing addresses
+            clearExistingAddresses(browserWindow);
 
-        // Create an address
-        boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), addressSet[3].toString(),
-                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
-        Thread.sleep(1000);
+            // Create an address
+            boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(),
+                    addressSet[3].toString(), addressSet[4].toString(), addressSet[5].toString(),
+                    addressSet[6].toString(), addressSet[7].toString());
+            Thread.sleep(1000);
 
-        // Validate created address exists
-        assertTrue(result);
-        for (int i = 1; i <= 7; i++) {
-            if(i == 3)
-                continue;
-            assertTrue(browserWindow.getPageSource().contains(addressSet[i].toString()));
+            // Validate created address exists
+            assertTrue(browserWindow.getPageSource().contains("The address at " + addressSet[6].toString() +
+                    " has been successfully added to your addresses."));
+            assertTrue(result);
+            for (int i = 1; i <= 7; i++) {
+                if (i == 3)
+                    continue;
+                assertTrue(browserWindow.getPageSource().contains(addressSet[i].toString()));
+            }
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 
     /**
      * Smoke test for invalid address addition
      * Programmer: Salam Fazil
-     * TODO: params
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
@@ -109,25 +110,31 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login
-        TestFunctions.login(browserWindow);
+        try {
+            // Login
+            TestFunctions.login(browserWindow);
 
-        // Initialize the constant address object
-        constAddressValues();
+            // Initialize the constant address object
+            constAddressValues();
 
-        // Navigate to create and address page and then fill in data with incorrect phone
-        navigateToSavedAddresses(browserWindow);
-        boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), "123456",
-                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
+            // Navigate to create and address page and then fill in data with incorrect phone
+            navigateToSavedAddresses(browserWindow);
+            boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), "123456",
+                    addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
 
-        // Validate that submit button is greyed out and un-clickable
-        assertFalse(result);
+            // Validate submit button is greyed out and un-clickable
+            assertFalse(result);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     /**
      * Smoke test for address removal
      * Programmer: Salam Fazil
-     * TODO: params
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
@@ -147,35 +154,42 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login and navigate to saved addresses
-        login(browserWindow);
-        navigateToSavedAddresses(browserWindow);
+        try {
+            // Login and navigate to saved addresses
+            login(browserWindow);
+            navigateToSavedAddresses(browserWindow);
 
-        // Initialize address set then clear all existing addresses
-        clearExistingAddresses(browserWindow);
+            // Initialize address set then clear all existing addresses
+            clearExistingAddresses(browserWindow);
 
-        // Create an address
-        createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), addressSet[3].toString(),
-                addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
-        Thread.sleep(1000);
+            // Create an address
+            createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(), addressSet[3].toString(),
+                    addressSet[4].toString(), addressSet[5].toString(), addressSet[6].toString(), addressSet[7].toString());
+            Thread.sleep(1000);
 
-        // Remove added address
-        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content" +
-                "/app-saved-address/div/app-address/mat-card/mat-table/mat-row/mat-cell[5]/button")).click();
-        Thread.sleep(1000);
+            // Remove added address
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content" +
+                    "/app-saved-address/div/app-address/mat-card/mat-table/mat-row/mat-cell[5]/button")).click();
+            Thread.sleep(1000);
 
-        // Validate address was removed
-        for (int i = 1; i <= 7; i++) {
-            if(i == 3)
-                continue;
-            assertFalse(browserWindow.getPageSource().contains(addressSet[i].toString()));
+            // Validate address was removed
+            assertTrue(browserWindow.getPageSource().contains("Your address has been removed."));
+            for (int i = 1; i <= 7; i++) {
+                if (i == 3)
+                    continue;
+                assertFalse(browserWindow.getPageSource().contains(addressSet[i].toString()));
+            }
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 
     /**
      * Sanity test for invalid address addition
      * Programmer: Salam Fazil
-     * TODO: params
+     * @param chosenBrowser browser being used for test
      */
     @Test(
             groups = {"Sanity","AddressAlteration","AA_Sanity","hasDataProvider"},
@@ -195,35 +209,174 @@ public class AddressAlteration implements ITest
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-        // Login
-        TestFunctions.login(browserWindow);
+        try {
+            // Login
+            TestFunctions.login(browserWindow);
 
-        // Initialize the constant address object
-        constAddressValues();
+            // Initialize the constant address object
+            constAddressValues();
 
-        // Navigate to the 'create an address' page and then fill in data
-        navigateToSavedAddresses(browserWindow);
-//        Thread.sleep(1000);
+            // Navigate to the 'create an address' page and then fill in data
+            navigateToSavedAddresses(browserWindow);
 
-        // Set invalid values one by one, and validate that submit
-        // button cannot be clicked when any of the data is invalid
-        cycleInvalidity(browserWindow);
+            // Set invalid values one by one, and validate that submit
+            // button cannot be clicked when any of the data is invalid
+            cycleInvalidity(browserWindow);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
+    @Test(
+            groups = {"Regression","AddressAlteration","AA_Regression","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void AA_regressionSavedAddressesPage(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+            // Login and go to saved addresses page
+            login(browserWindow);
+            navigateToSavedAddresses(browserWindow);
+
+            // Verify URL, title, and page heading
+            String url = browserWindow.getCurrentUrl();
+            String title = browserWindow.getTitle();
+            String heading = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                    "mat-sidenav-content > app-saved-address > div > app-address > mat-card > h1")).getText();
+
+            assertEquals(url, "https://juice-shop.herokuapp.com/#/address/saved");
+            assertEquals(title, "OWASP Juice Shop");
+            assertEquals(heading, "My saved addresses");
+
+            // Verify top bar elements exist (logged in)
+            verifyTopBarElements(browserWindow, true);
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    @Test(
+            groups = {"Regression","AddressAlteration","AA_Regression","hasDataProvider"},
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class
+    )
+
+    public void AA_regressionAddAddressPage(String chosenBrowser) throws IOException, InterruptedException {
+        //Create Test environment and browser
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        try {
+            // Log in then go to add address page
+            login(browserWindow);
+            navigateToSavedAddresses(browserWindow);
+            browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content " +
+                    "> app-saved-address > div > app-address > mat-card > div > button")).click();
+
+
+            // Verify URL, title, and page heading
+            String url = browserWindow.getCurrentUrl();
+            String title = browserWindow.getTitle();
+            String heading = browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > " +
+                    "mat-sidenav-content > app-address-create > div > mat-card > h1")).getText();
+
+            assertEquals(url, "https://juice-shop.herokuapp.com/#/address/create");
+            assertEquals(title, "OWASP Juice Shop");
+            assertEquals(heading, "Add New Address");
+
+            // Verify top bar elements exist (logged in)
+            verifyTopBarElements(browserWindow, true);
+
+            // Verify place holder text
+            WebElement countryContainer = browserWindow.findElement(By.id("mat-input-1"));
+            countryContainer.click();
+            String countryPlaceholder = countryContainer.getAttribute("placeholder");
+
+            WebElement nameContainer = browserWindow.findElement(By.id("mat-input-2"));
+            nameContainer.click();
+            String namePlaceholder = nameContainer.getAttribute("placeholder");
+
+            WebElement phoneContainer = browserWindow.findElement(By.id("mat-input-3"));
+            phoneContainer.click();
+            String phonePlaceholder = phoneContainer.getAttribute("placeholder");
+
+            WebElement zipContainer = browserWindow.findElement(By.id("mat-input-4"));
+            zipContainer.click();
+            String zipPlaceholder = zipContainer.getAttribute("placeholder");
+
+            WebElement addressContainer = browserWindow.findElement(By.id("address"));
+            addressContainer.click();
+            String addressPlaceholder = addressContainer.getAttribute("placeholder");
+
+            WebElement cityContainer = browserWindow.findElement(By.id("mat-input-6"));
+            cityContainer.click();
+            String cityPlaceholder = cityContainer.getAttribute("placeholder");
+
+            WebElement stateContainer = browserWindow.findElement(By.id("mat-input-7"));
+            stateContainer.click();
+            String statePlaceholder = stateContainer.getAttribute("placeholder");
+
+            assertEquals(countryPlaceholder, "Please provide a country.");
+            assertEquals(namePlaceholder, "Please provide a name.");
+            assertEquals(phonePlaceholder, "Please provide a mobile number.");
+            assertEquals(zipPlaceholder, "Please provide a ZIP code.");
+            assertEquals(addressPlaceholder, "Please provide an address.");
+            assertEquals(cityPlaceholder, "Please provide a city.");
+            assertEquals(statePlaceholder, "Please provide a state.");
+
+            browserWindow.navigate().refresh();
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+    /* Start of helper methods */
+
     private static void cycleInvalidity(WebDriver browserWindow) throws InterruptedException {
-        for (int i = 1; i <= 6 ; i++) {
-            Object temp = invalidate(i);
+        try {
+            for (int i = 1; i <= 6; i++) {
+                Object temp = invalidate(i);
 
-            // Fill in new address information with the i'th data being invalid
-            boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(),
-                    addressSet[3].toString(), addressSet[4].toString(), addressSet[5].toString(),
-                    addressSet[6].toString(), addressSet[7].toString());
+                // Fill in new address information with the i'th data being invalid
+                boolean result = createAddress(browserWindow, addressSet[1].toString(), addressSet[2].toString(),
+                        addressSet[3].toString(), addressSet[4].toString(), addressSet[5].toString(),
+                        addressSet[6].toString(), addressSet[7].toString());
 
-            //Thread.sleep(10000);
-            revalidate(i, temp);
+                //Thread.sleep(10000);
+                revalidate(i, temp);
 
-            // Validate that submit button is greyed out and un-clickable
-            assertFalse(result);
+                // Validate that submit button is greyed out and un-clickable
+                assertFalse(result);
+            }
+
+        } finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 
