@@ -167,13 +167,14 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         try {
             // method call to fillout logging in using Google and the valid credential provided by the data provider
             fillOutLogGoogle (browserWindow, dataSet[0].toString (), dataSet[1].toString ());
             sleep (2);
 
             // Assert proper logged in and directed back to the original website
-
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/access_token"));
             assertEquals (browserWindow.getCurrentUrl (), "https://juice-shop.herokuapp.com/#/access_token");
 
         }finally {
@@ -236,13 +237,20 @@ public class Login implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
         try{
 
         // Method call to fill out registration
         fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
         sleep (1);
 
+        // Test case TC_LF_006: No credentials
+        loginNoCredentials (browserWindow);
 
+
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButton")));
+        assertFalse (browserWindow.findElement (By.id ("loginButton")).isEnabled ());
 
         // Test case TC_LF_004: Invalid email and Valid password
         loginWithRecentlyRegisteredAccount(dataSet,browserWindow, true);
@@ -264,7 +272,7 @@ public class Login implements ITest
 
 
        // Get the error message
-        sleep (1);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (loginErrorMessageCSS)));
         WebElement message1 = browserWindow.findElement (By.cssSelector (loginErrorMessageCSS));
 
 
@@ -272,14 +280,7 @@ public class Login implements ITest
         // check the error message and see if it is right
         assertEquals (message1.getText (), loginErrorMessageText);
 
-        // Test case TC_LF_006: No credentials
-        loginNoCredentials (browserWindow);
 
-
-        // Assert that the login
-        browserWindow.get ("https://juice-shop.herokuapp.com/#/login");
-
-        assertFalse (browserWindow.findElement (By.id ("loginButton")).isEnabled ());
 
 
 
@@ -461,7 +462,7 @@ public class Login implements ITest
 
 
             // Go to the Login Page
-            browserWindow.get ("https://juice-shop.herokuapp.com/#/login");
+            TestFunctions.navToLogin (browserWindow);
 
 
             // Use actions to perform TAB and ENTER press
@@ -512,14 +513,15 @@ public class Login implements ITest
 
     private void LoginUsingActions(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
         Actions actionToTake = new Actions (browserWindow);
-        actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB,Keys.TAB).perform ();
-
-
+        actionToTake.sendKeys (Keys.TAB,Keys.TAB).perform ();
 
         actionToTake.sendKeys (dataSet[0].toString ());
+        System.out.println (dataSet[0].toString ()+"    hhefhdf");
+        sleep (1);
         actionToTake.sendKeys (Keys.TAB).perform ();
 
         actionToTake.sendKeys (dataSet[1].toString ());
+        sleep (1);
         actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.ENTER).perform ();
     }
 
@@ -887,10 +889,11 @@ public class Login implements ITest
     }
 
     private void loginNoCredentials(WebDriver browserWindow) throws InterruptedException {
+        browserWindow.findElement (By.id ("email")).click ();
         browserWindow.findElement (By.id ("email")).clear ();
-        browserWindow.findElement (By.id ("email")).sendKeys ("");
+        browserWindow.findElement (By.id ("password")).click ();
         browserWindow.findElement (By.id ("password")).clear ();
-        browserWindow.findElement (By.id ("password")).sendKeys ("");
+        browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-login > div")).click ();
         sleep (6);
     }
 
