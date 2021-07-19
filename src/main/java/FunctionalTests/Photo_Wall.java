@@ -6,6 +6,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.v85.log.Log;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -36,6 +37,7 @@ public class Photo_Wall implements ITest
     public static final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
     public static final String titleCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-search-result > div > div > div.heading.mat-elevation-z6 > div.ng-star-inserted";
     public static final String photoWallCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
+    public static final String photoWallTitleCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > h1";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -320,7 +322,72 @@ public class Photo_Wall implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void PW_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
+    public void PW_Regression(String chosenBrowser,Object[] dataSet) throws InterruptedException, IOException{
+        //Create driver and browser for this particular test
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        //Website setup
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+        try {
+
+            // Login
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+
+
+            //PW_002 test case: Verify captions show up when you hover mouse over photos
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (sideMenuCSS)));
+            WebElement sideBarMenu = browserWindow.findElement(By.cssSelector (sideMenuCSS));
+            sideBarMenu.click ();
+
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (photoWallCSS)));
+            WebElement photoWall = browserWindow.findElement (By.cssSelector (photoWallCSS));
+
+            photoWall.click ();
+
+            Login.testUrlAndTitleAndHeading(browserWindow,"https://juice-shop.herokuapp.com/#/photo-wall", "OWASP Juice Shop", "Photo Wall", photoWallTitleCSS);
+
+            // Common Regression Testing
+            Login.testRegressionForMe (browserWindow, true);
+
+
+            // Check Place Holder for Caption
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("mat-input-1")));
+            wait.until (ExpectedConditions.elementToBeClickable (By.id ("mat-input-1")));
+            WebElement captionInput = browserWindow.findElement (By.id ("mat-input-1"));
+            Login.assertElement (captionInput);
+
+
+            // Check Submit Button
+            WebElement submitBtn = browserWindow.findElement (By.id ("submitButton"));
+            assertTrue (submitBtn.isDisplayed ());
+
+
+
+            //Check Caption Error Message
+            captionInput.click ();
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > div.ng-star-inserted > div")));
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > div.ng-star-inserted > div")));
+            browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > div.ng-star-inserted > div")).click ();
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-error-0")));
+            WebElement captionErr = browserWindow.findElement (By.cssSelector ("#mat-error-0"));
+            assertEquals (captionErr.getText (), "Please enter a caption");
+
+            // Common Regression Testing again after changes
+            Login.testRegressionForMe (browserWindow, true);
+
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
 
     }
 
