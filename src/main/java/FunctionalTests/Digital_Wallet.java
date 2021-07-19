@@ -117,8 +117,8 @@ public class Digital_Wallet {
     }
 
     /**
-     *Sanity tests for add a new card during payment.
-     * Verifies can add money to digital wallet using add new card
+     *Sanity tests for adding negative funds.
+     * Verifies cannot add funds to digital wallet using negative value
      *Programmer: Ewan Morgan
      */
     @Test(
@@ -126,7 +126,7 @@ public class Digital_Wallet {
             priority = 0,
             enabled = true
     )
-    public void DW4_Valid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
+    public void DW3_InvalidAmount(String chosenBrowser) throws IOException, InterruptedException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         browserWindow = browser.makeDriver();
@@ -155,16 +155,12 @@ public class Digital_Wallet {
             //Navigate to Digital Wallet
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[5]")).click();
 
-            //Add 100$ to Digital Wallet
+            //Add -100$ to Digital Wallet
             WebElement digit = browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]"));
-            digit.sendKeys("100");
+            digit.sendKeys("-100");
 
             //press continue
             browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
-
-            //Add -100$ to Digital Wallet
-            WebElement neg_digit = browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]"));
-            neg_digit.sendKeys("-100");
 
             WebElement cont = browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]"));
             assertFalse(cont.isEnabled());
@@ -179,8 +175,8 @@ public class Digital_Wallet {
 
     }
     /**
-     *Sanity tests a invalid digital wallet usage.
-     * Verifies cannot add negative funds to digital wallet
+     *Sanity tests adding funds to digital wallet using Add New Card feature.
+     * Verifies can add funds to digital wallet using add new card feature
      *Programmer: Ewan Morgan
      */
     @Test(
@@ -188,7 +184,7 @@ public class Digital_Wallet {
             priority = 0,
             enabled = true
     )
-    public void DW3_Invalid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
+    public void DW4_Invalid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         browserWindow = browser.makeDriver();
@@ -253,6 +249,19 @@ public class Digital_Wallet {
             Thread.sleep(TestFunctions.endTestWait);
             browserWindow.quit();
         }
+    }
+
+    /**
+     *Regression tests for Digital_Wallet
+     *Programmer: Ewan Morgan
+     */
+    @Test(
+            groups = {"Regression","Digital_Wallet Regression","Digital_Wallet"},
+            priority = 0,
+            enabled = true
+    )
+    public void DW_Regression() {
+        //TODO ADD Digital Wallet REGRESSION TEST
     }
 
 }

@@ -250,4 +250,17 @@ public class Customer_Feedback {
         }
         return "0";
     }
+
+    /**
+     *Regression tests for Customer_Feedback
+     *Programmer: Ewan Morgan
+     */
+    @Test(
+            groups = {"Regression","Customer_Feedback Regression","Customer_Feedback"},
+            priority = 0,
+            enabled = true
+    )
+    public void CF_Regression() {
+        //TODO ADD Basket REGRESSION TEST
+    }
 }
