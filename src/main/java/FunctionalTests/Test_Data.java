@@ -1,16 +1,18 @@
 package FunctionalTests;
+import Setup.CreateEnvironment;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
+
+import java.io.IOException;
 import java.util.Random;
 
 public class Test_Data
 {
-//TODO maybe switch from multiple parameters to a builder pattern or an object?
-
     private static int randomNum1 = emailRandomizer();
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
-    private static String email = "helloworld7" ;
+    private static String email = "helloworld8" ;
     private static String password = "Seng310@#$";
     private static String answer = "seng";
 
@@ -27,8 +29,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                {"Chrome"},
-                {"Edge"}
+                //{"Chrome"},
+                //{"Edge"}
                 //{"Safari"}
         };
     }
@@ -90,10 +92,12 @@ public class Test_Data
     public static Object[][] LG1_Input()
     {
         setUpEmail();
+        Random randomNum = new Random ();
+        int randomInteger = randomNum.nextInt(1000);
         return new Object[][]{
-                {"Firefox", new Object[]{email+randomNum1+"@gmail.com",password,answer}},
-                {"Chrome", new Object[]{email+randomNum2+"@gmail.com",password,answer}},
-                {"Edge", new Object[]{email+randomNum3+"@gmail.com",password,answer}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                {"Firefox", new Object[]{email+randomNum1+randomInteger+"@gmail.com",password,answer}},
+                {"Chrome", new Object[]{email+randomNum2+randomInteger+"@gmail.com",password,answer}},
+                {"Edge", new Object[]{email+randomNum3+randomInteger+"@gmail.com",password,answer}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
                // {"Safari", email+randomNum4+"@gmail.com",password,question}
         };
     }
@@ -117,10 +121,10 @@ public class Test_Data
         String password = "seng275@";
 
         return new Object[][]{
-              //  {"Firefox", new Object[]{email+"@gmail.com",password}},
+                {"Firefox", new Object[]{email+"@gmail.com",password}},
                 {"Chrome", new Object[]{email+"@gmail.com",password}},
-              //  {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
-               // {"Safari", new Object[]{email+"@gmail.com",password}}
+                {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+              // {"Safari", new Object[]{email+"@gmail.com",password}}
         };
     }
 
@@ -178,10 +182,89 @@ public class Test_Data
                 {"Bulk_Valid_Date",new Object[]{validQuantity,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"}},
         };
     }
-    //int quantity, boolean doAddress, boolean doPickup, boolean doDate, String date
 
     //*******************************************************************************************************
 
+    /**
+     * This dataProvider passes valid random country, name, mobile number, zip code, address, city, and state strings for the AA1 valid input test
+     * Programmer: Salam Fazil
+     * @return object with random country, name, mobile number, zip code, address, city, state, and the browser for that test.
+     */
+    @DataProvider(
+            name = "AA1_Input",
+            parallel = true
+    )
+    public static Object[][] AA1_Input()
+    {
+        while(randomNum1 == randomNum2 || randomNum1 == randomNum3 || randomNum2 == randomNum3)
+        {
+            randomNum1 = emailRandomizer();
+            randomNum2 = emailRandomizer();
+            randomNum3 = emailRandomizer();
+            randomNum4 = emailRandomizer();
+        }
+        String email = "helloworld" ;
+        String password = "Seng310@#$";
+        String question = "seng";
+
+        return new Object[][]{
+                {"Firefox", email+randomNum1+"@gmail.com", password, question, "Country1", "Name1", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"},
+                {"Chrome", email+randomNum2+"@gmail.com", password, question, "Country2", "Name2", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"},
+                {"Edge", email+randomNum3+"@gmail.com", password, question, "Country3", "Name3", "2504932384", "V9L2T5", "1234 Nimpkish Rd.", "Victoria", "BC"}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
+                //{"Safari", email+randomNum4+"@gmail.com",password,question}
+        };
+    }
+
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "PV2_Input"
+    )
+    public static Object[][] PV2_Input() throws InterruptedException, IOException
+    {
+        CreateEnvironment passBrowser = new CreateEnvironment();
+        WebDriver browserWindow = passBrowser.createBrowser().makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
+        return new Object[][]{
+                {"12_Items_Per_Page", browserWindow,12},
+                {"24_Items_Per_Page", browserWindow,24},
+                {"36_Items_Per_Page", browserWindow,36},
+        };
+    }
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "RE2_Input"
+    )
+    public static Object[][] RE3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Review_Over_Char_Limit","spam"},
+        };
+    }
+
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "SC3_Input"
+    )
+    public static Object[][] SC3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Bad Input","jarbagarad"},
+        };
+    }
+
+    //*******************************************************************************************************
     /**
      * This method create a random integer to add to the end of an email to ensure unique emails for each.
      * Programmer: Kyle Sullivan

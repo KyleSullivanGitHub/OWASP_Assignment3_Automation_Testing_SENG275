@@ -1,12 +1,12 @@
 package FunctionalTests;
 
 import Setup.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Random;
@@ -70,7 +70,7 @@ public class Registration implements ITest
             //Fill out registration with a valid data set
             fillOutReg(browserWindow, dataSet);
 
-            browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+            TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
 
             //Check that the user is taken back to the login page
             Thread.sleep(1000);
@@ -125,30 +125,6 @@ public class Registration implements ITest
 
 
     /**
-     * purpose
-     * Programmer
-     *
-     * @param
-     */
-    @Test(
-            groups = {"", ""},
-            priority = 2,
-            enabled = false
-    )
-    public void RF3_Validation_Email() throws InterruptedException
-    {
-        //TODO Validation Email
-        try
-        {
-
-        }
-        finally
-        {
-            Thread.sleep(TestFunctions.endTestWait);
-        }
-    }
-
-    /**
      * Smoke tests several invalid cases for Registration, which can be found in the data provider class.
      * Programmer: Kyle Sullivan
      * @param testing Invalid case being tested
@@ -188,7 +164,7 @@ public class Registration implements ITest
             if (disabledButton)
             {
                 //...Ensure it does not accept the account details.
-                browserWindow.findElement(By.cssSelector(TestFunctions.regButton)).click();//click register button
+                TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
                 Thread.sleep(1000);
                 assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
             }
@@ -213,7 +189,7 @@ public class Registration implements ITest
      * @param
      */
     @Test(
-            groups = {"", ""},
+            groups = {"Regression", "Registration Regression", "Registration", "noDataProvider"},
             priority = 4,
             enabled = false
     )
@@ -221,30 +197,77 @@ public class Registration implements ITest
     {
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+
 
         try
         {
+            String xPathLoc = "register";
+            String pass = "primary";
+            String fail = "warn";
+            Object[] passwordComplexityExpected = new Object[]{"",fail,fail,fail,fail,fail};
+
+
             TestFunctions.navToReg(browserWindow);
-            Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
+
             assertEquals(browserWindow.findElement(By.className("mat-slide-toggle-thumb")).getAttribute("aria-checked"), "false");
+            assertEquals(browserWindow.findElement(By.linkText("User Registration")).getText(),"User Registration");
 
-            //check placeholder fields
-            //check normal color
+            WebElement email = browserWindow.findElement(By.id("emailControl"));
+            WebElement password = browserWindow.findElement(By.id("passwordControl"));
+            WebElement repPassword = browserWindow.findElement(By.id("repeatPasswordControl"));
+            WebElement secQuest = browserWindow.findElement(By.name("securityQuestion"));
+            WebElement secAnswer = browserWindow.findElement(By.id("securityAnswerControl"));
+            String[] placeholders = new String[]{"Email","Password","Repeat Password","Security Question","Answer"};
+            WebElement[] fields = new WebElement[]{email,password,repPassword,secQuest,secAnswer};
 
-            //mandatory field check
+            for(int preFilled = 0; preFilled <= 4; preFilled++)
+            {
+                assertEquals(fields[preFilled].getAttribute("aria-invalid"),"false");
+                assertEquals(fields[preFilled].findElement(By.linkText(placeholders[preFilled])),placeholders[preFilled]);
+            }
+            browserWindow.findElement(By.className("mat-slide-toggle-thumb")).click();
+            PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
+
             fillOutReg(browserWindow, new Object[]{"","","",false,""});
-            //touch security question
-            //Check mandatory fields
-            //check out password advice
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            secQuest.findElement(By.className("mat-select-trigger")).click();
+            secAnswer.click();
 
-            //clear current fields
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
+            for(int blank = 0; blank <= 4; blank++)
+                assertEquals(fields[blank].getAttribute("aria-invalid"),"true");
+            PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
+
+            fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100),"aB!", "aB3!a!", true, "answer"});
+
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
+            for(int incorrect = 0; incorrect <= 4; incorrect++)
+                assertEquals(fields[incorrect].getAttribute("aria-invalid"),(incorrect != 3 ?"true":"false"));
+            passwordComplexityExpected = new Object[]{"",pass,pass,fail,pass,fail};
+            PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
+
+
+            //Try to copy the contents of the password field
+            Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
+            for(int remove = 0; remove <= 4; remove++)
+            {
+                if(remove != 3)
+                {
+                    fields[remove].sendKeys(OSspecific + "a");
+                    fields[remove].sendKeys(OSspecific + "x");
+                }
+            }
 
             fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100) +"@gmail.com","aB3!aB3!", "aB3!aB3!", true, "answer"});
-            TestFunctions.commonRegression(browserWindow, UI, true);
-            //check out password advice
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
+            for(int incorrect = 0; incorrect <= 4; incorrect++)
+                assertEquals(fields[incorrect].getAttribute("aria-invalid"),(incorrect != 3 ?"true":"false"));
+            passwordComplexityExpected = new Object[]{"",pass,pass,pass,pass,pass};
+            PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);//check out password advice
 
             //check password is hidden
             WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
@@ -252,10 +275,15 @@ public class Registration implements ITest
             WebElement repPasswordField = browserWindow.findElement(By.cssSelector("#repeatPasswordControl"));
             assertEquals(repPasswordField.getAttribute("type"), "password");
 
+            TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
+            Thread.sleep(1000);
+            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
+
         }
         finally
         {
             Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
     }
 
@@ -303,7 +331,7 @@ public class Registration implements ITest
                     browserWindow.findElement(By.cssSelector("#mat-option-" + optionTry)).click();
                     notFound = false;
                 }
-                catch (Exception NoSuchElementException)
+                catch (NoSuchElementException exception)
                 {
                     //If the option was invalid, prepare to try the next one
                     notFound = true;

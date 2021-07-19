@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
@@ -40,8 +42,7 @@ public class Account_Management implements ITest
      *Smoke tests for Valid use of Account Management
      * Includes test cases MA_001, MA_002, MA_005
      *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
      */
     //TODO Check MA_005 and how to apply it
@@ -53,47 +54,50 @@ public class Account_Management implements ITest
             threadPoolSize = 3,
             enabled = true
     )
-    public void MA1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
-        //Browser setup
+    public void MA1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Website
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
-
-        // MA_001 test case: Verify that the Profile page is hidden while logged out
-
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(200);
-
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try {
+            // MA_001 test case: Verify that the Profile page is hidden while logged out
+
+            browserWindow.findElement(By.cssSelector (TestFunctions.navPath)).click ();
+
+
+            try {
+                WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
+                assertTrue (AccountManagement.isDisplayed ());
+            }catch (Exception e){
+                assertFalse (false);
+            }
+
+            // MA_002 test case: Verify navigating to 'Profile' page
+
+            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id (TestFunctions.navPath)));
+            browserWindow.findElement(By.id (TestFunctions.navPath)).click ();
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)")));
             WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
-            assertTrue (AccountManagement.isDisplayed ());
-        }catch (Exception e){
-            assertFalse (false);
+            AccountManagement.click ();
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#card > div > h1")));
+            WebElement profileTitle = browserWindow.findElement (By.cssSelector ("#card > div > h1"));
+            assertEquals (profileTitle.getText (),"User Profile");
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
 
-        // MA_002 test case: Verify navigating to 'Profile' page
-        loginForMe (browserWindow,email,password);
-        Thread.sleep (1000);
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep (1000);
-
-        WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
-        AccountManagement.click ();
-        Thread.sleep (1000);
-
-        WebElement profileTitle = browserWindow.findElement (By.cssSelector ("#card > div > h1"));
-        assertEquals (profileTitle.getText (),"User Profile");
 
 
-        Thread.sleep (1000);
-        browserWindow.quit();
+
     }
 
 
@@ -112,7 +116,7 @@ public class Account_Management implements ITest
      * link: https://ibb.co/6gBdXKJ
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
+            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement"},
             dataProvider = "LG3_Input",
             priority = 1,
             dataProviderClass = Test_Data.class,
@@ -172,44 +176,72 @@ public class Account_Management implements ITest
     }
 
 
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
+            dataProvider = "LG3_Input",
+            priority = 1,
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+
+    public void MA3_Update(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+
+    }
+
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
+            dataProvider = "LG3_Input",
+            priority = 1,
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+
+    public void MA_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+
+    }
+
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.get (TestFunctions.website);
-        Thread.sleep(500);
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (Complaint.titleCSS)));
+        TestFunctions.navToLogin (browserWindow);
 
-
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
-
-        Thread.sleep(1000);
-
-
-
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        Thread.sleep(1000);
+        sleep (1);
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        Thread.sleep(1000);
-        emailUsr.click ();
+        sleep (1);
+        Login.emailPassEnter (browserWindow, email, password, emailUsr);
 
-        emailUsr.sendKeys (email);
-        Thread.sleep(500);
-        emailUsr.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
-
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        Thread.sleep(500);
-        passwordInput.click ();
-        passwordInput.sendKeys (password);
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (Complaint.titleCSS)));
     }
+
+    private static void sleep(int a) throws InterruptedException {
+
+        switch (a) {
+            case 1:
+                Thread.sleep (1000);
+                break;
+            case 2:
+                Thread.sleep (2000);
+                break;
+            case 3:
+                Thread.sleep (3000);
+                break;
+            case 4:
+                Thread.sleep (4000);
+                break;
+            case 5:
+                Thread.sleep (5000);
+                break;
+
+        }
+    }
+
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)

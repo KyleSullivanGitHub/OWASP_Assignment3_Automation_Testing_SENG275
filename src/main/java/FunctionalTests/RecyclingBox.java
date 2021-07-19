@@ -3,7 +3,9 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -162,7 +164,6 @@ public class RecyclingBox implements ITest
     )
     public void RB_Regression() throws InterruptedException, IOException
     {
-        //TODO Recycling Regression
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -174,22 +175,37 @@ public class RecyclingBox implements ITest
         try
         {
             navToRecycle(browserWindow);
-            Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
 
-            //Test Place holder parts
+            assertEquals(browserWindow.findElement(By.linkText("Quantity")).getText(),"Quantity");
+
+            WebElement inputBox;
             //test for red
-            browserWindow.findElement(By.cssSelector(TestFunctions.mInput+"11")).sendKeys("");
-            //check box has gone red
+
+            try
+            {
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2"));
+            } catch (NoSuchElementException tryOther)
+            {
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3"));
+            }
+            inputBox.click();
+            assertEquals(inputBox.getAttribute("data-placeholder"),"...in liters");
+            try
+            {
+                browserWindow.findElement(By.id("recycle-form")).click();
+            }
+            catch (Exception ignore){}
+            assertEquals(inputBox.getAttribute("aria-invalid"),"true");
 
             //test invalid input
             fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow,TestFunctions.website+"recycle", true);
 
             //test valid input
             fillRecycling(browserWindow,new Object[]{1001,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"});
-            TestFunctions.commonRegression(browserWindow, UI, true);
+            TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
         }
         finally
         {
@@ -204,7 +220,7 @@ public class RecyclingBox implements ITest
         String xPathPart2 = "]/div/div/div/button[2]";
 
         TestFunctions.login(browserWindow);
-        browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
+        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath,true);
         Thread.sleep(500);
 
         boolean notFound = true;
@@ -217,7 +233,7 @@ public class RecyclingBox implements ITest
                 browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2)).click();
                 notFound = false;
             }
-            catch (Exception NoSuchElementException)
+            catch (NoSuchElementException tryOther)
             {
                 browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
                 Thread.sleep(500);
@@ -231,19 +247,21 @@ public class RecyclingBox implements ITest
     {
         Thread.sleep(3000);
         boolean notClicked = true;
+        WebElement inputBox;
+        //test for red
         while(notClicked)
         {
             try
             {
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).click();
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).sendKeys("" + dataSet[0]);
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2"));
                 notClicked = false;
-            } catch (Exception NoSuchElementExists)
+            } catch (NoSuchElementException tryOther)
             {
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).click();
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).sendKeys("" + dataSet[0]);
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3"));
                 notClicked = false;
             }
+            inputBox.click();
+            inputBox.sendKeys(""+dataSet[0]);
         }
         if((boolean) dataSet[1])
         {
@@ -255,8 +273,7 @@ public class RecyclingBox implements ITest
             {
                 TestFunctions.createAddress();
                 browserWindow.navigate().refresh();
-                TestFunctions.waitForSite(browserWindow,TestFunctions.mRadio+"38");
-                browserWindow.findElement(By.cssSelector(TestFunctions.mRadio+"38")).click();
+                TestFunctions.waitForSite(browserWindow,TestFunctions.mRadio+"38",true);
             }
         }
         if((int)dataSet[0] > 100)
@@ -265,13 +282,13 @@ public class RecyclingBox implements ITest
             {
                 for(int i = 0; i < 10; i++)
                 {
-                    try { browserWindow.findElement(By.cssSelector("#mat-checkbox-"+i)).click();}
-                    catch (Exception NoSuchElementException) {}
+                    try {TestFunctions.waitForSite(browserWindow,"#mat-checkbox-"+i,true);}
+                    catch (NoSuchElementException ignored ) {}
                 }
                 if((boolean) dataSet[3])
                 {
-                 browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-recycle/mat-card/div[1]/div/mat-form-field[3]/div/div[1]/div[4]/mat-datepicker-toggle")).click();
-                 browserWindow.findElement(By.xpath((String)dataSet[4])).click();
+                    TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-recycle/mat-card/div[1]/div/mat-form-field[3]/div/div[1]/div[4]/mat-datepicker-toggle",true);
+                    TestFunctions.waitForSiteXpath(browserWindow,(String)dataSet[4],true);
                 }
             }
         }
@@ -279,7 +296,7 @@ public class RecyclingBox implements ITest
     }
     private void validateRecycling(WebDriver browserWindow) throws InterruptedException
     {
-        browserWindow.findElement(By.cssSelector("#recycleButton")).click();
+        TestFunctions.waitForSite(browserWindow,"#recycleButton",true);
         Thread.sleep(1000);
         boolean foundPopup = false;
         for(int i = 0; i < 10; i++)
@@ -292,7 +309,7 @@ public class RecyclingBox implements ITest
                     break;
                 }
             }
-            catch (Exception NoSuchElementException){}
+            catch (NoSuchElementException ignored){}
         }
         assertTrue(foundPopup);
     }
