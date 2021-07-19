@@ -569,4 +569,33 @@ public class TestFunctions
         assertTrue(testing.isDisplayed());
     }
 
+    /*
+    Due to the nature of the security question answer box, there is potentially dozens of ids for the several answers.
+   The catch is that only a few of these are true for any given instance of a test, but we dont know which ones will be active.
+   As such, we are forced to just check for many different possible answers and use the first valid one we find.
+   This is not an error on the site's part, just a limitation of the automation.
+   */
+    /**
+     * Recursive function for finding elements with varying IDs
+     * Programmer: Kyle Sullivan, Nicole Makarowski
+     * @param browserWindow the browser for the regression test
+     * @param idPrefix ID of the element to search for excluding the number e.g "mat-radio-"
+     * @param optionTry starting index for element
+     * @param optionTryLimit ending index for element
+     * @return the WebElement if found, or null if unable to find.
+     */
+    public static WebElement findRadioButton(WebDriver browserWindow, String idPrefix, int optionTry, int optionTryLimit){
+        if (optionTry > optionTryLimit)
+            return null;
+
+        try {
+            //Try an potential option
+            WebElement element = browserWindow.findElement(By.id(idPrefix + optionTry));
+            return element;
+        }
+        catch (Exception NoSuchElementException) {
+            return findRadioButton(browserWindow, idPrefix, ++optionTry, optionTryLimit);
+        }
+    }
+
 }
