@@ -255,6 +255,7 @@ public class Complaint implements ITest
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
+     * @param dataSet provides email and password to Login
      */
     @Test(
             groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},

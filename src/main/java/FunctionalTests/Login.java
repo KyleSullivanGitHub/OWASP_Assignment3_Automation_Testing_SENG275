@@ -823,6 +823,7 @@ public class Login implements ITest
         WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
 
         wait.until (ExpectedConditions.elementToBeClickable (passwordInput));
+        sleep (1);
         passwordInput.click ();
 
         passwordInput.sendKeys (password);
