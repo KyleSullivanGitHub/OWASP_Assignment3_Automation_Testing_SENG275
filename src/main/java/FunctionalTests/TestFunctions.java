@@ -4,6 +4,8 @@ import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.IOException;
@@ -234,6 +236,7 @@ public class TestFunctions
         //navigate to login page
         navToLogin(test);
         //ensure that we can navigate to the sign up page
+        test.navigate().refresh();
         WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();//enter sign up page

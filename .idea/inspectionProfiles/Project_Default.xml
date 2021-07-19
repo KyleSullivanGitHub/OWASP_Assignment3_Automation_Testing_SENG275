@@ -51,7 +51,7 @@
     <inspection_tool class="groupsTestNG" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="groups">
         <value>
-          <list size="27">
+          <list size="28">
             <item index="0" class="java.lang.String" itemvalue="Integration" />
             <item index="1" class="java.lang.String" itemvalue="Regression" />
             <item index="2" class="java.lang.String" itemvalue="Login" />
@@ -79,6 +79,7 @@
             <item index="24" class="java.lang.String" itemvalue="NoDataProvider" />
             <item index="25" class="java.lang.String" itemvalue="AA_Regression" />
             <item index="26" class="java.lang.String" itemvalue="PMA_Regression" />
+            <item index="27" class="java.lang.String" itemvalue="PA_Regression" />
           </list>
         </value>
       </option>
