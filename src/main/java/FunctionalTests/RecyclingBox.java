@@ -5,6 +5,7 @@ import Setup.TestBrowser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -163,7 +164,6 @@ public class RecyclingBox implements ITest
     )
     public void RB_Regression() throws InterruptedException, IOException
     {
-        //TODO Recycling Regression
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -175,14 +175,29 @@ public class RecyclingBox implements ITest
         try
         {
             navToRecycle(browserWindow);
-            Object[] UI = new Object[]{"get URL", "Get Header", "Get title"};
 
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
 
-            //Test Place holder parts
+            assertEquals(browserWindow.findElement(By.linkText("Quantity")).getText(),"Quantity");
+
+            WebElement inputBox;
             //test for red
-            browserWindow.findElement(By.cssSelector(TestFunctions.mInput+"11")).sendKeys("");
-            //check box has gone red
+
+            try
+            {
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2"));
+            } catch (NoSuchElementException tryOther)
+            {
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3"));
+            }
+            inputBox.click();
+            assertEquals(inputBox.getAttribute("data-placeholder"),"...in liters");
+            try
+            {
+                browserWindow.findElement(By.id("recycle-form")).click();
+            }
+            catch (Exception ignore){}
+            assertEquals(inputBox.getAttribute("aria-invalid"),"true");
 
             //test invalid input
             fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
@@ -232,19 +247,21 @@ public class RecyclingBox implements ITest
     {
         Thread.sleep(3000);
         boolean notClicked = true;
+        WebElement inputBox;
+        //test for red
         while(notClicked)
         {
             try
             {
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).click();
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2")).sendKeys("" + dataSet[0]);
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "2"));
                 notClicked = false;
             } catch (NoSuchElementException tryOther)
             {
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).click();
-                browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3")).sendKeys("" + dataSet[0]);
+                inputBox = browserWindow.findElement(By.cssSelector(TestFunctions.mInput + "3"));
                 notClicked = false;
             }
+            inputBox.click();
+            inputBox.sendKeys(""+dataSet[0]);
         }
         if((boolean) dataSet[1])
         {

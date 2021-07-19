@@ -8,8 +8,6 @@ import java.util.Random;
 
 public class Test_Data
 {
-//TODO maybe switch from multiple parameters to a builder pattern or an object?
-
     private static int randomNum1 = emailRandomizer();
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
@@ -249,6 +247,20 @@ public class Test_Data
         return new Object[][]{
                 {"No_Inputs", ""},
                 {"Review_Over_Char_Limit","spam"},
+        };
+    }
+
+    //*******************************************************************************************************
+
+    @DataProvider(
+            name = "SC3_Input"
+    )
+    public static Object[][] SC3_Input()
+    {
+
+        return new Object[][]{
+                {"No_Inputs", ""},
+                {"Bad Input","jarbagarad"},
         };
     }
 

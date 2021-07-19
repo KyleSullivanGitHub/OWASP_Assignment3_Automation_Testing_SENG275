@@ -64,7 +64,7 @@ public class NavigationMenu implements ITest
 
         try
         {
-            menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+            menuOptions = TestFunctions.navbarLoggedOut;
             checkNav(browserWindow);
             browserWindow.findElement(By.xpath(xPathNavMenuCommon + 1 + xPathNavMenuEnd)).click();
             TestFunctions.waitForSite(browserWindow,TestFunctions.navPath);
@@ -96,7 +96,7 @@ public class NavigationMenu implements ITest
 
         try
         {
-            menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+            menuOptions = TestFunctions.navbarLoggedOut;
             URLConfirm = new Object[]{"","contact","about","photo-wall"};
             checkNavLinks(browserWindow);
         }
@@ -124,7 +124,7 @@ public class NavigationMenu implements ITest
 
         try
         {
-            menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+            menuOptions = TestFunctions.navbarLoggedIn;
             URLConfirm = new Object[]{"","contact","complain","chatbot","about","photo-wall","deluxe-membership"};
             TestFunctions.login(browserWindow);
             checkNavLinks(browserWindow);
