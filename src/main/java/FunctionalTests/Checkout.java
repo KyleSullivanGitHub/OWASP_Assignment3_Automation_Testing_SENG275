@@ -235,6 +235,31 @@ public class Checkout implements ITest {
 
     }
 
+    /**
+     *Smoke tests invalid purchase
+     *Programmer: Nicole Makarowski
+     */
+    @Test(
+            groups = {"Smoke","Checkout Smoke","Checkout", "noDataProvider"},
+            priority = 1,
+            enabled = true
+    )
+    public void CO3_Invalid_Usage(String chosenBrowser) throws InterruptedException, IOException
+    {}
+
+
+    /**
+     *Regression Test
+     *Programmer: Nicole Makarowski
+     */
+    @Test(
+            groups = {"Regression","Checkout Regression","Checkout", "noDataProvider"},
+            priority = 1,
+            enabled = true
+    )
+    public void CO_Regression(String chosenBrowser) throws InterruptedException, IOException
+    {}
+
     void addSavedAddress(WebDriver browserWindow) {
         //add new address
         browserWindow.findElement(By.xpath(addSavedAddress_XPath)).click();
