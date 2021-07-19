@@ -47,7 +47,7 @@ public class Basket implements ITest{
         browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
 
         //Verify Navigation to basket page
-        Thread.sleep(1500);
+        Thread.sleep(500);
         assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
     }
 
@@ -81,43 +81,45 @@ public class Basket implements ITest{
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
+        try {
+            browserWindow.manage().window().maximize();
 
-        //Wait for Website to load
-        browserWindow.get(website);
-        TestFunctions.waitForSite(browserWindow);
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
 
-        //Login/Initial steps??
-        TestFunctions.login(browserWindow);
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
 
-        Thread.sleep(1000);
+            //Add to cart
+            browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            Thread.sleep(1000);
 
-        //Add to cart
-        browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            //Quantity icon on cart updated
+            assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
-        Thread.sleep(1500);
-        //Quantity icon on cart updated
-        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+            Thread.sleep(1000);
 
-        //Navigate to Basket
-        browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+            //Verify Navigation to basket page
+            assertEquals(browserWindow.getCurrentUrl(), website + "/#/basket");
 
-        //Verify Navigation to basket page
-        Thread.sleep(1500);
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
+            //Verify product Info
+            assertEquals(browserWindow.findElement(By.xpath(productName_XPath)).getText(), "Apple Juice (1000ml)"); //Product Name
+            assertEquals(browserWindow.findElement(By.xpath(productPrice_XPath)).getText(), "1.99¤"); //Price
+            assertEquals(browserWindow.findElement(By.xpath(productQuantity_XPath)).getText(), "1"); //Quantity
+            assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 1.99¤"); //Total Price
 
-        //Verify product Info
-        assertEquals(browserWindow.findElement(By.xpath(productName_XPath)).getText(),"Apple Juice (1000ml)"); //Product Name
-        assertEquals(browserWindow.findElement(By.xpath(productPrice_XPath)).getText(),"1.99¤"); //Price
-        assertEquals(browserWindow.findElement(By.xpath(productQuantity_XPath)).getText(), "1"); //Quantity
-        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 1.99¤"); //Total Price
-
-        //Remove Product
-        browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 0¤");
-
-        browserWindow.quit();
+            //Remove Product
+            browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
+            Thread.sleep(500);
+            assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 0¤");
+        }
+        finally {
+            browserWindow.quit();
+        }
     }
 
     /**
@@ -126,20 +128,23 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket Smoke","Basket"},
+            groups = {"Smoke","Basket Smoke","Basket", "noDataProvider"},
             priority = 2,
             enabled = true
     )
     public void BA2_Invalid_Usage() throws InterruptedException{
-
         browserWindow = environment.makeDriver();
-        browserWindow.get(website);
-        TestFunctions.waitForSite(browserWindow);
-
-        //Verify add to basket element does not exist
-        assertTrue(browserWindow.findElements(By.xpath(addToCart_XPath)).isEmpty());
-
-        browserWindow.quit();
+        try {
+            browserWindow.manage().window().maximize();
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+            Thread.sleep(500);
+            //Verify add to basket element does not exist
+            assertTrue(browserWindow.findElements(By.xpath(addToCart_XPath)).isEmpty());
+        }
+        finally {
+            browserWindow.quit();
+        }
 
     }
 
@@ -148,49 +153,51 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Sanity","Basket Sanity","Basket"},
+            groups = {"Sanity","Basket Sanity","Basket", "noDataProvider"},
             priority = 3,
             enabled = true
     )
     public void BA3_Alternate_Usages() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
-        browserWindow.get(website);
-        browserWindow.manage().window().maximize();
-        TestFunctions.waitForSite(browserWindow);
+        try {
+            browserWindow.get(website);
+            browserWindow.manage().window().maximize();
+            TestFunctions.waitForSite(browserWindow);
 
-        //Login/Initial steps??
-        TestFunctions.login(browserWindow);
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
 
-        Thread.sleep(6000);
+            //Add to cart
+            browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            Thread.sleep(1000);
 
-        //Add to cart
-        browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+            Thread.sleep(1000);
 
-        //Navigate to Basket
-        browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+            //Verify Navigation to basket page
+            assertEquals(browserWindow.getCurrentUrl(), website + "/#/basket");
 
-        //Verify Navigation to basket page
-        Thread.sleep(1500);
-        assertEquals(browserWindow.getCurrentUrl(),website+"/#/basket");
+            //Increase Quantity by one
+            browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
+            Thread.sleep(500);
+            assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
 
-        //Increase Quantity by one
-        browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
+            //Decrease Quantity by one
+            browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
+            Thread.sleep(500);
+            assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
-        //Decrease Quantity by one
-        browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
-
-        //Remove Product
-        browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
-        Thread.sleep(1500);
-        assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(),"Total Price: 0¤");
-
-        browserWindow.quit();
-
+            //Remove Product
+            browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
+            Thread.sleep(500);
+            assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 0¤");
+        }
+        finally {
+            browserWindow.quit();
+        }
     }
 
     /**

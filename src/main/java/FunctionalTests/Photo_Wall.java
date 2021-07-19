@@ -10,7 +10,9 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
@@ -31,6 +33,9 @@ public class Photo_Wall implements ITest
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
+    public static final String sideMenuCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)";
+    public static final String titleCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-search-result > div > div > div.heading.mat-elevation-z6 > div.ng-star-inserted";
+
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -40,10 +45,6 @@ public class Photo_Wall implements ITest
     {
         environment = passBrowser.createBrowser();
     }
-
-
-
-
 
 
 
@@ -61,16 +62,16 @@ public class Photo_Wall implements ITest
             enabled = true
     )
     public void PW1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
-        //Browser setup
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Website
+        // Website setup
         browserWindow.get(TestFunctions.website);
-        Thread.sleep(2500);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
-        Thread.sleep(300);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
 
         // Login
         loginForMe (browserWindow,email,password);
@@ -287,47 +288,58 @@ public class Photo_Wall implements ITest
     }
 
 
+    @Test(
+            groups = {"Regression","Photo_Wall Regression", "Caption_Check"},
+            dataProvider = "LG3_Input",
+            priority = 1,
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void PW_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
 
+    }
 
 
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.get (TestFunctions.website);
-        Thread.sleep(500);
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        Thread.sleep(500);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
+        TestFunctions.navToLogin (browserWindow);
 
-
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
-
-        Thread.sleep(1500);
-
-
-
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-        Thread.sleep(1000);
+        sleep (1);
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        Thread.sleep(1000);
-        emailUsr.click ();
+        sleep (1);
+        Login.emailPassEnter (browserWindow, email, password, emailUsr);
 
-        emailUsr.sendKeys (email);
-        Thread.sleep(500);
-        emailUsr.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
+    }
 
-        WebElement passwordInput = browserWindow.findElement(By.cssSelector ("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input"));
-        Thread.sleep(500);
-        passwordInput.click ();
-        passwordInput.sendKeys (password);
-        Thread.sleep(500);
-        passwordInput.sendKeys (Keys.ENTER);
-        Thread.sleep(1000);
+    private static void sleep(int a) throws InterruptedException {
+
+        switch (a) {
+            case 1:
+                Thread.sleep (1000);
+                break;
+            case 2:
+                Thread.sleep (2000);
+                break;
+            case 3:
+                Thread.sleep (3000);
+                break;
+            case 4:
+                Thread.sleep (4000);
+                break;
+            case 5:
+                Thread.sleep (5000);
+                break;
+
+        }
     }
 
 
