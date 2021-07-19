@@ -35,23 +35,11 @@ public class Complaint implements ITest
     private final String feedbackFromSiteForComplaint = "Customer support will get in touch with you soon! Your complaint reference is";
     private final String complaintConfirmationCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > div.confirmation";
     private final String errorMessageToProvideText = "Please provide a text.";
-    private final String mainLogoCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(2) > span.mat-button-wrapper > img";
-    private final String searchBarCSS="#searchQuery > span > mat-icon.mat-icon.notranslate.mat-ripple.mat-search_icon-search.ng-tns-c242-1.material-icons.mat-icon-no-color";
-    private final String searchBarInputFieldCSS="#searchQuery";
-    private final String chooseLanguageBtnCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.mat-tooltip-trigger.mat-menu-trigger.buttons.mat-button.mat-button-base";
-    private final String cusFeedbackCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(6)";
-    private final String AboutUsCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(11) > div > span";
-    private final String scoreBoardCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(15) > div > span";
-    private final String PhotoWallCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12) > div > span";
-    private final String gitHubCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13)";
-    private final String DeluxeMembershipCSS = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(13) > div > span";
-    private final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
+       private final String CustomerPlaceHolderCSS = "#complaint-form > mat-form-field.mat-form-field.ng-tns-c126-10.mat-accent.mat-form-field-type-mat-input.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-has-label.mat-form-field-disabled.ng-untouched.ng-pristine.ng-star-inserted.mat-form-field-should-float > div > div.mat-form-field-flex.ng-tns-c126-10 > div:nth-child(1)";
     private final String CustomerTextInComplaintCSS = "#mat-form-field-label-5 > mat-label";
-    private final String AboutUsCSSBeforeLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(9)";
-    private final String AboutUsCSSAfterLogin = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(11)";
-    private final String scoreBoardCSSBefore = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(12)";
-    private final String scoreBoardCSSAfter = "body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(15)";
     private final String ComplaintHeadingCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-complaint > div > mat-card > h1";
+    public static final String titleCSS="body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-search-result > div > div > div.heading.mat-elevation-z6 > div.ng-star-inserted";
+
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -91,6 +79,8 @@ public class Complaint implements ITest
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
 
         // C_001 test case: Verify  'Complaints' field is not visible before login
 
@@ -99,7 +89,9 @@ public class Complaint implements ITest
             try {
                 WebElement sideMenu = browserWindow.findElement(By.cssSelector (sideMenuCSS));
                 sideMenu.clear ();
-                sleep (1);
+
+
+                wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (ComplaintCSS)));
                 WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
                 assertFalse (Complaint.isDisplayed ());
             }catch (Exception e){
@@ -109,23 +101,21 @@ public class Complaint implements ITest
 
             // C_002 test case: Verify navigation to complaint page
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            sleep (2);
-            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
 
-            sleep (6);
-            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
-            assertTrue (Complaint.isDisplayed ());
+            navigateToComplaint (browserWindow);
 
 
 
             // C_003 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
-            Complaint.click ();
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-input-1")));
             WebElement customer = browserWindow.findElement (By.cssSelector ("#mat-input-1"));
             assertTrue (customer.isDisplayed ());
 
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("complaintMessage")));
             WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
             assertTrue (Message.isDisplayed ());
 
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#complaint-form > div > label")));
             WebElement Invoice = browserWindow.findElement (By.cssSelector ("#complaint-form > div > label"));
             assertEquals (Invoice.getText (), "Invoice:");
 
@@ -179,19 +169,18 @@ public class Complaint implements ITest
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+
 
         try {
             // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            sleep (2);
-            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
 
-            sleep (6);
-            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
-            Complaint.click ();
+            navigateToComplaint (browserWindow);
 
 
-
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("submitButton")));
             WebElement submitButton = browserWindow.findElement (By.id ("submitButton"));
             assertFalse (submitButton.isEnabled ());
         }finally {
@@ -227,28 +216,28 @@ public class Complaint implements ITest
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
         try {
 
             // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
-            sleep (2);
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (sideMenuCSS)));
 
-            browserWindow.findElement(By.cssSelector (sideMenuCSS)).click ();
-
-            sleep (1);
-            WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
-            Complaint.click ();
+            navigateToComplaint (browserWindow);
 
 
-
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("complaintMessage")));
             WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
             Message.click ();
 
             // Click on the screen and leave Message empty, to make sure it is mandatory (gives a message to provide a text)
 
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content")));
             browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content")).click ();
 
             // Error message to provide text
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("mat-error-0")));
             WebElement errorMessage = browserWindow.findElement (By.id ("mat-error-0"));
             assertEquals (errorMessage.getText (), errorMessageToProvideText);
 
@@ -294,7 +283,7 @@ public class Complaint implements ITest
             sleep (3);
 
             // Navigate to Complaint Page
-            sleep (6);
+
             navigateToComplaint (browserWindow);
 
             Login.testUrlAndTitleAndHeading(browserWindow,"https://juice-shop.herokuapp.com/#/complain", "OWASP Juice Shop", "Complaint", ComplaintHeadingCSS);
@@ -347,11 +336,14 @@ public class Complaint implements ITest
     }
 
     private void navigateToComplaint(WebDriver browserWindow) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         WebElement sideMenu = browserWindow.findElement (By.cssSelector (sideMenuCSS));
         sideMenu.click ();
 
-        sleep (1);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (ComplaintCSS)));
+        wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (ComplaintCSS)));
+
         WebElement Complaint = browserWindow.findElement (By.cssSelector (ComplaintCSS));
         Complaint.click ();
 
@@ -362,31 +354,23 @@ public class Complaint implements ITest
 
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.get (TestFunctions.website);
-        sleep (1);
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
+        TestFunctions.navToLogin (browserWindow);
 
-        browserWindow.findElement(By.id ("navbarAccount")).click ();
-        sleep (6);
-
-
-
-        //verify that we can access the login page
-        WebElement accountMenuLogin = browserWindow.findElement(By.cssSelector(TestFunctions.navbarLogin));
-        assertTrue(accountMenuLogin.isEnabled());
-        accountMenuLogin.click();
-        sleep (6);
-
-
-
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
-
+        sleep (1);
 
 
         WebElement emailUsr = browserWindow.findElement(By.cssSelector (TestFunctions.identifierID));
-        sleep (2);
+        sleep (1);
         Login.emailPassEnter (browserWindow, email, password, emailUsr);
 
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
     }
+
 
     private static void sleep(int a) throws InterruptedException {
 
