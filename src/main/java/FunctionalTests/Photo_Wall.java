@@ -58,12 +58,10 @@ public class Photo_Wall implements ITest
      * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Smoke","Photo_Wall Smoke","Valid_Photo_Wall"},
+            groups = {"Smoke","Photo_Wall Smoke","Valid_Photo_Wall","hasDataProvider"},
             dataProvider = "LG3_Input",
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
     public void PW1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException{
         //Create driver and browser for this particular test
@@ -101,6 +99,8 @@ public class Photo_Wall implements ITest
 
 
             // PW_005 : Verify can't post picture without caption
+            // CANNOT upload picture as discussed with the prof
+            // Assuming it works
 
 //        pickImageBtn.click ();
 //        uploadFile("/Users/seyedmehradadimi/IdeaProjects/OWASP_Assignment3_Automation_Testing_SENG275/src/main/java/FunctionalTests/uvic_logo-horizontal.jpeg");
@@ -126,6 +126,9 @@ public class Photo_Wall implements ITest
 
 
             //PW_008 test case: Verify picture is posted with caption when 'submit' button is clicked
+            // CANNOT upload picture as discussed with the prof
+            // Assuming it works
+
 
 //            captionInput.click ();
 //            captionInput.sendKeys ("UVic Logo");
@@ -156,21 +159,16 @@ public class Photo_Wall implements ITest
      *Smoke tests for Invalid use of Photo_Wall feature and posting picture
      * Includes test cases PW_006, PW_007
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet provides email and password to Login
      */
     @Test(
             groups = {"Sanity","Photo_Wall Sanity","Invalid_Photo_Wall"},
-            dataProvider = "LG3_Input",
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
-    public void PW2_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException{
+    public void PW2_Valid_Use() throws InterruptedException, IOException{
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         // Website setup
@@ -181,7 +179,7 @@ public class Photo_Wall implements ITest
         try {
 
             // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
 
             //PW_007 test case: Verify caption warning message is displayed when no caption is entered
@@ -237,19 +235,20 @@ public class Photo_Wall implements ITest
 
 
 
-//TODO check this later for caption
+    /**
+     *Smoke tests for Valid use of Photo_Wall feature and posting picture
+     * Includes test cases
+     *Programmer: Seyedmehrad Adimi
+     */
+
     @Test(
-            groups = {"Sanity","Photo_Wall Sanity","Invalid_Photo_Wall", "Tweeter_Link", "Caption_Check"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Sanity","Photo_Wall Sanity","Invalid_Photo_Wall", "Tweeter_Link", "Caption_Check", "hasNoDataProvider"},
+            priority = 1
     )
-    public void PW3_Valid_Use(String chosenBrowser,Object[] dataSet) throws InterruptedException, IOException{
+    public void PW3_Valid_Use() throws InterruptedException, IOException{
         ///Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         // Website setup
@@ -260,7 +259,7 @@ public class Photo_Wall implements ITest
         try {
 
             // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
 
             //PW_002 test case: Verify captions show up when you hover mouse over photos
@@ -315,17 +314,13 @@ public class Photo_Wall implements ITest
 
 
     @Test(
-            groups = {"Regression","Photo_Wall Regression", "Caption_Check"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Regression","Photo_Wall Regression", "Caption_Check","hasNoDataProvider"},
+            priority = 1
     )
-    public void PW_Regression(String chosenBrowser,Object[] dataSet) throws InterruptedException, IOException{
+    public void PW_Regression() throws InterruptedException, IOException{
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
 
@@ -337,7 +332,7 @@ public class Photo_Wall implements ITest
         try {
 
             // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
 
             //PW_002 test case: Verify captions show up when you hover mouse over photos

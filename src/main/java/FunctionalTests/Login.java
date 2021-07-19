@@ -55,6 +55,8 @@ public class Login implements ITest
     public static final String ordersAndPaymentsCSS = "#mat-menu-panel-0 > div > button:nth-child(2) > span";
     public static final String privacyAndSecurityCSS = "button.mat-menu-trigger:nth-child(3)";
     public static final String supportChatCSS ="body > app-root > div > mat-sidenav-container > mat-sidenav > div > sidenav > mat-nav-list > a:nth-child(8)";
+    public static final String googleEmail = "helloworld.owasp@gmail.com";
+    public static final String googlePass = "seng275@";
 
 
     /**
@@ -77,9 +79,7 @@ public class Login implements ITest
             groups = {"Smoke","Login","Login Smoke","hasDataProvider"},
             priority = 0,
             dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
     public void LG1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
     {
@@ -118,8 +118,7 @@ public class Login implements ITest
      */
     @Test(
             groups = {"Smoke","Login Smoke","Login", "hasNoDataProvider"},
-            priority = 1,
-            enabled = true
+            priority = 1
     )
     public void LG2_Invalid_Input() throws InterruptedException
     {
@@ -150,27 +149,23 @@ public class Login implements ITest
     /**
      * Smoke test for valid Google Login within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
+
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login Smoke","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Smoke","Google_Login","Login Smoke","hasNoDataProvider"},
+            priority = 0
     )
-    public void LG3_Valid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG3_Valid_Input() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         try {
             // method call to fillout logging in using Google and the valid credential provided by the data provider
-            fillOutLogGoogle (browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+
+            fillOutLogGoogle (browserWindow, googleEmail, googlePass);
             sleep (2);
 
             // Assert proper logged in and directed back to the original website
@@ -191,8 +186,7 @@ public class Login implements ITest
      */
     @Test(
             groups = {"Smoke","Login Smoke","Google_Login", "hasNoDataProvider"},
-            priority = 1,
-            enabled = true
+            priority = 1
     )
     public void LG4_Invalid_Input() throws InterruptedException
     {
@@ -224,17 +218,15 @@ public class Login implements ITest
     @Test(
             groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
             priority = 0,
-            dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProvider = "LG_RandomInput",
+            dataProviderClass = Test_Data.class
     )
-    public void LG5_Invalid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(Object[] dataSet) throws IOException, InterruptedException
     {
 
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -302,21 +294,17 @@ public class Login implements ITest
 
     /**
      *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
-     * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
+
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
             groups = {"Sanity","Login Sanity","Google_Login"},
             priority = 0,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
-    public void LG6_Invalid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+    public void LG6_Invalid_Input() throws InterruptedException, IOException {
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -324,7 +312,7 @@ public class Login implements ITest
         try {
             // Test case TC_LF_022 : Valid password and Invalid email
 
-            fillOutLogGoogleInvalid (browserWindow, "email", dataSet[1].toString ());
+            fillOutLogGoogleInvalid (browserWindow, "email", googlePass.toString ());
 
 
 
@@ -334,11 +322,11 @@ public class Login implements ITest
 
 
             // Test case TC_LF_023 : Invalid password and valid email
-            fillOutLogGoogleInvalid (browserWindow, dataSet[0].toString (), "inv" + dataSet[1].toString ());
+            fillOutLogGoogleInvalid (browserWindow, googleEmail, "inv" + googlePass);
 
 
             sleep (1);
-            WebElement message1 = inavlidPassPlusMessage (dataSet[1], browserWindow);
+            WebElement message1 = inavlidPassPlusMessage (googleEmail, browserWindow);
 
             //Assert to see if we get an error with the right message
             assertEquals (message1.getText (), "Wrong password. Try again or click ‘Forgot password’ to reset it.");
@@ -353,30 +341,24 @@ public class Login implements ITest
     /**
      * Smoke test for valid Login memory within several different browsers
      * Programmer: Seyedmehrad Adimi
-     * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login_Memory","Login Sanity","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Smoke","Google_Login","Login_Memory","Login Sanity","hasNoDataProvider"},
+            priority = 0
     )
 
     //todo closing and opening does not work
-    public void LG7_Login_Memory(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG7_Login_Memory() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try{
 
-            fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            fillOutLogGoogle(browserWindow, googleEmail, googlePass);
 
             wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/access_token"));
 
@@ -411,21 +393,18 @@ public class Login implements ITest
      * Regression test for Login feature within several different browsers.
      * Considers test cases TC_LF_007, TC_LF_008, TC_LF_011, TC_LF_016, TC_LF_017
      * Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
      */
     @Test(
             groups = {"Regression","Login","Login_Regression","hasDataProvider"},
             priority = 0,
-            dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProvider = "LG_RandomInput",
+            dataProviderClass = Test_Data.class
     )
-    public void LG_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG_Regression(Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         browserWindow.get(TestFunctions.website);
@@ -516,7 +495,7 @@ public class Login implements ITest
         actionToTake.sendKeys (Keys.TAB,Keys.TAB).perform ();
 
         actionToTake.sendKeys (dataSet[0].toString ());
-        System.out.println (dataSet[0].toString ()+"    hhefhdf");
+
         sleep (1);
         actionToTake.sendKeys (Keys.TAB).perform ();
 
@@ -563,6 +542,7 @@ public class Login implements ITest
         // Check Search bar
         WebElement searchBar = browserWindow.findElement (By.cssSelector (searchBarCSS));
         assertElement (searchBar);
+        wait.until (ExpectedConditions.elementToBeClickable (searchBar));
         searchBar.click ();
 
         WebElement searchBarInputField = browserWindow.findElement (By.cssSelector (searchBarInputFieldCSS));

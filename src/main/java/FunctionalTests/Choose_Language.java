@@ -96,25 +96,20 @@ public class Choose_Language implements ITest
      * Regression tests for Valid use of Choose Language
      * Includes test cases CL_004,CL_005,CL_006
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Regression","Choose_Language Regression", "hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Regression","Choose_Language Regression", "hasNoDataProvider"},
+            priority = 0
     )
-    // TODO no title for choose language
-    public void CL_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
 
+    public void CL_Regression() throws InterruptedException, IOException {
+        // No title for choose language
+        //Create driver and browser for this particular test
+
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
         browserWindow.get(TestFunctions.website);
+
         TestFunctions.waitForSite(browserWindow);
 
         try {
@@ -145,6 +140,7 @@ public class Choose_Language implements ITest
             assertEquals (Title.getText (), "Alle produkter");
             return;
         }else if (Language.equals ("Italiano")){
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (ItalianoCSS)));
             browserWindow.findElement (By.cssSelector (ItalianoCSS)).click ();
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (ItalianoTitleCSS)));
@@ -153,6 +149,7 @@ public class Choose_Language implements ITest
             assertEquals (Title.getText (), "Tutti i prodotti");
             return;
         }else if (Language.equals ("Magyar")){
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (MagyarCSS)));
             browserWindow.findElement (By.cssSelector (MagyarCSS)).click ();
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (MagyarTitleCSS)));

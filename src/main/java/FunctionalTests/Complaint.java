@@ -65,21 +65,20 @@ public class Complaint implements ITest
             groups = {"Smoke","Complaint Smoke","Valid_Complaint", "has_Data_Provider"},
             dataProvider = "LG3_Input",
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
     public void CO1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
+
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Website
+        // Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
-
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
 
 
         // C_001 test case: Verify  'Complaints' field is not visible before login
@@ -112,7 +111,7 @@ public class Complaint implements ITest
             assertTrue (customer.isDisplayed ());
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("complaintMessage")));
-            WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
+            WebElement Message = browserWindow.findElement (By.cssSelector ("#complaintMessage"));
             assertTrue (Message.isDisplayed ());
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#complaint-form > div > label")));
@@ -121,6 +120,8 @@ public class Complaint implements ITest
 
             // C_005 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
 
+
+            sleep (1);
             Message.click ();
             Message.sendKeys (complaintMessageToSend);
 
@@ -134,7 +135,7 @@ public class Complaint implements ITest
 
         }finally {
             Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            //browserWindow.quit();
         }
 
 
@@ -148,21 +149,16 @@ public class Complaint implements ITest
      *Smoke (also included in Sanity) test for Invalid use of Complaint feature
      * Includes test cases C_006
      *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            dataProvider = "LG3_Input",
+            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
-    public void CO2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+    public void CO2_Invalid_Use() throws InterruptedException, IOException {
+
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -175,7 +171,7 @@ public class Complaint implements ITest
 
         try {
             // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
             navigateToComplaint (browserWindow);
 
@@ -195,21 +191,15 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
      */
     @Test(
             groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            priority = 1
     )
-    public void CO3_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+    public void CO3_Invalid_Use() throws InterruptedException, IOException {
+
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -221,7 +211,7 @@ public class Complaint implements ITest
         try {
 
             // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (sideMenuCSS)));
 
             navigateToComplaint (browserWindow);
@@ -254,23 +244,16 @@ public class Complaint implements ITest
      * Regression test for Login feature within several different browsers.
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Regression","Complaint","Login_Complaint","hasNoDataProvider"},
+            priority = 0
     )
-    public void CO_Regression(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
+    public void CO_Regression() throws IOException, InterruptedException {
 
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
 
         //Website setup
         browserWindow.get(TestFunctions.website);
@@ -280,7 +263,7 @@ public class Complaint implements ITest
 
             /* Test cases TC_LF_007, TC_LF_008: Verify the Page Heading, Page Title and Page URL of Complaint page, Verify the UI of the Complaint page*/
             // Login First
-            Login.fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            Login.fillOutLogGoogle(browserWindow, Login.googleEmail, Login.googlePass);
             sleep (3);
 
             // Navigate to Complaint Page

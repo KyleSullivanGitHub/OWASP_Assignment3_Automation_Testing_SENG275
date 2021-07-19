@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -56,9 +57,7 @@ public class Support_Chat implements ITest
             groups = {"Smoke","Support_Chat Smoke","Valid_Support_Chat"},
             dataProvider = "LG3_Input",
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
     public void SC1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -84,7 +83,6 @@ public class Support_Chat implements ITest
             }catch (Exception e){
                 assertFalse (false);
             }
-
 
             // SC_002 test case: Navigating to support chat after login
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
@@ -117,21 +115,16 @@ public class Support_Chat implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet provides email and password to Login
      */
     @Test(
             groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
-            dataProvider = "LG3_Input",
             priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
-    public void SC2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void SC2_Invalid_Use() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         browserWindow.get(TestFunctions.website);
@@ -139,7 +132,7 @@ public class Support_Chat implements ITest
 
         try {
            // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
             // navigate to support chat page
             navigateToSupportChat (browserWindow);
 
@@ -172,21 +165,15 @@ public class Support_Chat implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_003,SC_004,SC_007,SC_008
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Regression","Support_Chat Regression","hasDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
-            enabled = true
+            groups = {"Regression","Support_Chat Regression","hasNoDataProvider"},
+            priority = 1
     )
-    public void SC_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void SC_Regression() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         // website setup
@@ -199,7 +186,7 @@ public class Support_Chat implements ITest
             Login.testRegressionForMe (browserWindow,false);
 
             // Login now
-            loginForMe (browserWindow,dataSet[0].toString (), dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail, Login.googlePass);
 
             // Common Regression After Login
             Login.testRegressionForMe (browserWindow,true);
@@ -246,8 +233,12 @@ public class Support_Chat implements ITest
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
-        browserWindow.get (TestFunctions.website);
+
+        browserWindow.navigate ().refresh ();
+
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (TestFunctions.navPath)));
+        sleep (3);
         TestFunctions.navToLogin (browserWindow);
 
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));

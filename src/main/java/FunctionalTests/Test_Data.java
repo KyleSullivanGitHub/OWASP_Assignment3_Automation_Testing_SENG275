@@ -128,6 +128,26 @@ public class Test_Data
         };
     }
 
+    //*******************************************************************************************************
+
+    /**
+     * This dataProvider passes valid random email and password strings for the LG1 valid input test
+     * Programmer: Seyedmehrad Adimi
+     * @return object with email and password for that test.
+     */
+    @DataProvider(
+            name = "LG_RandomInput"
+    )
+    public static Object[][] LG_RandomInput()
+    {
+        setUpEmail();
+        Random randomNum = new Random ();
+        int randomInteger = randomNum.nextInt(1000);
+        return new Object[][]{
+                {new Object[]{email+randomNum1+randomInteger+"@gmail.com",password,answer}},
+        };
+    }
+
 
     //*******************************************************************************************************
 
