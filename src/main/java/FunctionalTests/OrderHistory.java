@@ -135,7 +135,7 @@ public class OrderHistory implements ITest
             priority = 1,
             enabled = true
     )
-    public void OH_Regression(String chosenBrowser) throws InterruptedException, IOException
+    public void OH_Regression() throws InterruptedException, IOException
     {}
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})

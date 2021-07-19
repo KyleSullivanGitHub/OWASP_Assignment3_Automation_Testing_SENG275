@@ -284,7 +284,7 @@ public class Checkout implements ITest {
             priority = 1,
             enabled = true
     )
-    public void CO_Regression(String chosenBrowser) throws InterruptedException, IOException
+    public void CO_Regression() throws InterruptedException, IOException
     {}
 
     void addSavedAddress(WebDriver browserWindow) {
@@ -324,6 +324,13 @@ public class Checkout implements ITest {
     public void BeforeMethod(Method method, Object[] testData)
     {
         testName.set(method.getName()+"_"+testData[0]);
+    }
+
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
     }
 
     @Override
