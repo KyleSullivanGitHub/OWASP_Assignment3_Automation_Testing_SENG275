@@ -113,7 +113,7 @@ public class Data_Management {
      */
     @Test(
             groups = {"Sanity","Data Management Smoke","Data Management"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DM5_JSON(String chosenBrowser) throws IOException, InterruptedException{
@@ -172,7 +172,7 @@ public class Data_Management {
      */
     @Test(
             groups = {"Sanity","Data Management Smoke","Data Management"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DM2_Erasure(String chosenBrowser) throws IOException, InterruptedException{
@@ -227,7 +227,7 @@ public class Data_Management {
      */
     @Test(
             groups = {"Sanity","Data Management Sanity","Data Management"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DM6_PDF(String chosenBrowser) throws IOException, InterruptedException{
@@ -287,7 +287,7 @@ public class Data_Management {
      */
     @Test(
             groups = {"Sanity","Data Management Sanity","Data Management"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DM7_Excel(String chosenBrowser) throws IOException, InterruptedException{

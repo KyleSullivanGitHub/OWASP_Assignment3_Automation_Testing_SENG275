@@ -233,7 +233,7 @@ public class Deluxe_Membership {
      */
     @Test(
             groups = {"Smoke","Basket Smoke","Basket"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DM2_Invalid_Usage(String chosenBrowser) throws InterruptedException, IOException{

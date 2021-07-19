@@ -123,7 +123,7 @@ public class Digital_Wallet {
      */
     @Test(
             groups = {"Sanity","Digital_Wallet Sanity","Digital_Wallet"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DW4_Valid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
@@ -185,7 +185,7 @@ public class Digital_Wallet {
      */
     @Test(
             groups = {"Sanity","Digital_Wallet sanity","Digital_Wallet"},
-            priority = 2,
+            priority = 0,
             enabled = true
     )
     public void DW3_Invalid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
