@@ -25,6 +25,8 @@ public class NavigationMenu implements ITest
     static String xPathNavMenuEnd = "]";
     static String xPathNavMenuDesc = "/div/span";
 
+
+    //TODO about us
     String xPathAboutButtons1 = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-about/div/mat-card/section/div/a[";
     String xPathAboutButtons2 = "]/button";
 
@@ -44,8 +46,8 @@ public class NavigationMenu implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Navigation Menu Smoke", "Navigation menu", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Navigation_Menu", "hasDataProvider"},
+            priority = 10,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -79,8 +81,8 @@ public class NavigationMenu implements ITest
 
 
     @Test(
-            groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Navigation_Menu", "noDataProvider"},
+            priority = 60,
             enabled = true
     )
     public void NM2_Nav_Menu_Logged_Out() throws InterruptedException
@@ -108,8 +110,8 @@ public class NavigationMenu implements ITest
     }
 
     @Test(
-            groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Navigation_Menu", "noDataProvider"},
+            priority = 60,
             enabled = true
     )
     public void NM3_Nav_Menu_Logged_In() throws InterruptedException

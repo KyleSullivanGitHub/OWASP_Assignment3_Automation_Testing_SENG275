@@ -55,8 +55,8 @@ public class ProductReviews implements ITest
      * @throws InterruptedException
      */
     @Test(
-            groups = {"Smoke", "Review Smoke", "Review Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Review", "hasDataProvider"},
+            priority = 31,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -97,13 +97,42 @@ public class ProductReviews implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Review Smoke", "Review Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Review", "noDataProvider"},
+            priority = 32,
+            enabled = true
+    )
+    public void RE2_Invalid_Review() throws IOException, InterruptedException, UnsupportedFlavorException
+    {
+        //Create Test environment and browser
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        String input = "";
+
+        try
+        {
+            fillReview(browserWindow,input);
+            assertEquals(browserWindow.findElement(By.cssSelector("#submitButton")).getAttribute("disabled"),"true");
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+
+    @Test(
+            groups = {"Sanity", "Review", "hasDataProvider"},
+            priority = 67,
             dataProvider = "RE2_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void RE2_Invalid_Review(String testing, String input) throws IOException, InterruptedException, UnsupportedFlavorException
+    public void RE3_Invalid_Review_Comprehensive(String testing, String input) throws IOException, InterruptedException, UnsupportedFlavorException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();

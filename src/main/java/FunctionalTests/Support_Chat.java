@@ -53,14 +53,14 @@ public class Support_Chat implements ITest
      * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Valid_Support_Chat"},
+            groups = {"Smoke","Support_Chat","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 29,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void SC1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //TODO remove that data set. use the google login instead
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -117,21 +117,17 @@ public class Support_Chat implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Smoke","Support_Chat","noDataProvider"},
+            priority = 30,
             enabled = true
     )
-    public void SC2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void SC2_Invalid_Use(Object[] dataSet) throws InterruptedException, IOException {
+        //TODO remove the dataset. Smoke tests run with only one set of inputs. If you have multiple cases, put them in a sanity test
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         browserWindow.get(TestFunctions.website);
@@ -172,21 +168,19 @@ public class Support_Chat implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_003,SC_004,SC_007,SC_008
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
      */
     @Test(
-            groups = {"Regression","Support_Chat Regression","hasDataProvider"},
+            groups = {"Regression","Support_Chat","noDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 85,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void SC_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void SC_Regression(Object[] dataSet) throws InterruptedException, IOException {
+        //TODO Remove your data set. Regression tests only run once, with all various inputs sequentially.
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         // website setup
@@ -283,13 +277,31 @@ public class Support_Chat implements ITest
 
         }
     }
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

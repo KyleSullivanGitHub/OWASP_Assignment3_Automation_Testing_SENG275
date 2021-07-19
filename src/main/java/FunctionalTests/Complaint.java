@@ -62,14 +62,14 @@ public class Complaint implements ITest
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Valid_Complaint", "has_Data_Provider"},
+            groups = {"Smoke","Complaint","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 27,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void CO1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //TODO Change your data provider to passBrowser, and remove that data set object. Smoke tests must all be run with a single set of inputs.
         //Browser setup
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -149,20 +149,16 @@ public class Complaint implements ITest
      * Includes test cases C_006
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Smoke","Complaint","noDataProvider"},
+            priority = 28,
             enabled = true
     )
-    public void CO2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void CO2_Invalid_Use(Object[] dataSet) throws InterruptedException, IOException {
+        //TODO remove that data set object. Smoke tests must all be run with a single set of inputs.
         //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -196,20 +192,18 @@ public class Complaint implements ITest
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
+            groups = {"Sanity","Complaint", "hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 66,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void CO3_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void CO3_Invalid_Use(Object[] dataSet) throws InterruptedException, IOException {
+        //TODO use the google login method in test functions, not multiple random accounts. Create your own data set, not another classes
         //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -254,20 +248,18 @@ public class Complaint implements ITest
      * Regression test for Login feature within several different browsers.
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},
-            priority = 0,
+            groups = {"Regression","Complaint"},
+            priority = 84,
             dataProvider = "LG3_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void CO_Regression(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException {
+    public void CO_Regression(Object[] dataSet) throws IOException, InterruptedException {
+        //TODO No data providers for regression tests, run all tests in the same method.
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
 
@@ -396,15 +388,31 @@ public class Complaint implements ITest
         }
     }
 
-
-
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

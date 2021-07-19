@@ -74,11 +74,10 @@ public class Login implements ITest
      * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Login","Login Smoke","hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke","Login","hasDataProvider"},
+            priority = 5,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void LG1_Valid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
@@ -117,8 +116,8 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Login", "hasNoDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Login", "noDataProvider"},
+            priority = 6,
             enabled = true
     )
     public void LG2_Invalid_Input() throws InterruptedException
@@ -151,20 +150,17 @@ public class Login implements ITest
      * Smoke test for valid Google Login within several different browsers
      * Programmer: Seyedmehrad Adimi
      * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login Smoke","hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke","Login","hasDataProvider"},
+            priority = 7,
             dataProvider = "LG3_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void LG3_Valid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG3_Valid_Input(Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -190,8 +186,8 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Login Smoke","Google_Login", "hasNoDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Login", "noDataProvider"},
+            priority = 8,
             enabled = true
     )
     public void LG4_Invalid_Input() throws InterruptedException
@@ -222,19 +218,16 @@ public class Login implements ITest
 
 
     @Test(
-            groups = {"Sanity","Login","Login Sanity","hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 55,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void LG5_Invalid_Input(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(Object[] dataSet) throws IOException, InterruptedException
     {
-
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -303,20 +296,17 @@ public class Login implements ITest
     /**
      *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
      * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Sanity","Login Sanity","Google_Login"},
-            priority = 0,
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 56,
             dataProvider = "LG3_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void LG6_Invalid_Input(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+    public void LG6_Invalid_Input(Object[] dataSet) throws InterruptedException, IOException {
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -354,22 +344,19 @@ public class Login implements ITest
      * Smoke test for valid Login memory within several different browsers
      * Programmer: Seyedmehrad Adimi
      * @param dataSet has the email and password required
-     * @param chosenBrowser browser used for that test
      */
     @Test(
-            groups = {"Smoke","Google_Login","Login_Memory","Login Sanity","hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity","Login","hasDataProvider"},
+            priority = 58,
             dataProvider = "LG3_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
 
     //todo closing and opening does not work
-    public void LG7_Login_Memory(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG7_Login_Memory(Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -411,21 +398,18 @@ public class Login implements ITest
      * Regression test for Login feature within several different browsers.
      * Considers test cases TC_LF_007, TC_LF_008, TC_LF_011, TC_LF_016, TC_LF_017
      * Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Regression","Login","Login_Regression","hasDataProvider"},
-            priority = 0,
+            groups = {"Regression","Login","hasDataProvider"},
+            priority = 76,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void LG_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void LG_Regression(Object[] dataSet) throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         browserWindow.get(TestFunctions.website);
@@ -952,12 +936,31 @@ public class Login implements ITest
         }
     }
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

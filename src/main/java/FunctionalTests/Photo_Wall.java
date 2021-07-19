@@ -54,14 +54,14 @@ public class Photo_Wall implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Photo_Wall Smoke","Valid_Photo_Wall"},
+            groups = {"Smoke","Photo_Wall","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 45,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void PW1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
+        //TODO remove all paramaters other then chosen browser. Smoke tests only use one set of inputs
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -144,17 +144,16 @@ public class Photo_Wall implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Sanity","Photo_Wall Sanity","Invalid_Photo_Wall"},
+            groups = {"Smoke","Photo_Wall","noDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 46,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void PW2_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
+    public void PW2_Invalid_Use(String email, String password) throws InterruptedException, IOException{
+        //TODO Change to smoke test. remove all inputs
         //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -217,17 +216,16 @@ public class Photo_Wall implements ITest
 
 //TODO check this later for caption
     @Test(
-            groups = {"Sanity","Photo_Wall Sanity","Invalid_Photo_Wall", "Tweeter_Link", "Caption_Check"},
+            groups = {"Sanity","Photo_Wall", "noDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 72,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void PW3_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
+    public void PW3_Valid_Use(String email, String password) throws InterruptedException, IOException{
+        //Remove inputs, you dont need them
         //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -289,14 +287,13 @@ public class Photo_Wall implements ITest
 
 
     @Test(
-            groups = {"Regression","Photo_Wall Regression", "Caption_Check"},
+            groups = {"Regression","Photo_Wall", "noDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 90,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
-    public void PW_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException{
+    public void PW_Regression() throws InterruptedException, IOException{
 
     }
 
@@ -369,12 +366,31 @@ public class Photo_Wall implements ITest
 
     // TODO PW3 and PW1
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

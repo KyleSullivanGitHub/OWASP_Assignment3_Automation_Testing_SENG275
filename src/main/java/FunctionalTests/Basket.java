@@ -70,8 +70,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket Smoke","Basket", "hasDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Basket", "hasDataProvider"},
+            priority = 14,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -128,8 +128,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket Smoke","Basket", "noDataProvider"},
-            priority = 2,
+            groups = {"Smoke","Basket", "noDataProvider"},
+            priority = 15,
             enabled = true
     )
     public void BA2_Invalid_Usage() throws InterruptedException{
@@ -153,8 +153,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Sanity","Basket Sanity","Basket", "noDataProvider"},
-            priority = 3,
+            groups = {"Sanity","Basket", "noDataProvider"},
+            priority = 63,
             enabled = true
     )
     public void BA3_Alternate_Usages() throws IOException, InterruptedException {
@@ -205,8 +205,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Regression","Basket Regression","Basket"},
-            priority = 4,
+            groups = {"Regression","Basket","noDataProvider"},
+            priority = 79,
             enabled = true
     )
     public void BA_Regression() {
@@ -214,18 +214,36 @@ public class Basket implements ITest{
     }
 
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {
         return testName.get();
     }
-
 
 }
 

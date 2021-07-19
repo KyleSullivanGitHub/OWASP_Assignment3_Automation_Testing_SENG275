@@ -58,14 +58,14 @@ public class Choose_Language implements ITest
      * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Smoke","Choose_Language Smoke","Valid_Choose_Language", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke","Choose_Language", "hasDataProvider"},
+            priority = 44,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void CL1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //TODO remove dataset. Split into a smoke test and a sanity test of all potential langauges (that work)(use a data provider, and have a seperate run for each, though you can create the browser just once and use it for all sanity tests)
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -96,22 +96,20 @@ public class Choose_Language implements ITest
      * Regression tests for Valid use of Choose Language
      * Includes test cases CL_004,CL_005,CL_006
      *Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
      */
     @Test(
-            groups = {"Regression","Choose_Language Regression", "hasDataProvider"},
-            priority = 0,
+            groups = {"Regression","Choose_Language", "noDataProvider"},
+            priority = 999,
             dataProvider = "LG1_Input",
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     // TODO no title for choose language
-    public void CL_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void CL_Regression(Object[] dataSet) throws InterruptedException, IOException {
+        //TODO Delete. This test class does not need a regression test.
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         browserWindow.get(TestFunctions.website);
@@ -164,16 +162,31 @@ public class Choose_Language implements ITest
     }
 
 
-
-
-
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

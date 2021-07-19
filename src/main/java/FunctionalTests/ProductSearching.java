@@ -29,8 +29,6 @@ public class ProductSearching implements ITest
     String pageNav = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/button[";
 
 
-
-
     /**
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
@@ -43,8 +41,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Product Searching Smoke", "Product Searching", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Product_Searching", "hasDataProvider"},
+            priority = 12,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -105,8 +103,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Product Searching Smoke", "Product Searching", "noDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Product_Searching", "noDataProvider"},
+            priority = 13,
             enabled = true
     )
     public void SC2_Invalid_Search() throws InterruptedException
@@ -134,8 +132,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Sanity", "Product Searching Sanity", "Product Searching", "hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Product_Searching", "hasDataProvider"},
+            priority = 62,
             dataProvider = "SC3_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -173,8 +171,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Regression", "Product Searching Regression", "Product Searching", "noDataProvider"},
-            priority = 0,
+            groups = {"Regression","Product_Searching", "noDataProvider"},
+            priority = 78,
             enabled = true
     )
     public void SC_Regression() throws InterruptedException, IOException

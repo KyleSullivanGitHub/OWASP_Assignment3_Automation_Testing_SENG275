@@ -47,8 +47,8 @@ public class Logout implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Logout Smoke", "Logout", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Logout", "hasDataProvider"},
+            priority = 9,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -87,8 +87,8 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown when the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Sanity", "Logout Sanity", "Logout","noDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Logout","noDataProvider"},
+            priority = 59,
             enabled = true
     )
     public void LO2_Logout_Sanity() throws InterruptedException
@@ -157,9 +157,9 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown if Test was interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Registration Sanity", "Registration","noDataProvider"},
-            priority = 1,
-            enabled = false
+            groups = {"Sanity", "Registration","noDataProvider","Extended_Period_Test"},
+            priority = 999,
+            enabled = true
     )
     public void LO3_Logout_Automated() throws InterruptedException
     {
