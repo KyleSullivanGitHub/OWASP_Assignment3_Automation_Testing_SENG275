@@ -54,9 +54,9 @@ public class CreateEnvironment
             case "Chrome": //Chrome Browser
                 passOn = new useChrome();
                 break;
-            case "Edge": //Chrome Browser
-                passOn = new useEdge();
-                break;
+//            case "Edge": //Chrome Browser
+//                passOn = new useEdge();
+//                break;
                 /*
             case "Safari": // Safari Browser
                 passOn = new useSafari (); //TODO Add safari web driver
