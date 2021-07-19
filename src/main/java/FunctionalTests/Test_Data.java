@@ -8,8 +8,6 @@ import java.util.Random;
 
 public class Test_Data
 {
-//TODO maybe switch from multiple parameters to a builder pattern or an object?
-
     private static int randomNum1 = emailRandomizer();
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();

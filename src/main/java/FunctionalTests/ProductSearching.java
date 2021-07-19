@@ -26,6 +26,7 @@ public class ProductSearching implements ITest
     String listElement = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[";
     String productContainer = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details";
     String descXpath = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details/mat-dialog-content/div/div[1]/div[2]/div[1]";
+    String pageNav = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/button[";
 
 
 
@@ -171,10 +172,67 @@ public class ProductSearching implements ITest
         }
     }
 
-
-    public void SC_Regression()
+    @Test(
+            groups = {"Regression", "Product Searching Regression", "Product Searching", "noDataProvider"},
+            priority = 0,
+            enabled = true
+    )
+    public void SC_Regression() throws InterruptedException, IOException
     {
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        try
+        {
+            for(int isValid = 1; isValid <= 2; isValid++)
+            {
+                String input = validInput;
+                if(isValid == 2)
+                    input = invalidInput;
 
+                searching(browserWindow, input);
+                TestFunctions.waitForSite(browserWindow, "#searchValue");
+
+                int[] productPerPage = new int[]{12, 24, 36};
+                int select;
+
+                TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
+                TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + 5 + "\"]", true);
+
+                int resultAmount = Integer.parseInt(browserWindow.findElement(By.className("mat-paginator-range-label")).getText().substring(5, 6));
+
+                for (int perPage : productPerPage)
+                {
+                    select = perPage == 12 ? 3 : perPage == 24 ? 4 : perPage == 36 ? 5 : null;
+
+                    TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
+                    TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + select + "\"]", true);
+
+                    int temp = resultAmount / perPage + (resultAmount % perPage > 0 ? 1 : 0);
+                    int pages = 2 * temp - 1;
+
+                    for (int i = 1; i <= pages; i++)
+                    {
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website + "search?p=" + input, false);
+                        int limit = i == temp ? resultAmount % perPage : perPage;
+                        for (int j = 1; j <= limit; j++)
+                            assertTrue(browserWindow.findElement(By.xpath(listElement + j + "]")).isDisplayed());
+                        if (i < temp) //go to the next page if we have not reached the end
+                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
+                        else if (i >= temp && i != pages) //go to the previous page if we have reached the end
+                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
+                    }
+                }
+            }
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
     }
 
     public void searching(WebDriver browserWindow, String toSearchFor) throws InterruptedException

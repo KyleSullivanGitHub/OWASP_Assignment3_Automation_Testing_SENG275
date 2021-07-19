@@ -161,10 +161,19 @@ public class ProductReviews implements ITest
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(input);
     }
 
+    public static void submitReview(WebDriver browserWindow) throws InterruptedException
+    {
+        browserWindow.findElement(By.cssSelector("#submitButton")).click();
+
+        TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
+
+        numOfReviews2 = getNumOfReviews(browserWindow);
+        checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
+
+    }
+
     public static void testReview(WebDriver browserWindow) throws InterruptedException
     {
-        int numOfReviews;
-
         numOfReviews = getNumOfReviews(browserWindow);
         browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-0")).click();
         //identify how many reviews are supposed to be present.
@@ -178,16 +187,7 @@ public class ProductReviews implements ITest
             } catch (NoSuchElementException ignore) {}
         }
     }
-    public static void submitReview(WebDriver browserWindow) throws InterruptedException
-    {
-        browserWindow.findElement(By.cssSelector("#submitButton")).click();
 
-        TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
-
-        numOfReviews2 = getNumOfReviews(browserWindow);
-        checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
-
-    }
 
     public static int getNumOfReviews(WebDriver browserWindow)
     {

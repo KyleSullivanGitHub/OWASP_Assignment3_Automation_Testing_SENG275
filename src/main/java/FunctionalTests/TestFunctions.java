@@ -3,19 +3,18 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
-import org.testng.annotations.BeforeSuite;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Random;
 
 import static org.testng.Assert.*;
 
 public class TestFunctions
 {
-    //TODO Replace as many path strings as possible with variables
-
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
     public static String website = "https://juice-shop.herokuapp.com/#/";
@@ -199,11 +198,6 @@ public class TestFunctions
             }
         }
     }
-
-
-
-
-    //TODO will probably need to make a method for navigating to account menu when screen is not full sized
 
     /**
      * Quick navigation to the login page from any other page.
@@ -465,6 +459,21 @@ public class TestFunctions
             assertEquals(mainPageLogo.getAttribute("src"), "https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
             //check Search tools
+            WebElement searchElement = test.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)"));
+            assertWebElement(searchElement);
+            searchElement.click();
+            TestFunctions.waitForSite(test,"#mat-input-0");
+            searchElement = test.findElement(By.cssSelector("#mat-input-0"));
+            assertWebElement(searchElement);
+            searchElement.sendKeys("testing" + Keys.ENTER);
+
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            //Try to copy the contents of the password field
+            Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
+            searchElement.sendKeys(OSspecific + "a");
+            searchElement.sendKeys(OSspecific + "c");
+            //Confirm that the clipboard does not contain the password
+            assertEquals(cb.getData(DataFlavor.stringFlavor), "testing");
 
             //check account button
             waitForSite(test, navPath);
@@ -538,7 +547,7 @@ public class TestFunctions
             }
             test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
         }
-        catch (NoSuchElementException elementNotFound) { assertEquals("Missing","Header Bar Option");}
+        catch (NoSuchElementException | UnsupportedFlavorException | IOException elementNotFound) { assertEquals("Missing","Header Bar Option");}
     }
 
 
