@@ -108,7 +108,7 @@ public class Choose_Language implements ITest
         // No title for choose language
         //Create driver and browser for this particular test
 
-        WebDriver browserWindow = environment.makeDriver();
+
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(TestFunctions.website);

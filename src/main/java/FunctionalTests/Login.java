@@ -75,6 +75,7 @@ public class Login implements ITest
      * @param dataSet has email, password, and answer used to register
      * @param chosenBrowser browser used for that test
      */
+
     @Test(
             groups = {"Smoke","Login","hasDataProvider"},
             priority = 5,

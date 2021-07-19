@@ -103,13 +103,7 @@ public class Photo_Wall implements ITest
             // CANNOT upload picture as discussed with the prof
             // Assuming it works
 
-//        pickImageBtn.click ();
-//        uploadFile("/Users/seyedmehradadimi/IdeaProjects/OWASP_Assignment3_Automation_Testing_SENG275/src/main/java/FunctionalTests/uvic_logo-horizontal.jpeg");
-//        Thread.sleep(2000);
-//
-//
-//        Thread.sleep (1300);
-//        pickImageBtn.sendKeys (Keys.ESCAPE);
+
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("mat-input-1")));
             wait.until (ExpectedConditions.elementToBeClickable (By.id ("mat-input-1")));
@@ -129,18 +123,7 @@ public class Photo_Wall implements ITest
             //PW_008 test case: Verify picture is posted with caption when 'submit' button is clicked
             // CANNOT upload picture as discussed with the prof
             // Assuming it works
-
-
-//            captionInput.click ();
-//            captionInput.sendKeys ("UVic Logo");
-//
-//            WebElement submittBtn =  browserWindow.findElement (By.id ("submitButton"));
-//            submittBtn.click ();
-//
-//
-//            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > div:nth-child(2) > div > span:nth-child(6) > div > div")));
-//            WebElement postedPicture = browserWindow.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-photo-wall > mat-card > div:nth-child(2) > div > span:nth-child(6) > div > div"));
-//            assertEquals (postedPicture.getText (), "UVic Logo");
+            // Caption is tested above
 
 
 
@@ -438,29 +421,6 @@ public class Photo_Wall implements ITest
     }
 
 
-    public static void setClipboardData(String string) {
-        //StringSelection is a class that can be used for copy and paste operations.
-        StringSelection stringSelection = new StringSelection(string);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-    }
-
-    public static void uploadFile(String fileLocation) {
-        try {
-            //Setting clipboard with file location
-            setClipboardData(fileLocation);
-            //native key strokes for CTRL, V and ENTER keys
-            Robot robot = new Robot();
-
-            robot.keyPress(KeyEvent.VK_CONTROL);
-            robot.keyPress(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_CONTROL);
-            robot.keyPress(KeyEvent.VK_ENTER);
-            robot.keyRelease(KeyEvent.VK_ENTER);
-        } catch (Exception exp) {
-            exp.printStackTrace();
-        }
-    }
 
     // TODO PW3 and PW1
 

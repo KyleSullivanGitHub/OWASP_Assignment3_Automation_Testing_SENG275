@@ -192,16 +192,11 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to login
+
      */
     @Test(
-            groups = {"Sanity","Complaint", "hasDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 66,
-            dataProviderClass = Test_Data.class,
-            enabled = true
-            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            priority = 1
+            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
+            priority = 66
     )
 
     public void CO3_Invalid_Use() throws InterruptedException, IOException {

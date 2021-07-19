@@ -28,6 +28,9 @@ public class Account_Management implements ITest
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
+
+    public static final String submitButtonCSS = "#card > div > div:nth-child(2) > form:nth-child(3) > button";
+    public static final String inputImageUrlCSS = "#url";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -54,9 +57,8 @@ public class Account_Management implements ITest
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void MA1_Valid_Use(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
-        //TODO remove all paramaters except for chosen browser. Use hard coded inputs for smoke tests.
-        //Browser setup
+    public void MA1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
@@ -71,13 +73,10 @@ public class Account_Management implements ITest
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (TestFunctions.navPath)));
             browserWindow.findElement(By.cssSelector (TestFunctions.navPath)).click ();
 
+            // Assert Account Management does not exist
+            assertFalse (browserWindow.getPageSource ().contains (Login.googleEmail));
 
-            try {
-                WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
-                assertTrue (AccountManagement.isDisplayed ());
-            }catch (Exception e){
-                assertFalse (false);
-            }
+
 
             Actions ESCAPE = new Actions (browserWindow);
             ESCAPE.sendKeys (Keys.ESCAPE).perform ();
@@ -105,32 +104,31 @@ public class Account_Management implements ITest
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
      *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password text for test
-     * @param chosenBrowser browser used for that test
-     * @param email email text for test
-     * @param password password text for test
      * link: https://ibb.co/6gBdXKJ
      */
     @Test(
             groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement"},
             dataProvider = "LG3_Input",
-            priority = 36,
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            priority = 36
     )
-    public void MA2_Update_Profile(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void MA2_Update_Profile() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
+
+        //Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
 
+        // Updating all the fields except photo, cant be uploaded, as discussed with Dr. Popli.
+        // Website problem
+
         try {
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
             //Navigate to Account Management
             navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
@@ -185,9 +183,125 @@ public class Account_Management implements ITest
             enabled = true
     )
 
-    public void MA3_Update(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-    public void MA3_Update(String email, String password) throws InterruptedException, IOException {
-        //TODO one regression per test class
+    public void MA3_1_Update() throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        //Website setup
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+       try {
+           /*TC_MA_007 = Verify Uploading image without a file selected*/
+
+           loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
+
+           //Navigate to Account Management
+           navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
+
+           wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (submitButtonCSS)));
+
+           // Assert that no file is chosen
+           assertTrue (browserWindow.getPageSource ().contains ("No file chosen"));
+
+           // Assert that upload button is greyed out and clickable -> or error message shows up when clicking on the button
+           // The test should FAIL
+           assertFalse (browserWindow.findElement (By.cssSelector (submitButtonCSS)).isEnabled ());
+
+       }finally {
+           Thread.sleep(TestFunctions.endTestWait);
+           browserWindow.quit();
+       }
+
+    }
+
+
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasNoDataProvider"},
+            priority = 1
+    )
+
+    public void MA3_2_Update() throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        //Website setup
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+        try {
+            /*TC_MA_007 = Verify Uploading image without a file selected*/
+
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
+
+            //Navigate to Account Management
+            navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
+
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (submitButtonCSS)));
+
+
+            /*TC_MA_008 = Verify Uploading image without an Image URL set*/
+            assertEquals (browserWindow.findElement (By.cssSelector (inputImageUrlCSS)).getText (),"");
+            // Assert that upload button is greyed out and clickable -> or error message shows up when clicking on the button
+            // The test should FAIL
+            assertFalse (browserWindow.findElement (By.cssSelector (submitButtonCSS)).isEnabled ());
+
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+
+    }
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasNoDataProvider"},
+            priority = 1
+    )
+
+    public void MA3_3_Update() throws InterruptedException, IOException {
+        //Create driver and browser for this particular test
+
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+
+
+        //Website setup
+        browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(browserWindow);
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
+        try {
+            /*TC_MA_007 = Verify Uploading image without a file selected*/
+
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
+
+            //Navigate to Account Management
+            navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
+
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (submitButtonCSS)));
+
+
+            /*TC_MA_009 = Verify uploading image with bad image URL*/
+            browserWindow.findElement (By.cssSelector ("#url")).sendKeys ("hadvkadjbc");
+            browserWindow.findElement (By.cssSelector ("#submitUrl")).click ();
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/profile/image/url"));
+            assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/profile/image/url");
+            assertTrue (browserWindow.getPageSource ().contains ("Invalid URI"));
+
+
+
+        }finally {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
 
     }
 
