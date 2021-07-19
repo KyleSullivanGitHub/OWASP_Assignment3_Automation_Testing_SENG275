@@ -3,6 +3,7 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
@@ -66,7 +67,7 @@ public class Logout implements ITest
         {
             //See method for full details
             verifyLoggedOut(browserWindow);
-            browserWindow.findElement(By.cssSelector("#navbarLogoutButton")).click();//Logout
+            TestFunctions.waitForSite(browserWindow,"#navbarLogoutButton",true);//Logout
 
             verifyLoggedOut(browserWindow);
             assertTrue(browserWindow.findElement(By.cssSelector("#navbarLogoutButton")).isDisplayed());//Confirm user is logged out.
@@ -118,8 +119,7 @@ public class Logout implements ITest
             browserWindow.get(TestFunctions.website);
 
             //Check if the account menu has the logout button displayed. If it is displayed, then the test was passed as the user was not logged out
-            TestFunctions.waitForSite(browserWindow, TestFunctions.navPath); //Wait for site to be ready
-            browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();//Open account menu
+            TestFunctions.waitForSite(browserWindow, TestFunctions.navPath,true); //Open account menu
             Thread.sleep(100);
             WebElement browserWindowLogout = browserWindow.findElement(By.cssSelector("#navbarLogoutButton"));
             boolean userIsNotLoggedOut = browserWindowLogout.isDisplayed();
@@ -133,8 +133,7 @@ public class Logout implements ITest
             //Refresh the page on the secondary test window
             browserSecondary.navigate().refresh();
             //Check if logged out. If the logout button is present, then the user was not logged out, and the test was failed.
-            TestFunctions.waitForSite(browserSecondary, TestFunctions.navPath);
-            browserSecondary.findElement(By.cssSelector(TestFunctions.navPath)).click();
+            TestFunctions.waitForSite(browserSecondary, TestFunctions.navPath,true);
             Thread.sleep(100);
 
             boolean secondaryIsLoggedOut = browserSecondary.findElement(By.cssSelector("#navbarLogoutButton")).isDisplayed();
@@ -211,9 +210,7 @@ public class Logout implements ITest
     private void verifyLoggedOut(WebDriver browserWindow) throws InterruptedException
     {
         //Waits for the account menu to be accessible then opens it
-        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath);
-        Thread.sleep(100);
-        browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
+        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath,true);
         Thread.sleep(100);
 
         boolean logoutVisible = false; //Whether the logout button is visible
@@ -225,19 +222,19 @@ public class Logout implements ITest
             if (element.isDisplayed())
                 logoutVisible = true;
         }
-        catch (Exception NoSuchElementException) {}
+        catch (NoSuchElementException ignored) {}
         finally
         {
             assertFalse(logoutVisible);//Ensure that while logged out, the logout button is not visible
         }
 
         //Find the overlay blocking the account menu button and remove it
-        browserWindow.findElement(By.cssSelector("body > div.cdk-overlay-container.bluegrey-lightgreen-theme > div.cdk-overlay-backdrop.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing")).click();
+        TestFunctions.waitForSite(browserWindow,"body > div.cdk-overlay-container.bluegrey-lightgreen-theme > div.cdk-overlay-backdrop.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing",true);
 
         //Log the user back in via google
         TestFunctions.login(browserWindow);
         //Open the account menu
-        browserWindow.findElement(By.cssSelector(TestFunctions.navPath)).click();
+        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath,true);
         Thread.sleep(500);
     }
 

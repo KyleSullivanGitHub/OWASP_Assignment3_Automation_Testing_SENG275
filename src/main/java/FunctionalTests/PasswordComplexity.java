@@ -3,6 +3,7 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
@@ -286,7 +287,7 @@ public class PasswordComplexity implements ITest
             browserWindow.findElement(By.className("mat-slide-toggle")).click();
             browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String) dataSet[0]); //enter password
         }
-        catch (Exception ElementNotInteractableException)
+        catch (ElementNotInteractableException badCondition)
         {
             assertTrue(false);
         }
@@ -321,11 +322,10 @@ public class PasswordComplexity implements ITest
          * If the icon is green, its color attribute is primary, which is the pass state for a standard test.
          * There are 5 standard tests to check.
          */
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[1]/mat-icon")).getAttribute("color"), (String)dataSet[1]);//Check lowercase test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[2]/mat-icon")).getAttribute("color"), (String)dataSet[2]);//Check uppercase test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[3]/mat-icon")).getAttribute("color"), (String)dataSet[3]);//check number test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[4]/mat-icon")).getAttribute("color"), (String)dataSet[4]);//check special character test
-        assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[5]/mat-icon")).getAttribute("color"), (String)dataSet[5]);//check length test
+        for(int i = 1; i <= 5; i++)
+        {
+            assertEquals(browserWindow.findElement(By.xpath(iconPath + "div[" + i + "]/mat-icon")).getAttribute("color"), (String)dataSet[i]);//Check standard test
+        }
     }
 
     /**

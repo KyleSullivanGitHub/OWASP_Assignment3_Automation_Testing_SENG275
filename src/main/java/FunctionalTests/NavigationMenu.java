@@ -2,8 +2,7 @@ package FunctionalTests;
 
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -21,12 +20,16 @@ public class NavigationMenu implements ITest
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
-    String xPathNavMenu = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[1]";
-    String xPathNavMenu1 = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[";
-    String xPathNavMenu2 = "]";
-    String xPathNavMenu3 = "/div/span";
+    static String xPathNavMenu = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[1]";
+    static String xPathNavMenuCommon = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[";
+    static String xPathNavMenuEnd = "]";
+    static String xPathNavMenuDesc = "/div/span";
+
     String xPathAboutButtons1 = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-about/div/mat-card/section/div/a[";
     String xPathAboutButtons2 = "]/button";
+
+    static Object[] menuOptions;
+    static Object[] URLConfirm;
 
 
     /**
@@ -47,25 +50,25 @@ public class NavigationMenu implements ITest
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    /*
+
     public void NM1_Nav_Menu_Basic_Functionality(String chosenBrowser) throws InterruptedException, IOException
     {
         //Create Test environment and browser
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
-       // browserWindow.manage().window().maximize();
+        browserWindow.manage().window().maximize();
         //Go to Website
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        Object[] menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
 
         try
         {
-            browserWindow.findElement(By.xpath(xPathNavMenu)).click();
-            checkNav(browserWindow,menuOptions);
-            browserWindow.findElement(By.xpath(xPathNavMenu1 +1+ xPathNavMenu2)).click();
-            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + "contact");
+            menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+            checkNav(browserWindow);
+            browserWindow.findElement(By.xpath(xPathNavMenuCommon + 1 + xPathNavMenuEnd)).click();
+            TestFunctions.waitForSite(browserWindow,TestFunctions.navPath);
+            assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website+"contact");
         }
         finally
         {
@@ -74,62 +77,13 @@ public class NavigationMenu implements ITest
         }
     }
 
-    @Test(
-            groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
-            priority = 0,
-            enabled = true
-    )
-    public void NM2_Nav_Menu_Logged_Out_Small() throws InterruptedException
-    {
-        //Create Test environment and browser
-        WebDriver browserWindow = environment.makeDriver();
-       //browserWindow.manage().window().setSize();
-        //Go to Website
-        browserWindow.get(TestFunctions.website);
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
-        try
-        {
-
-        }
-        finally
-        {
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-        }
-    }
 
     @Test(
             groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
             priority = 0,
             enabled = true
     )
-    public void NM3_Nav_Menu_Logged_In_Small() throws InterruptedException
-    {
-        //Create Test environment and browser
-        WebDriver browserWindow = environment.makeDriver();
-        //browserWindow.manage().window().setSize();
-        //Go to Website
-        browserWindow.get(TestFunctions.website);
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
-        try
-        {
-
-        }
-        finally
-        {
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-        }
-    }
-
-    @Test(
-            groups = {"Sanity", "Navigation Menu Sanity", "Navigation menu", "noDataProvider"},
-            priority = 0,
-            enabled = true
-    )
-    public void NM4_Nav_Menu_Logged_Out_FullScreen() throws InterruptedException
+    public void NM2_Nav_Menu_Logged_Out() throws InterruptedException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
@@ -138,11 +92,13 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
-        Object[] menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
-        Object[] URLConfirm = new Object[]{"","contact","about","photo-wall"};
+
+
         try
         {
-            checkNavLinks(browserWindow,menuOptions,URLConfirm);
+            menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
+            URLConfirm = new Object[]{"","contact","about","photo-wall"};
+            checkNavLinks(browserWindow);
         }
         finally
         {
@@ -156,7 +112,7 @@ public class NavigationMenu implements ITest
             priority = 0,
             enabled = true
     )
-    public void NM5_Nav_Menu_Logged_In_FullScreen() throws InterruptedException
+    public void NM3_Nav_Menu_Logged_In() throws InterruptedException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
@@ -165,9 +121,13 @@ public class NavigationMenu implements ITest
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
+
         try
         {
-
+            menuOptions = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+            URLConfirm = new Object[]{"","contact","complain","chatbot","about","photo-wall","deluxe-membership"};
+            TestFunctions.login(browserWindow);
+            checkNavLinks(browserWindow);
         }
         finally
         {
@@ -176,39 +136,28 @@ public class NavigationMenu implements ITest
         }
     }
 
-    public void checkNav(WebDriver browserWindow, Object[] menuOptions)
+    public static void checkNav(WebDriver browserWindow) throws InterruptedException
     {
-        int limit = menuOptions.length-1;
-        for(int i = 1; i <= limit; i++)
-            assertEquals(menuOptions[i], browserWindow.findElement(By.xpath(xPathNavMenu1 + i + xPathNavMenu2 + xPathNavMenu3)).getText());
+        TestFunctions.waitForSiteXpath(browserWindow,xPathNavMenu,true);
+        int limit = menuOptions.length;
+        for(int i = 1; i < limit; i++)
+            assertEquals(browserWindow.findElement(By.xpath(xPathNavMenuCommon + i + xPathNavMenuEnd + xPathNavMenuDesc)).getText(),menuOptions[i]);
     }
 
-    public void checkNavLinks(WebDriver browserWindow, Object[] menuOptions, Object[] URLConfirm) throws InterruptedException
+    public void checkNavLinks(WebDriver browserWindow) throws InterruptedException
     {
-        int limit = URLConfirm.length-1;
-        for(int i = 1; i <= limit; i++)
+        int limit = URLConfirm.length;
+        for(int i = 1; i < limit; i++)
         {
-            Thread.sleep(1500);
-            browserWindow.findElement(By.xpath(xPathNavMenu)).click();
-            checkNav(browserWindow, menuOptions);
-            browserWindow.findElement(By.xpath(xPathNavMenu1 + i + xPathNavMenu2)).click();
+            checkNav(browserWindow);
+            TestFunctions.waitForSiteXpath(browserWindow, xPathNavMenuCommon + i + xPathNavMenuEnd,true);
             assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website + URLConfirm[i]);
-            if(browserWindow.getCurrentUrl().equals(TestFunctions.website+"about"))
-            {
-                Object[] links = new Object[]{"","","","","","",};
-                for(int j = 1; j <= 5; j++)
-                {
-                    browserWindow.findElement(By.xpath(xPathAboutButtons1+j+xPathAboutButtons2)).click();
-                    Thread.sleep(500);
-                    assertEquals(browserWindow.getCurrentUrl(),links[j]);
-                    browserWindow.get(TestFunctions.website + "about");
-                    TestFunctions.waitForSite(browserWindow, TestFunctions.navPath);
-                }
-            }
         }
+        checkNav(browserWindow);
     }
 
-     */
+
+
 
     /**
      * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
