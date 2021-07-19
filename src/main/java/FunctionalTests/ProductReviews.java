@@ -26,14 +26,15 @@ public class ProductReviews implements ITest
 
     //Path to product list elements
 
-    String listElement = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[1]";
+    static String listElement = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[1]";
     //Path to the container of a product
-    String productContainer = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details";
-    String reviewPath = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details/mat-dialog-content/div/mat-expansion-panel/div/div/div/div[";
-    String reviewContents = "]/div/div[1]/p";
-    String reviewNumPath = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details/mat-dialog-content/div/mat-expansion-panel/mat-expansion-panel-header/span[1]/mat-panel-title/span[2]";
+    static String productContainer = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details";
+    static String reviewPath = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details/mat-dialog-content/div/mat-expansion-panel/div/div/div/div[";
+    static String reviewContents = "]/div/div[1]/p";
+    static String reviewNumPath = "/html/body/div[3]/div[2]/div/mat-dialog-container/app-product-details/mat-dialog-content/div/mat-expansion-panel/mat-expansion-panel-header/span[1]/mat-panel-title/span[2]";
     //Valid review input
-    String validInput = "Testing Review";
+    static String validInput = "Testing Review";
+    static int numOfReviews, numOfReviews2;
 
     /**
      *Create an environment for all tests using the same browser app.
@@ -73,29 +74,10 @@ public class ProductReviews implements ITest
 
         try
         {
-            int numOfReviews, numOfReviews2,numOfReviews3;
+
             fillReview(browserWindow,validInput);
-            browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-0")).click();
-
-            //identify how many reviews are supposed to be present.
-            numOfReviews = getNumOfReviews(browserWindow);
-
-            //Check that there are actually that number of reviews
-            for(int i = 1; i <= numOfReviews; i++)
-            {
-                try
-                {
-                   assertTrue(browserWindow.findElement(By.xpath(reviewPath+i+"]")).isEnabled());
-                }
-                catch(NoSuchElementException ignore) {}
-            }
-
-            browserWindow.findElement(By.cssSelector("#submitButton")).click();
-
-            TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
-
-            numOfReviews2 = getNumOfReviews(browserWindow);
-            checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
+            testReview(browserWindow);
+            submitReview(browserWindow);
 
             WebElement product = browserWindow.findElement(By.xpath(productContainer));
             product.findElement(By.className("close-dialog")).click();
@@ -105,7 +87,6 @@ public class ProductReviews implements ITest
             browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-1")).click();
 
             TestFunctions.waitForSiteXpath(browserWindow,reviewNumPath);
-
             checkReview(browserWindow,getNumOfReviews(browserWindow),numOfReviews2, validInput);
         }
         finally
@@ -169,7 +150,7 @@ public class ProductReviews implements ITest
         }
     }
 
-    public void fillReview(WebDriver browserWindow, String input) throws InterruptedException
+    public static void fillReview(WebDriver browserWindow, String input) throws InterruptedException
     {
         TestFunctions.login(browserWindow);
         //check product
@@ -180,13 +161,41 @@ public class ProductReviews implements ITest
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(input);
     }
 
-    public int getNumOfReviews(WebDriver browserWindow)
+    public static void testReview(WebDriver browserWindow) throws InterruptedException
+    {
+        int numOfReviews;
+
+        numOfReviews = getNumOfReviews(browserWindow);
+        browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-0")).click();
+        //identify how many reviews are supposed to be present.
+        numOfReviews = getNumOfReviews(browserWindow);
+        //Check that there are actually that number of reviews
+        for (int i = 1; i <= numOfReviews; i++)
+        {
+            try
+            {
+                assertTrue(browserWindow.findElement(By.xpath(reviewPath + i + "]")).isEnabled());
+            } catch (NoSuchElementException ignore) {}
+        }
+    }
+    public static void submitReview(WebDriver browserWindow) throws InterruptedException
+    {
+        browserWindow.findElement(By.cssSelector("#submitButton")).click();
+
+        TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
+
+        numOfReviews2 = getNumOfReviews(browserWindow);
+        checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
+
+    }
+
+    public static int getNumOfReviews(WebDriver browserWindow)
     {
         String reviewAmount = browserWindow.findElement(By.xpath(reviewNumPath)).getText();
         return Integer.parseInt(reviewAmount.substring(1,reviewAmount.length()-1));
     }
 
-    public void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString)
+    public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString)
     {
         assertEquals(actual, previous);
         assertEquals(browserWindow.findElement(By.xpath(reviewPath+actual+reviewContents)).getText(),expectedString);

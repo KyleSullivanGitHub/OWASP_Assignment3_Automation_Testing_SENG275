@@ -189,11 +189,13 @@ public class ProductViewing implements ITest
         }
     }
 
-
-    public void PV_Regression() throws InterruptedException
+    @Test(
+            groups = {"Regression", "Product View Regression", "Product View", "NoDataProvider"},
+            priority = 0,
+            enabled = true
+    )
+    public void PV_Regression() throws InterruptedException, IOException
     {
-
-        //TODO PV Regression
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
@@ -203,17 +205,57 @@ public class ProductViewing implements ITest
 
         try
         {
+            for(int isLogged = 0; isLogged <=1; isLogged++)
+            {
+                int[] temp = new int[]{5, 2, 1};
+                for (int pages : temp)
+                {
+                    int select;
+                    try
+                    {
+                        select = pages == 5 ? 0 : pages == 2 ? 1 : pages == 1 ? 2 : null;
+                    } catch (NullPointerException exception)
+                    {
+                        throw new IOException("No Product per page Amount Set");
+                    }
 
+                    //select the amount of product per page to display
+                    TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
+                    TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + select + "\"]", true);
 
-            //try twice, once logged in, once logged out
-            //check reviews
-            //check add to basket
-            //move to next page, and check again
-            //check for ribbons
+                    for (int page = 1; page <= pages; page++)
+                    {
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
+                        TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]", true);
+
+                        ProductReviews.testReview(browserWindow);
+                        if(isLogged == 1)
+                        {
+                            ProductReviews.fillReview(browserWindow,"Test Review");
+                            ProductReviews.submitReview(browserWindow);
+                        }
+
+                        WebElement product = browserWindow.findElement(By.xpath(productContainer));
+                        product.findElement(By.className("close-dialog")).click();
+                        assertTrue(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[3]/button")).isEnabled());
+
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
+
+                        if (page < pages) //go to the next page if we have not reached the end
+                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
+                        else if (page >= pages && page != pages) //go to the previous page if we have reached the end
+                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
+                    }
+
+                }
+                if(isLogged == 0)
+                    TestFunctions.login(browserWindow);
+            }
 
         } finally
         {
-
+            Thread.sleep(TestFunctions.endTestWait);
+            //browserWindow.quit();
         }
     }
 

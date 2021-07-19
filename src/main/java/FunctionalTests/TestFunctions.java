@@ -33,6 +33,7 @@ public class TestFunctions
     public static String logButton = "loginButton";
     public static String mInput = "#mat-input-";
     public static String mRadio = "#mat-radio-";
+    public static String basketXpath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]";
 
     public static int endTestWait = 2500;
 
@@ -442,7 +443,7 @@ public class TestFunctions
         else
             NavigationMenu.menuOptions = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
         NavigationMenu.checkNav(test);
-
+        test.findElement(By.className("mat-drawer-shown")).click();
 
         //check Main logo
         WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
@@ -450,11 +451,12 @@ public class TestFunctions
         assertEquals(mainPageLink.getAttribute("aria-label"),"Back to homepage");
         WebElement mainPageLogo = test.findElement(By.className("logo"));
         assertWebElement(mainPageLogo);
-        assertEquals(mainPageLogo.getAttribute("src"),"assets/public/images/JuiceShop_Logo.png");
+        assertEquals(mainPageLogo.getAttribute("src"),"https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
         //check Search tools
 
         //check account button
+        waitForSite(test,navPath);
         WebElement accountMenu = test.findElement(By.cssSelector(navPath));
         assertWebElement(accountMenu);
         accountMenu.click();
@@ -476,11 +478,6 @@ public class TestFunctions
             WebElement logoutMenu = accountMenu.findElement(By.cssSelector("#mat-menu-panel-0 > div > button:nth-child(4)"));
             assertWebElement(logoutMenu);
             assertEquals(logoutMenu.getText(),"Logout");
-
-            WebElement basketMenu = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]"));
-            assertWebElement(basketMenu);
-            basketMenu.click();
-
         }
         else
         {
@@ -491,12 +488,74 @@ public class TestFunctions
 
         if(loggedIn)
         {
-            //check basket
+            WebElement basket = test.findElement(By.xpath(basketXpath));
+            assertWebElement(basket);
+            WebElement basketIcon = test.findElement(By.xpath(Basket.basketIcon_XPath));
+            assertWebElement(basketIcon);
+            WebElement basketCounter = test.findElement(By.xpath(Basket.basketIconQuantity_XPath));
+            assertWebElement(basketCounter);
         }
+        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
 
         //Change Language
-        WebElement changeLanguageMenu; //= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
-        //assertWebElement(changeLanguageMenu);
+        WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
+        assertWebElement(changeLanguageMenu);
+        changeLanguageMenu.click();
+        if(!languageListCreated)
+            createLanguageList();
+        for(int i = 1; i <= 37; i++)
+        {
+            assertEquals(test.findElement(By.cssSelector(mRadio+i)).getText(),languageList[i]);
+        }
+        test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
+
+    }
+
+    private static boolean languageListCreated = false;
+    private static Object[] languageList;
+    private static void createLanguageList()
+    {
+        languageList = new Object[]{
+                "",
+                "Azərbaycanca",
+                "Bahasa Indonesia",
+                "Catalan",
+                "Česky",
+                "Dansk",
+                "Deutsch",
+                "Eesti",
+                "English",
+                "Español",
+                "Français",
+                "Italiano",
+                "Język Polski",
+                "Latvijas",
+                "Magyar",
+                "Nederlands",
+                "Norsk",
+                "Português",
+                "Português (Brasil)",
+                "Pусский",
+                "Românesc",
+                "Schwizerdütsch",
+                "Suomalainen",
+                "Svenska",
+                "Türkçe",
+                "Ελληνικά",
+                "български (език)",
+                "ქართული",
+                "עברית",
+                "عربي",
+                "हिंदी",
+                "ไทย",
+                "ျမန္မာ",
+                "한국어",
+                "中文",
+                "日本の",
+                "繁體中文",
+                "繁體中文",
+        };
+        languageListCreated = true;
     }
 
     private static void assertWebElement(WebElement testing)

@@ -21,17 +21,38 @@ public class ProductSearching implements ITest
 
 
     /**
-     *Create an environment for all tests using the same browser app.
-     *Programmer: Kyle Sullivan
+     * Create an environment for all tests using the same browser app.
+     * Programmer: Kyle Sullivan
      */
     @BeforeSuite
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
-        TestFunctions.createAccount();
     }
 
+    public void SC1_Valid_Search()
+    {
+
+    }
+
+
+    public void SC2_Invalid_Search()
+    {
+
+    }
+
+
+    public void SC3_Invalid_Search_Comprehensive()
+    {
+
+    }
+
+
+    public void SC4_Additional_Search_Checks()
+    {
+
+    }
 
 
     /**
