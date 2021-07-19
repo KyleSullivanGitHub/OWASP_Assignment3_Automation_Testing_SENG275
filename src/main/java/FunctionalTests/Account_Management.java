@@ -112,7 +112,7 @@ public class Account_Management implements ITest
      * link: https://ibb.co/6gBdXKJ
      */
     @Test(
-            groups = {"Smoke","Support_Chat Smoke","Invalid_Support_Chat"},
+            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement"},
             dataProvider = "LG3_Input",
             priority = 1,
             dataProviderClass = Test_Data.class,
@@ -171,6 +171,17 @@ public class Account_Management implements ITest
         browserWindow.quit();
     }
 
+    @Test(
+            groups = {"Regression","Account_Management_Regression","hasDataProvider"},
+            dataProvider = "LG3_Input",
+            priority = 1,
+            dataProviderClass = Test_Data.class,
+            threadPoolSize = 3,
+            enabled = true
+    )
+    public void MA_Regression(String chosenBrowser, String email, String password) throws InterruptedException, IOException {
+
+    }
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         browserWindow.get (TestFunctions.website);
