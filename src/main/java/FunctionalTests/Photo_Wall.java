@@ -53,9 +53,9 @@ public class Photo_Wall implements ITest
 
 
     /**
-     *Smoke tests for Valid use of Photo_Wall feature and posting picture
+     * Smoke tests for Valid use of Photo_Wall feature and posting picture
      * Includes test cases PW_001, PW_004,PW_008
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
      * @exception IOException Thrown if no browser is chosen for a test
@@ -144,7 +144,7 @@ public class Photo_Wall implements ITest
 
 
     /**
-     *Smoke tests for Invalid use of Photo_Wall feature and posting picture
+     * Smoke tests for Invalid use of Photo_Wall feature and posting picture
      * Includes test cases PW_006, PW_007
      *Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
@@ -224,7 +224,7 @@ public class Photo_Wall implements ITest
 
 
     /**
-     * Smoke tests for Valid use of Photo_Wall feature and posting picture
+     * Sanity tests for Valid use of Photo_Wall feature and posting picture
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */

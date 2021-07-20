@@ -49,9 +49,9 @@ public class Support_Chat implements ITest
 
 
     /**
-     *Smoke tests for Valid use of support chat
+     * Smoke tests for Valid use of support chat
      * Includes test cases SC_001, SC_002, SC_005, SC_009.
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
      * @exception IOException Thrown if no browser is chosen for a test
@@ -115,9 +115,9 @@ public class Support_Chat implements ITest
 
 
     /**
-     *Smoke tests for Invalid use of support chat
+     * Smoke tests for Invalid use of support chat
      * Includes test case SC_006
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(

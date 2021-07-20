@@ -150,7 +150,7 @@ public class Complaint implements ITest
 
 
     /**
-     *Smoke (also included in Sanity) test for Invalid use of Complaint feature
+     * Sanity-Smoke (also included in Sanity) test for Invalid use of Complaint feature
      * Includes test cases C_006
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time

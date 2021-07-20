@@ -49,9 +49,9 @@ public class Account_Management implements ITest
 
 
     /**
-     *Smoke tests for Valid use of Account Management
+     * Smoke tests for Valid use of Account Management
      * Includes test cases MA_001, MA_002, MA_005
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
      * @exception IOException Thrown if no browser is chosen for a test
@@ -108,9 +108,9 @@ public class Account_Management implements ITest
 
 
     /**
-     *Smoke tests for Invalid use of support chat
+     * Smoke tests for Invalid use of support chat
      * Includes test case SC_006
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * link: https://ibb.co/6gBdXKJ
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -179,7 +179,7 @@ public class Account_Management implements ITest
 
     /**
      * Sanity tests for updating Profile page fields -> 1st one
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * link: https://ibb.co/6gBdXKJ
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -229,7 +229,7 @@ public class Account_Management implements ITest
 
     /**
      * Sanity tests for updating Profile page fields -> 2nd one
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * link: https://ibb.co/6gBdXKJ
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */

@@ -228,8 +228,9 @@ public class Login implements ITest
 
 
     /**
-     *Smoke tests a single invalid Google login attempt.
-     *Programmer: Seyedmehrad Adimi
+     * Sanity tests a single invalid Google login attempt.
+     * Programmer: Seyedmehrad Adimi
+     * @param dataSet provides email and password
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
@@ -305,7 +306,7 @@ public class Login implements ITest
 
 
     /**
-     *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
+     *Sanity tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
      *Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -350,7 +351,7 @@ public class Login implements ITest
 
 
     /**
-     * Smoke test for valid Login memory within one browser
+     * Sanity test for valid Login memory within one browser
      * Programmer: Seyedmehrad Adimi
      *  @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
