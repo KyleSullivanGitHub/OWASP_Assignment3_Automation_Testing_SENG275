@@ -14,13 +14,16 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
+
+
+/*
+Tests for verifying the full functionality of the Choose Language feature
+*/
 
 public class Choose_Language implements ITest
 {
@@ -56,6 +59,7 @@ public class Choose_Language implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
+     * @exception IOException Thrown if no browser is chosen for a test
      */
     @Test(
             groups = {"Smoke","Choose_Language", "hasDataProvider"},
@@ -94,14 +98,15 @@ public class Choose_Language implements ITest
     /**
      * Regression tests for Valid use of Choose Language
      * Includes test cases CL_004,CL_005,CL_006
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Regression","Choose_Language", "noDataProvider"},
             priority = 999
     )
 
-    public void CL_Regression() throws InterruptedException, IOException {
+    public void CL_Regression() throws InterruptedException{
         // No title for choose language
         //Create driver and browser for this particular test
 
@@ -128,6 +133,11 @@ public class Choose_Language implements ITest
 
 
 
+    /**
+     * This is a helper method to help verifiying the languages chosen
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     private void TestThisLanguage(WebDriver browserWindow, String Language) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.findElement(By.cssSelector (chooseLanguageCSS)).click ();
