@@ -47,7 +47,7 @@ public class Complaint implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -156,8 +156,9 @@ public class Complaint implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
-            priority = 28
+            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "noDataProvider"},
+            priority = 28,
+            enabled = true
     )
     public void CO2_Invalid_Use() throws InterruptedException {
 
@@ -198,8 +199,9 @@ public class Complaint implements ITest
      *@exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
-            priority = 66
+            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "noDataProvider"},
+            priority = 66,
+            enabled = true
     )
 
     public void CO3_Invalid_Use() throws InterruptedException{
@@ -253,8 +255,9 @@ public class Complaint implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Regression","Complaint"},
-            priority = 84
+            groups = {"Regression","Complaint","noDataProvider"},
+            priority = 84,
+            enabled = true
     )
     public void CO_Regression() throws InterruptedException {
 

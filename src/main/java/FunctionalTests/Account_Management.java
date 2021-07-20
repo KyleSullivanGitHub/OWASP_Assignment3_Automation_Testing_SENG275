@@ -41,7 +41,7 @@ public class Account_Management implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -115,8 +115,9 @@ public class Account_Management implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement", "hasNoDataProvider"},
-            priority = 36
+            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement", "noDataProvider"},
+            priority = 36,
+            enabled = true
     )
     public void MA2_Update_Profile() throws InterruptedException{
         //Create driver and browser for this particular test
@@ -234,8 +235,9 @@ public class Account_Management implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Account_Management_Sanity","hasNoDataProvider"},
-            priority = 1
+            groups = {"Sanity","Account_Management_Sanity","noDataProvider"},
+            priority = 1,
+            enabled = true
     )
 
     public void MA3_2_Update() throws InterruptedException{
@@ -282,8 +284,9 @@ public class Account_Management implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Account_Management_Sanity","hasNoDataProvider"},
-            priority = 1
+            groups = {"Sanity","Account_Management_Sanity","noDataProvider"},
+            priority = 1,
+            enabled = true
     )
 
     public void MA3_3_Update() throws InterruptedException{
@@ -334,7 +337,7 @@ public class Account_Management implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Regression","Account_Management","hasNoDataProvider"},
+            groups = {"Regression","Account_Management","noDataProvider"},
             priority =87,
             enabled = true
     )
@@ -401,6 +404,8 @@ public class Account_Management implements ITest
             browserWindow.quit ();
         }
     }
+
+
     /**
      * Helper method to navigate to Profile page
      * Programmer: Seyedmehrad Adimi
@@ -408,7 +413,6 @@ public class Account_Management implements ITest
      * @param wait is the wait driver
      * @param navbarAccount is the locator
      */
-
     private void navToAccountManagement(WebDriver browserWindow, WebDriverWait wait, By navbarAccount) {
         wait.until (ExpectedConditions.visibilityOfElementLocated (navbarAccount));
         browserWindow.findElement (navbarAccount).click ();

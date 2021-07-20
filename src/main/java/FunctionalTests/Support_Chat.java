@@ -41,7 +41,7 @@ public class Support_Chat implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -172,7 +172,8 @@ public class Support_Chat implements ITest
      */
     @Test(
             groups = {"Regression","Support_Chat","noDataProvider"},
-            priority = 85
+            priority = 85,
+            enabled = true
     )
     public void SC_Regression() throws InterruptedException{
         //Create driver and browser for this particular test

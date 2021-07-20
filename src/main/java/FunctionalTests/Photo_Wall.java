@@ -44,7 +44,7 @@ public class Photo_Wall implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -150,8 +150,9 @@ public class Photo_Wall implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Photo_Wall","hasNoDataProvider"},
-            priority = 46
+            groups = {"Smoke","Photo_Wall","noDataProvider"},
+            priority = 46,
+            enabled = true
     )
     public void PW2_Valid_Use() throws InterruptedException{
         //Create driver and browser for this particular test
@@ -230,8 +231,9 @@ public class Photo_Wall implements ITest
      */
 
     @Test(
-            groups = {"Sanity","Photo_Wall", "hasNoDataProvider"},
-            priority = 72
+            groups = {"Sanity","Photo_Wall", "noDataProvider"},
+            priority = 72,
+            enabled = true
     )
     public void PW3_Valid_Use() throws InterruptedException{
         ///Create driver and browser for this particular test
@@ -307,8 +309,9 @@ public class Photo_Wall implements ITest
      */
 
     @Test(
-            groups = {"Regression","Photo_Wall", "hasNoDataProvider"},
-            priority = 90
+            groups = {"Regression","Photo_Wall", "noDataProvider"},
+            priority = 90,
+            enabled = true
     )
     public void PW_Regression() throws InterruptedException{
         //Create driver and browser for this particular test

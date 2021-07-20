@@ -66,7 +66,7 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -162,8 +162,9 @@ public class Login implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Login","hasNoDataProvider"},
-            priority = 7
+            groups = {"Smoke","Login","noDataProvider"},
+            priority = 7,
+            enabled = true
     )
     public void LG3_Valid_Input() throws InterruptedException {
         //Create driver and browser for this particular test
@@ -311,8 +312,9 @@ public class Login implements ITest
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Login","hasNoDataProvider"},
-            priority = 56
+            groups = {"Sanity","Login","noDataProvider"},
+            priority = 56,
+            enabled = true
     )
     public void LG6_Invalid_Input() throws InterruptedException{
         //Create the Test Environment
@@ -356,8 +358,9 @@ public class Login implements ITest
      *  @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Login","haNoDataProvider"},
-            priority = 58
+            groups = {"Sanity","Login","noDataProvider"},
+            priority = 58,
+            enabled = true
     )
 
     public void LG7_Login_Memory() throws InterruptedException{

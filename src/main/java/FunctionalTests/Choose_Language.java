@@ -46,7 +46,7 @@ public class Choose_Language implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -96,41 +96,6 @@ public class Choose_Language implements ITest
         }
     }
 
-    /**
-     * Regression tests for Valid use of Choose Language
-     * Includes test cases CL_004,CL_005,CL_006
-     * Programmer: Seyedmehrad Adimi
-     * @exception InterruptedException is thrown if a test is interrupted during a wait time
-     */
-    @Test(
-            groups = {"Regression","Choose_Language", "noDataProvider"},
-            priority = 999
-    )
-
-    public void CL_Regression() throws InterruptedException{
-        // No title for choose language
-        //Create driver and browser for this particular test
-
-
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        browserWindow.get(TestFunctions.website);
-
-        TestFunctions.waitForSite(browserWindow);
-
-        try {
-            // Testing CL_004 : Verify the Page URL, Page Heading and Page Title of 'Choose Language' page
-                Login.testUrlAndTitleAndHeading (browserWindow,"https://juice-shop.herokuapp.com/#/","OWASP Juice Shop","All Products", titleCSS );
-            // Testing CL_005 : Verify the UI of  'Choose Language' page functionality
-                Login.testRegressionForMe (browserWindow,false);
-            // Testing CL_006 : Verify the 'Choose Language' page  functionality in all the supported environments -> is Tested automtically
-
-
-        }finally {
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-        }
-    }
 
 
 
