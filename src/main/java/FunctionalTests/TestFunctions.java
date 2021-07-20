@@ -34,7 +34,7 @@ public class TestFunctions
     public static String mRadio = "#mat-radio-";
     public static String basketXpath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]";
 
-    public static int endTestWait = 500;
+    public static int endTestWait = 2500;
 
     //Declarations for constant account values
     private static boolean registerSetup = false;
@@ -63,7 +63,7 @@ public class TestFunctions
                 emailNumRandomizer += emailRandomizer.nextInt(9);
             }
             //set up the constant email for this session
-            constEmail = "HelloWorld934" + emailNumRandomizer + "@gmail.com";
+            constEmail = "HelloWorld9" + emailNumRandomizer + "@gmail.com";
             constPassword = "Seng265!";
             constAnswer = "Seng";
 
@@ -207,19 +207,13 @@ public class TestFunctions
      */
     public static void navToLogin(WebDriver test) throws InterruptedException
     {
-        try{
-            test.findElement(By.cssSelector(navbarLogin)).click();
-        }
-        catch(NoSuchElementException | ElementClickInterceptedException qucikLog)
-        {
-            //Find the account button
-            test.findElement(By.cssSelector(navPath)).click();
-            //verify that we can access the login page
-            waitForSite(test, navbarLogin);
-            WebElement accountMenuLogin = test.findElement(By.cssSelector(navbarLogin));
-            assertTrue(accountMenuLogin.isEnabled());
-            accountMenuLogin.click(); //Go to login page
-        }
+        //Find the account button
+        test.findElement(By.cssSelector(navPath)).click();
+        //verify that we can access the login page
+        waitForSite(test,navbarLogin);
+        WebElement accountMenuLogin = test.findElement(By.cssSelector(navbarLogin));
+        assertTrue(accountMenuLogin.isEnabled());
+        accountMenuLogin.click(); //Go to login page
     }
 
     /**
@@ -233,6 +227,7 @@ public class TestFunctions
         //navigate to login page
         navToLogin(test);
         //ensure that we can navigate to the sign up page
+        test.navigate().refresh();
         WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();//enter sign up page
@@ -465,24 +460,22 @@ public class TestFunctions
             assertEquals(mainPageLogo.getAttribute("src"), "https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
             //check Search tools
-            if(!expectedURL.contains(website+"search?"))
-            {
-                WebElement searchElement = test.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)"));
-                searchElement.click();
-                TestFunctions.waitForSite(test, "#mat-input-0");
-                searchElement = test.findElement(By.cssSelector("#mat-input-0"));
-                assertWebElement(searchElement);
-                searchElement.sendKeys("testing");
+            WebElement searchElement = test.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)"));
+            assertWebElement(searchElement);
+            searchElement.click();
+            TestFunctions.waitForSite(test,"#mat-input-0");
+            searchElement = test.findElement(By.cssSelector("#mat-input-0"));
+            assertWebElement(searchElement);
+            searchElement.sendKeys("testing" + Keys.ENTER);
 
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            //Try to copy the contents of the password field
+            Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
+            searchElement.sendKeys(OSspecific + "a");
+            searchElement.sendKeys(OSspecific + "c");
+            //Confirm that the clipboard does not contain the password
+            assertEquals(cb.getData(DataFlavor.stringFlavor), "testing");
 
-                Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-                //Try to copy the contents of the password field
-                Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
-                searchElement.sendKeys(OSspecific + "a");
-                searchElement.sendKeys(OSspecific + "c");
-                //Confirm that the clipboard does not contain the password
-                assertEquals(cb.getData(DataFlavor.stringFlavor), "testing");
-            }
             //check account button
             waitForSite(test, navPath);
             WebElement accountMenu = test.findElement(By.cssSelector(navPath));
@@ -523,6 +516,8 @@ public class TestFunctions
                 WebElement accountMenuLogin = test.findElement(By.cssSelector(TestFunctions.navbarLogin));
                 assertWebElement(accountMenuLogin);
             }
+
+            test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
 
             if (loggedIn)
             {

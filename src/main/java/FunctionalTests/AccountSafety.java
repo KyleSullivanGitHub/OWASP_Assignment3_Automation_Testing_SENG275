@@ -7,8 +7,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
-import org.testng.annotations.*;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 import java.awt.*;
@@ -53,8 +54,8 @@ public class AccountSafety implements ITest
      * @exception UnsupportedFlavorException Thrown if the clipboard cannot be read
      */
     @Test(
-            groups = {"Smoke","Password_Security","hasDataProvider"},
-            priority = 41,
+            groups = {"Smoke","Password Security","Password Security Smoke","hasDataProvider"},
+            priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true

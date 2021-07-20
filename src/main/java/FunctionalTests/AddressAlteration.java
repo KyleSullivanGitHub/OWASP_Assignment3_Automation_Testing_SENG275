@@ -2,9 +2,7 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.ITest;
 import org.testng.annotations.*;
 
@@ -26,7 +24,7 @@ public class AddressAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -42,8 +40,7 @@ public class AddressAlteration implements ITest
             groups = {"Smoke","Address_Alteration","hasDataProvider"},
             priority = 19,
             dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            dataProviderClass = Test_Data.class
     )
 
     public void AA1_validAddressAddition(String chosenBrowser) throws IOException, InterruptedException {
@@ -103,10 +100,8 @@ public class AddressAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -145,10 +140,8 @@ public class AddressAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -198,10 +191,8 @@ public class AddressAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -235,10 +226,8 @@ public class AddressAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -267,21 +256,15 @@ public class AddressAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","AddressAlteration","AA_Regression","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Regression","AddressAlteration","AA_Regression","noDataProvider"}
     )
 
-    public void AA_regressionAddAddressPage(String chosenBrowser) throws IOException, InterruptedException {
-        //TODO Combine with above. Only one regression per test class. Implement common regresssion
+    public void AA_regressionAddAddressPage() throws InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -342,9 +325,6 @@ public class AddressAlteration implements ITest
             assertEquals(addressPlaceholder, "Please provide an address.");
             assertEquals(cityPlaceholder, "Please provide a city.");
             assertEquals(statePlaceholder, "Please provide a state.");
-
-            //Unnecessary
-            browserWindow.navigate().refresh();
 
         } finally {
             Thread.sleep(TestFunctions.endTestWait);

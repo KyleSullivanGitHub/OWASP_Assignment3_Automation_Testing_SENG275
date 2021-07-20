@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -60,8 +59,8 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Password_Complexity", "hasDataProvider"},
-            priority = 3,
+            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke", "hasDataProvider"},
+            priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -96,8 +95,8 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Password_Complexity", "noDataProvider"},
-            priority = 4,
+            groups = {"Smoke", "Password Complexity", "Password Complexity Smoke","noDataProvider"},
+            priority = 0,
             enabled = true
     )
     public void PCS2_Password_Complexity_Invalid() throws InterruptedException
@@ -131,8 +130,8 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Sanity", "Password_Complexity", "hasDataProvider"},
-            priority = 52,
+            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity", "hasDataProvider"},
+            priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -165,8 +164,8 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Password_Complexity", "noDataProvider"},
-            priority = 53,
+            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity","noDataProvider"},
+            priority = 0,
             enabled = true
     )
     public void PCS4_Password_Complexity_Valid_FP() throws InterruptedException
@@ -199,8 +198,8 @@ public class PasswordComplexity implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Password_Complexity", "hasDataProvider"},
-            priority = 54,
+            groups = {"Sanity", "Password Complexity", "Password Complexity Sanity", "hasDataProvider"},
+            priority = 0,
             dataProvider = "PC_Input",
             dataProviderClass = Test_Data.class,
             enabled = true

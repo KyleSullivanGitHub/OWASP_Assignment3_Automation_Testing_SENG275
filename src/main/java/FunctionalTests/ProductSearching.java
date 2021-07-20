@@ -29,6 +29,8 @@ public class ProductSearching implements ITest
     String pageNav = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/mat-paginator/div/div/div[2]/button[";
 
 
+
+
     /**
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
@@ -41,8 +43,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Product_Searching", "hasDataProvider"},
-            priority = 12,
+            groups = {"Smoke", "Product Searching Smoke", "Product Searching", "hasDataProvider"},
+            priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -103,8 +105,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Product_Searching", "noDataProvider"},
-            priority = 13,
+            groups = {"Smoke", "Product Searching Smoke", "Product Searching", "noDataProvider"},
+            priority = 0,
             enabled = true
     )
     public void SC2_Invalid_Search() throws InterruptedException
@@ -132,8 +134,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Sanity", "Product_Searching", "hasDataProvider"},
-            priority = 62,
+            groups = {"Sanity", "Product Searching Sanity", "Product Searching", "hasDataProvider"},
+            priority = 0,
             dataProvider = "SC3_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -152,7 +154,7 @@ public class ProductSearching implements ITest
             searching(browserWindow, input);
             if(input == "")
             {
-                TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[1]/div[1]");
+                TestFunctions.waitForSite(browserWindow,"#search-results-heading");
                 assertEquals(browserWindow.getCurrentUrl(),TestFunctions.website+"search");
             }
             else
@@ -171,8 +173,8 @@ public class ProductSearching implements ITest
     }
 
     @Test(
-            groups = {"Regression","Product_Searching", "noDataProvider"},
-            priority = 78,
+            groups = {"Regression", "Product Searching Regression", "Product Searching", "noDataProvider"},
+            priority = 0,
             enabled = true
     )
     public void SC_Regression() throws InterruptedException, IOException
@@ -214,7 +216,7 @@ public class ProductSearching implements ITest
 
                     for (int i = 1; i <= pages; i++)
                     {
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website + "search?q=" + input, false);
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website + "search?p=" + input, false);
                         int limit = i == temp ? resultAmount % perPage : perPage;
                         for (int j = 1; j <= limit; j++)
                             assertTrue(browserWindow.findElement(By.xpath(listElement + j + "]")).isDisplayed());

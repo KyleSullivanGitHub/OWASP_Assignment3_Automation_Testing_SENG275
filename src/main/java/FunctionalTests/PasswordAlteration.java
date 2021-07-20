@@ -2,7 +2,6 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
 import org.testng.annotations.*;
@@ -27,7 +26,7 @@ public class PasswordAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -93,17 +92,14 @@ public class PasswordAlteration implements ITest
     @Test(
             groups = {"Smoke","Password_Alteration","noDataProvider"},
             priority = 43
-
     )
 
     public void PA2_invalidPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -136,10 +132,8 @@ public class PasswordAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -182,10 +176,8 @@ public class PasswordAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -212,10 +204,8 @@ public class PasswordAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -278,10 +268,8 @@ public class PasswordAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
