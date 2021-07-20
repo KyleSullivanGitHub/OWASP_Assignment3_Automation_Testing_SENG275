@@ -88,7 +88,7 @@ public class Basket implements ITest{
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -165,7 +165,7 @@ public class Basket implements ITest{
             browserWindow.manage().window().maximize();
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -217,7 +217,7 @@ public class Basket implements ITest{
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             TestFunctions.constEmail = "helloworld.owasp@gmail.com";
             Thread.sleep(1000);
