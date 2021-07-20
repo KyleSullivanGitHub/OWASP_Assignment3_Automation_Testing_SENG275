@@ -15,13 +15,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
 import org.openqa.selenium.interactions.Actions;
-
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Random;
-
 import static org.testng.Assert.*;
+
+
+/*
+Tests for verifying the full functionality of the Login feature
+*/
 
 public class Login implements ITest
 {
@@ -62,6 +64,7 @@ public class Login implements ITest
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
+     * @exception IOException Thrown if no browser is chosen for a test
      */
     @BeforeSuite
     public void SetUp() throws IOException
@@ -114,10 +117,10 @@ public class Login implements ITest
     }
 
 
-
     /**
      *Smoke tests a single invalid login attempt.
      *Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Login", "noDataProvider"},
@@ -154,12 +157,13 @@ public class Login implements ITest
     /**
      * Smoke test for valid Google Login with a single browser
      * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Login","hasNoDataProvider"},
             priority = 7
     )
-    public void LG3_Valid_Input() throws InterruptedException, IOException {
+    public void LG3_Valid_Input() throws InterruptedException {
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -187,6 +191,7 @@ public class Login implements ITest
     /**
      *Smoke tests a single invalid Google login attempt.
      *Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Login", "noDataProvider"},
@@ -223,6 +228,7 @@ public class Login implements ITest
     /**
      *Smoke tests a single invalid Google login attempt.
      *Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Sanity","Login","hasDataProvider"},
@@ -231,7 +237,7 @@ public class Login implements ITest
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void LG5_Invalid_Input(Object[] dataSet) throws IOException, InterruptedException
+    public void LG5_Invalid_Input(Object[] dataSet) throws InterruptedException
     {
 
         //Create driver and browser for this particular test
@@ -282,13 +288,7 @@ public class Login implements ITest
         // check the error message and see if it is right
         assertEquals (message1.getText (), loginErrorMessageText);
 
-
-
-
-
-        //Todo how to test inactive credentials?
-        // Test case TC_LF_010: No credentials:
-
+        // The website does not send any verification email, that is why email verification and verifies accounts cannot be tested
 
 
         assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/login");}
@@ -304,14 +304,14 @@ public class Login implements ITest
 
     /**
      *Smoke tests invalid Google login attempt with valid password + Invalid email and Invalid password + Valid email.
-
      *Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Sanity","Login","hasNoDataProvider"},
             priority = 56
     )
-    public void LG6_Invalid_Input() throws InterruptedException, IOException {
+    public void LG6_Invalid_Input() throws InterruptedException{
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -348,16 +348,16 @@ public class Login implements ITest
 
 
     /**
-     * Smoke test for valid Login memory within several different browsers
+     * Smoke test for valid Login memory within one browser
      * Programmer: Seyedmehrad Adimi
+     *  @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Sanity","Login","haNoDataProvider"},
             priority = 58
     )
 
-    //todo closing and opening does not work
-    public void LG7_Login_Memory() throws InterruptedException, IOException {
+    public void LG7_Login_Memory() throws InterruptedException{
         //Create driver and browser for this particular test
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
@@ -378,19 +378,23 @@ public class Login implements ITest
 
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
 
-          /*  Thread.sleep (2000);
+            // During testing, the login memory does not get saved.
+            // It only happens when the user manually closes the browser
+            // and opens it again
+            // Therefore Login Memory by closing the browser cannot be tested
+            // The code is below
+
+          /*  sleep(1);
 
             WebDriver browserWindow1 = environment.makeDriver();
             browserWindow1.manage().window().maximize();
             browserWindow1.get(website);
 
-            Thread.sleep (2000);
+            sleep(2);
             browserWindow1.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
-            Thread.sleep (1000);
+            sleep(1);
             assertTrue (browserWindow1.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isDisplayed ());
-
-            Thread.sleep (2000);
-            browserWindow.quit();*/
+         */
         }
         finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -399,10 +403,11 @@ public class Login implements ITest
     }
 
     /**
-     * Regression test for Login feature within several different browsers.
+     * Regression test for Login feature within one browser.
      * Considers test cases TC_LF_007, TC_LF_008, TC_LF_011, TC_LF_016, TC_LF_017
      * Programmer: Seyedmehrad Adimi
      * @param dataSet object provides email and password
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Regression","Login","hasDataProvider"},
@@ -411,7 +416,7 @@ public class Login implements ITest
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void LG_Regression(Object[] dataSet) throws InterruptedException, IOException {
+    public void LG_Regression(Object[] dataSet) throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -491,6 +496,18 @@ public class Login implements ITest
         }
     }
 
+
+
+    /**
+     * This is a helper method that checks the url, title, hand heading of a page
+     * and asserts that they are right.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param url is the correct url of the page that need to be compared
+     * @param title is the correct title to be tested
+     * @param heading is the correct heading to be tested
+     * @param headingCSS is the correct headingCSS and helps with finding the heading
+     */
     public static void testUrlAndTitleAndHeading(WebDriver browserWindow, String url, String title, String heading, String headingCSS) {
         String URL = browserWindow.getCurrentUrl ();
         String titleOfThis = browserWindow.getTitle ();
@@ -500,6 +517,15 @@ public class Login implements ITest
         assertEquals (headingOfMe.getText (), heading);
     }
 
+
+    /**
+     * This is a helper method that uses Actions class to login to the account
+     * Logging in using keyboard is in one of the tes cases.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param dataSet provides the credential such as email and password needed to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     private void LoginUsingActions(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
         Actions actionToTake = new Actions (browserWindow);
         actionToTake.sendKeys (Keys.TAB,Keys.TAB).perform ();
@@ -514,6 +540,16 @@ public class Login implements ITest
         actionToTake.sendKeys (Keys.TAB,Keys.TAB,Keys.TAB,Keys.ENTER).perform ();
     }
 
+
+    /**
+     * This is a helper method that logs in three times with invalid credentials
+     * as wanted by a test case mentioned above
+     * Programmer: Seyedmehrad Adimi
+     * @param chosenBrowser is the driver passed to the function
+     * @param email email for login
+     * @param password password for login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     private void loginForMeThreeTimesInvalid(WebDriver chosenBrowser, String email, String password) throws InterruptedException {
         sleep (1);
         TestFunctions.navToLogin (chosenBrowser);
@@ -540,7 +576,15 @@ public class Login implements ITest
 
     }
 
-
+    /**
+     * This is a helper method that carries on a regression test on common elements of a website.
+     * This method checks all the elements such as logo, search bar, heading and title
+     * as well as elements in the account menu and side menu
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param lgStatus is the login status
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     public static void testRegressionForMe(WebDriver browserWindow, boolean lgStatus) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -627,6 +671,15 @@ public class Login implements ITest
         sleep (1);
     }
 
+
+    /**
+     * This is a helper method that is called in the common regression method above, and tests the elements
+     * that are present in both before logging in and after that.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param lgStatus is the login status
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void presentInBothLoginAndLogoutRegression(WebDriver browserWindow, Boolean lgStatus)  throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -674,14 +727,29 @@ public class Login implements ITest
         assertElement (gitHub);
 
     }
-
+    /**
+     * This is a helper method that asserts if the element given is displayed and enabled. it is used
+     * in regression testing
+     * Programmer: Seyedmehrad Adimi
+     * @param element is the element to be tested
+     **/
     static void assertElement(WebElement element){
         assertTrue (element.isDisplayed ());
         assertTrue (element.isEnabled ());
     }
 
 
-
+    /**
+     * This is a helper method that carries out the registration process and fills out the required fields
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param email is the email to register
+     * @param password is the password to register
+     * @param repeatPassword is repeated password to register
+     * @param doQuestion is a boolean value that helps to choose the question when registering
+     * @param answer is the answer to the question when registering
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     static void fillOutReg(WebDriver browserWindow, String email, String password, String repeatPassword, Boolean doQuestion, String answer) throws InterruptedException
     {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -738,6 +806,14 @@ public class Login implements ITest
     }
 
 
+    /**
+     * This is a helper method that helps to login manually
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private void fillOutLog(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
 
@@ -765,6 +841,15 @@ public class Login implements ITest
     }
 
 
+
+    /**
+     * This is a helper method that helps to login manually using Google with valid credentials.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     static void fillOutLogGoogle(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -803,6 +888,14 @@ public class Login implements ITest
 
     }
 
+    /**
+     * This is a helper method that is called in the fillOutLogGoogle and helps passing the credentials and Enters to Log in
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     static void emailPassEnter(WebDriver browserWindow, String email, String password, WebElement emailUsr) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -821,7 +914,14 @@ public class Login implements ITest
         passwordInput.sendKeys (Keys.ENTER);
     }
 
-
+    /**
+     * This is a helper method that helps to login manually using Google with Invalid credentials.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private void fillOutLogGoogleInvalid(WebDriver browserWindow, String email, String password) throws InterruptedException
     {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -860,6 +960,14 @@ public class Login implements ITest
         sleep (1);
     }
 
+    /**
+     * This is a helper method that helps to login manually using the recently registered account.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param dataSet provides email and password
+     * @param invalid is used in some parts of the code to send the proper credentials in
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private void loginWithRecentlyRegisteredAccount(Object[] dataSet, WebDriver browserWindow, boolean invalid) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("email")));
@@ -880,6 +988,12 @@ public class Login implements ITest
         sleep (6);
     }
 
+    /**
+     * This is a helper method that helps to login manually with no credentials
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private void loginNoCredentials(WebDriver browserWindow) throws InterruptedException {
         browserWindow.findElement (By.id ("email")).click ();
         browserWindow.findElement (By.id ("email")).clear ();
@@ -889,6 +1003,13 @@ public class Login implements ITest
         sleep (6);
     }
 
+    /**
+     * This is a helper method that helps to login with valid email and invalid password credentials.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param dataSet provides email and password
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private void validEmailandInvalidPasswordCase(Object[] dataSet, WebDriver browserWindow) throws InterruptedException {
         browserWindow.findElement (By.id ("email")).clear ();
 
@@ -901,6 +1022,14 @@ public class Login implements ITest
         browserWindow.findElement (By.id ("loginButton")).click ();
     }
 
+
+    /**
+     * This is a helper method that helps to login with valid email and invalid password case.
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver passed to the function
+     * @param o is the message used
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private WebElement inavlidPassPlusMessage(Object o, WebDriver browserWindow) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -920,6 +1049,11 @@ public class Login implements ITest
         return message1;
     }
 
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {
