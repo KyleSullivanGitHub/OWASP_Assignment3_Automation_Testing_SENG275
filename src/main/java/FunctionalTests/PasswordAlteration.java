@@ -26,7 +26,7 @@ public class PasswordAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -43,7 +43,8 @@ public class PasswordAlteration implements ITest
      * @param chosenBrowser browser being used for test
      */
     @Test(
-            groups = {"Smoke","PasswordAlteration","PA_Smoke","hasDataProvider"},
+            groups = {"Smoke","Password_Alteration","hasDataProvider"},
+            priority = 42,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class
     )
@@ -89,10 +90,11 @@ public class PasswordAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Smoke","PasswordAlteration","PA_Smoke","noDataProvider"}
+            groups = {"Smoke","Password_Alteration","noDataProvider"},
+            priority = 43
     )
 
-    public void PA2_invalidPasswordReset() throws InterruptedException {
+    public void PA2_invalidPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -122,10 +124,11 @@ public class PasswordAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","noDataProvider"}
+            groups = {"Sanity","Password_Alteration","noDataProvider"},
+            priority = 70
     )
 
-    public void PA3_validPasswordReset() throws InterruptedException {
+    public void PA3_validPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -165,10 +168,11 @@ public class PasswordAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","noDataProvider"}
+            groups = {"Sanity","Password_Alteration","noDataProvider"},
+            priority = 70
     )
 
-    public void PA4_invalidPasswordReset() throws InterruptedException {
+    public void PA4_invalidPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -192,10 +196,11 @@ public class PasswordAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","PasswordAlteration","PA_Regression","noDataProvider"}
+            groups = {"Regression","Password_Alteration","noDataProvider"},
+            priority = 89
     )
 
-    public void PA_regressionForgetPasswordPage() throws InterruptedException {
+    public void PA_regressionForgetPasswordPage() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -255,10 +260,11 @@ public class PasswordAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","PasswordAlteration","PA_Regression","noDataProvider"}
+            groups = {"Regression","Password_Alteration","noDataProvider"},
+            priority = 89
     )
 
-    public void PA_regressionChangePasswordPage() throws InterruptedException {
+    public void PA_regressionChangePasswordPage() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -452,14 +458,18 @@ public class PasswordAlteration implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
-
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

@@ -24,7 +24,7 @@ public class AddressAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -37,7 +37,8 @@ public class AddressAlteration implements ITest
      * @param chosenBrowser browser being used for test
      */
     @Test(
-            groups = {"Smoke","AddressAlteration","AA_Smoke","hasDataProvider"},
+            groups = {"Smoke","Address_Alteration","hasDataProvider"},
+            priority = 19,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class
     )
@@ -90,10 +91,12 @@ public class AddressAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Smoke","AddressAlteration","AA_Smoke","noDataProvider"}
+            groups = {"Smoke","Address_Alteration","noDataProvider"},
+            priority = 20,
+            enabled = true
     )
 
-    public void AA2_invalidAddressAddition() throws InterruptedException {
+    public void AA2_invalidAddressAddition() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -128,10 +131,12 @@ public class AddressAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Smoke","AddressAlteration","AA_Smoke","noDataProvider"}
+            groups = {"Smoke","Address_Alteration","noDataProvider"},
+            priority = 21,
+            enabled = true
     )
 
-    public void AA3_addressRemoval() throws InterruptedException {
+    public void AA3_addressRemoval() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -177,10 +182,12 @@ public class AddressAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Sanity","AddressAlteration","AA_Sanity","noDataProvider"}
+            groups = {"Sanity","Address_Alteration","hasDataProvider"},
+            priority = 65,
+            enabled = true
     )
 
-    public void AA4_invalidAddressAddition() throws InterruptedException {
+    public void AA4_invalidAddressAddition() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -210,10 +217,12 @@ public class AddressAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","AddressAlteration","AA_Regression","noDataProvider"}
+            groups = {"Regression","Address_Alteration","noDataProvider"},
+            priority = 81,
+            enabled = true
     )
 
-    public void AA_regressionSavedAddressesPage() throws InterruptedException {
+    public void AA_regressionSavedAddressesPage() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -316,8 +325,6 @@ public class AddressAlteration implements ITest
             assertEquals(addressPlaceholder, "Please provide an address.");
             assertEquals(cityPlaceholder, "Please provide a city.");
             assertEquals(statePlaceholder, "Please provide a state.");
-
-            browserWindow.navigate().refresh();
 
         } finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -457,14 +464,18 @@ public class AddressAlteration implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
-
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

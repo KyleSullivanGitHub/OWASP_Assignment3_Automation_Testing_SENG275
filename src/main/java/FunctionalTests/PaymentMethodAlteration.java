@@ -29,7 +29,7 @@ public class PaymentMethodAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -44,9 +44,11 @@ public class PaymentMethodAlteration implements ITest
      * @param chosenBrowser browser being used for test
      */
     @Test(
-            groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","hasDataProvider"},
+            groups = {"Smoke","Payment_Method_Alteration","hasDataProvider"},
+            priority = 16,
             dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            dataProviderClass = Test_Data.class,
+            enabled = true
     )
 
     public void PMA1_validPaymentAddition(String chosenBrowser) throws IOException, InterruptedException {
@@ -93,10 +95,12 @@ public class PaymentMethodAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","noDataProvider"}
+            groups = {"Smoke","Payment_Method_Alteration","noDataProvider"},
+            priority = 17,
+            enabled = true
     )
 
-    public void PMA2_invalidPaymentAddition() throws InterruptedException {
+    public void PMA2_invalidPaymentAddition() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -128,9 +132,11 @@ public class PaymentMethodAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Smoke","PaymentMethodAlteration","PMA_Smoke","noDataProvider"}
+            groups = {"Smoke","Payment_Method_Alteration","noDataProvider"},
+            priority = 18,
+            enabled = true
     )
-    public void PMA3_paymentMethodRemoval() throws InterruptedException {
+    public void PMA3_paymentMethodRemoval() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -172,10 +178,12 @@ public class PaymentMethodAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Sanity","PaymentMethodAlteration","PMA_Sanity","noDataProvider"}
+            groups = {"Sanity","Payment_Method_Alteration","noDataProvider"},
+            priority = 65,
+            enabled = true
     )
 
-    public void PMA4_invalidPaymentAddition() throws InterruptedException {
+    public void PMA4_invalidPaymentAddition() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -208,10 +216,12 @@ public class PaymentMethodAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","PaymentMethodAlteration","PMA_Regression","noDataProvider"}
+            groups = {"Regression","Payment_Method_Alteration","noDataProvider"},
+            priority = 80,
+            enabled = true
     )
 
-    public void PMA_regression() throws InterruptedException {
+    public void PMA_regression() throws IOException, InterruptedException {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
@@ -347,14 +357,18 @@ public class PaymentMethodAlteration implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
-
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
-
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {
