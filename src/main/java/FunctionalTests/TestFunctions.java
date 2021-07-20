@@ -227,6 +227,7 @@ public class TestFunctions
         //navigate to login page
         navToLogin(test);
         //ensure that we can navigate to the sign up page
+        test.navigate().refresh();
         WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
         assertTrue(signUpLink.isEnabled());
         signUpLink.click();//enter sign up page
