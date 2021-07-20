@@ -45,7 +45,7 @@ public class Checkout implements ITest {
     }
 
     /**
-     *Smoke tests a single invalid login attempt.
+     *Tests purchasing an order using a card
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -127,7 +127,7 @@ public class Checkout implements ITest {
 
     }
     /**
-     *Smoke tests a single invalid login attempt.
+     *Tests purchasing an order using digital wallet
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -236,7 +236,7 @@ public class Checkout implements ITest {
     }
 
     /**
-     *Smoke tests invalid purchase
+     *Tests invalid checkout usage
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -267,6 +267,58 @@ public class Checkout implements ITest {
 
             //Verify Checkout Button Disabled
             assertFalse(browserWindow.findElement(By.xpath(checkoutButton_XPath)).isEnabled());
+
+            //Add product to cart and click checkout button
+            browserWindow.get(website);
+            Thread.sleep(500);
+
+            browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();
+            Thread.sleep(750);
+            browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting address
+            TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"card\"]/app-address/mat-card/button");
+            WebElement continueButton = browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button"));
+            assertFalse(continueButton.isEnabled());
+
+            //Add address and continue
+            //Select saved Address
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
+                addSavedAddress(browserWindow);
+                Thread.sleep(500);
+            }
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button")).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting shipping address
+            continueButton = browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]"));
+            assertFalse(continueButton.isEnabled());
+
+            //select shipping method
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]")).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting payment method
+            continueButton = browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]"));
+            assertFalse(continueButton.isEnabled());
+
+            //Select payment method
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
+                addSavedPayment(browserWindow);
+                Thread.sleep(500);
+            }
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]")).click();
+            Thread.sleep(500);
+
+            //Place order
+            browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
+            Thread.sleep(500);
+
 
         }
         finally {
