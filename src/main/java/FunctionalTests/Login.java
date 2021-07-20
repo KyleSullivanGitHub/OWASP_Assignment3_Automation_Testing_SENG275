@@ -92,7 +92,7 @@ public class Login implements ITest
         browserWindow.manage().window().maximize();
 
 
-
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         try
         {
             // Navigate to registration page and register for a new account
@@ -103,6 +103,7 @@ public class Login implements ITest
             loginWithRecentlyRegisteredAccount (dataSet, browserWindow, false);
 
             //Assertion to check we are at the right URL if logged in properly
+            wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/#/search"));
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/search");
         }
         finally
@@ -128,6 +129,7 @@ public class Login implements ITest
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
+        WebDriverWait wait = new WebDriverWait(browserWindow,10);
         try {
             // Method to call to fill out the login process
             fillOutLog (browserWindow, "email", "pswrd");
@@ -155,11 +157,8 @@ public class Login implements ITest
 
      */
     @Test(
-            groups = {"Smoke","Login","hasDataProvider"},
-            priority = 7,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Smoke","Login","hasNoDataProvider"},
+            priority = 7
     )
     public void LG3_Valid_Input() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
@@ -225,7 +224,7 @@ public class Login implements ITest
     @Test(
             groups = {"Sanity","Login","hasDataProvider"},
             priority = 55,
-            dataProvider = "LG1_Input",
+            dataProvider = "LG_RandomInput",
             dataProviderClass = Test_Data.class,
             enabled = true
     )
@@ -306,11 +305,8 @@ public class Login implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Sanity","Login","hasDataProvider"},
-            priority = 56,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Sanity","Login","hasNoDataProvider"},
+            priority = 56
     )
     public void LG6_Invalid_Input() throws InterruptedException, IOException {
         //Create the Test Environment
@@ -353,11 +349,8 @@ public class Login implements ITest
      * Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Sanity","Login","hasDataProvider"},
-            priority = 58,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Sanity","Login","haNoDataProvider"},
+            priority = 58
     )
 
     //todo closing and opening does not work
@@ -411,7 +404,7 @@ public class Login implements ITest
     @Test(
             groups = {"Regression","Login","hasDataProvider"},
             priority = 76,
-            dataProvider = "LG1_Input",
+            dataProvider = "LG_RandomInput",
             dataProviderClass = Test_Data.class,
             enabled = true
     )
@@ -519,6 +512,7 @@ public class Login implements ITest
     }
 
     private void loginForMeThreeTimesInvalid(WebDriver chosenBrowser, String email, String password) throws InterruptedException {
+        sleep (1);
         TestFunctions.navToLogin (chosenBrowser);
         sleep (1);
         WebDriverWait wait = new WebDriverWait(chosenBrowser,10);

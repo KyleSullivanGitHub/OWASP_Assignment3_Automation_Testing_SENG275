@@ -6,6 +6,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.v85.log.Log;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -31,6 +32,7 @@ public class Account_Management implements ITest
 
     public static final String submitButtonCSS = "#card > div > div:nth-child(2) > form:nth-child(3) > button";
     public static final String inputImageUrlCSS = "#url";
+    public static final String headingProfileCSS = "#card > div > h1";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -49,7 +51,6 @@ public class Account_Management implements ITest
      * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
      */
-    //TODO Check MA_005 and how to apply it
     @Test(
             groups = {"Smoke","Account_Management","hasDataProvider"},
             dataProvider = "LG3_Input",
@@ -63,6 +64,7 @@ public class Account_Management implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
+        // Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -99,7 +101,6 @@ public class Account_Management implements ITest
     }
 
 
-    // TODO How to upload a picture and how to check if the pic is uploaded
     /**
      *Smoke tests for Invalid use of support chat
      * Includes test case SC_006
@@ -107,8 +108,7 @@ public class Account_Management implements ITest
      * link: https://ibb.co/6gBdXKJ
      */
     @Test(
-            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement"},
-            dataProvider = "LG3_Input",
+            groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement", "hasNoDataProvider"},
             priority = 36
     )
     public void MA2_Update_Profile() throws InterruptedException, IOException {
@@ -205,8 +205,9 @@ public class Account_Management implements ITest
 
            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (submitButtonCSS)));
 
-           // Assert that no file is chosen
-           assertTrue (browserWindow.getPageSource ().contains ("No file chosen"));
+           // Assert that no file is chosen -> No file is chosen because we are not able to upload any picture
+           assertEquals (browserWindow.findElement (By.id("picture")).getAttribute ("aria-label"), "Input for selecting the profile picture");
+
 
            // Assert that upload button is greyed out and clickable -> or error message shows up when clicking on the button
            // The test should FAIL
@@ -306,17 +307,19 @@ public class Account_Management implements ITest
     }
 
     @Test(
-            groups = {"Regression","Account_Management","hasDataProvider"},
-            priority =87 ,
+            groups = {"Regression","Account_Management","hasNoDataProvider"},
+            priority =87,
             enabled = true
     )
 
-    public void MA_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+    public void MA_Regression() throws InterruptedException, IOException {
         //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
+
+        //Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -325,12 +328,46 @@ public class Account_Management implements ITest
             Login.testRegressionForMe (browserWindow,false);
 
             // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
             // Navigate to Account Management
             navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
 
-            //
+            // Login Heading, title and URL
+            Login.testUrlAndTitleAndHeading (browserWindow,"https://juice-shop.herokuapp.com/profile","OWASP Juice Shop","User Profile", headingProfileCSS);
+
+            //Checking place holders and buttons
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id("email")));
+            WebElement emailPlaceHolder = browserWindow.findElement (By.id("email"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id("username")));
+            WebElement username = browserWindow.findElement (By.id("username"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#submit")));
+            WebElement submitUsernameBtn = browserWindow.findElement (By.cssSelector ("#submit"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#picture")));
+            WebElement choosePicButton = browserWindow.findElement (By.cssSelector ("#picture"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#card > div > div:nth-child(2) > form:nth-child(3) > button")));
+            WebElement UploadPicBtn = browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > form:nth-child(3) > button"));
+
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#url")));
+            WebElement linkInput = browserWindow.findElement (By.cssSelector ("#url"));
+
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#submitUrl")));
+            WebElement LinkImageBtn = browserWindow.findElement (By.cssSelector ("#submitUrl"));
+
+            assertTrue (emailPlaceHolder.isDisplayed ());
+            Login.assertElement (username);
+            Login.assertElement (submitUsernameBtn);
+            Login.assertElement (choosePicButton);
+            Login.assertElement (linkInput);
+            Login.assertElement (LinkImageBtn);
+            Login.assertElement (UploadPicBtn);
+
+
 
         }finally {
             Thread.sleep (TestFunctions.endTestWait);
@@ -343,7 +380,7 @@ public class Account_Management implements ITest
         browserWindow.get (TestFunctions.website);
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (Complaint.titleCSS)));
         TestFunctions.navToLogin (browserWindow);
-
+        sleep (1);
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
         browserWindow.findElement(By.id ("loginButtonGoogle")).click (); //click on login
         sleep (1);

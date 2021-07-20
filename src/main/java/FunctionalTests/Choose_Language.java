@@ -98,10 +98,7 @@ public class Choose_Language implements ITest
      */
     @Test(
             groups = {"Regression","Choose_Language", "noDataProvider"},
-            priority = 999,
-            dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            priority = 999
     )
 
     public void CL_Regression() throws InterruptedException, IOException {

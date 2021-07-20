@@ -52,8 +52,6 @@ public class Complaint implements ITest
 
 
 
-
-
     /**
      *Smoke tests for Valid use of Complaint feature
      * Includes test cases C_001,C_002,C_003,C_005
@@ -136,7 +134,7 @@ public class Complaint implements ITest
 
         }finally {
             Thread.sleep(TestFunctions.endTestWait);
-            //browserWindow.quit();
+            browserWindow.quit();
         }
 
 
@@ -153,8 +151,7 @@ public class Complaint implements ITest
      */
     @Test(
             groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
-            priority = 28,
-            dataProviderClass = Test_Data.class
+            priority = 28
     )
     public void CO2_Invalid_Use() throws InterruptedException, IOException {
 
@@ -250,10 +247,7 @@ public class Complaint implements ITest
      */
     @Test(
             groups = {"Regression","Complaint"},
-            priority = 84,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            priority = 84
     )
     public void CO_Regression() throws IOException, InterruptedException {
 

@@ -170,7 +170,6 @@ public class Support_Chat implements ITest
     @Test(
             groups = {"Regression","Support_Chat","noDataProvider"},
             priority = 85
-
     )
     public void SC_Regression() throws InterruptedException, IOException {
         //Create driver and browser for this particular test

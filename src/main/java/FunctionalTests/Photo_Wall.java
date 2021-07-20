@@ -145,11 +145,8 @@ public class Photo_Wall implements ITest
      *Programmer: Seyedmehrad Adimi
      */
     @Test(
-            groups = {"Smoke","Photo_Wall","noDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 46,
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Smoke","Photo_Wall","hasNoDataProvider"},
+            priority = 46
     )
     public void PW2_Valid_Use() throws InterruptedException, IOException{
         //Create driver and browser for this particular test
@@ -228,11 +225,8 @@ public class Photo_Wall implements ITest
      */
 
     @Test(
-            groups = {"Sanity","Photo_Wall", "noDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 72,
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Sanity","Photo_Wall", "hasNoDataProvider"},
+            priority = 72
     )
     public void PW3_Valid_Use() throws InterruptedException, IOException{
         ///Create driver and browser for this particular test
@@ -303,11 +297,8 @@ public class Photo_Wall implements ITest
 
 
     @Test(
-            groups = {"Regression","Photo_Wall", "noDataProvider"},
-            dataProvider = "LG3_Input",
-            priority = 90,
-            dataProviderClass = Test_Data.class,
-            enabled = true
+            groups = {"Regression","Photo_Wall", "hasNoDataProvider"},
+            priority = 90
     )
     public void PW_Regression() throws InterruptedException, IOException{
         //Create driver and browser for this particular test
