@@ -14,14 +14,17 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
 
+
+
+/*
+Tests for verifying the full functionality of the Complaint feature
+*/
 public class Complaint implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
@@ -58,6 +61,8 @@ public class Complaint implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password to login
      * @param chosenBrowser browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Complaint","hasDataProvider"},
@@ -147,13 +152,14 @@ public class Complaint implements ITest
     /**
      *Smoke (also included in Sanity) test for Invalid use of Complaint feature
      * Includes test cases C_006
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
             priority = 28
     )
-    public void CO2_Invalid_Use() throws InterruptedException, IOException {
+    public void CO2_Invalid_Use() throws InterruptedException {
 
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
@@ -189,14 +195,14 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
-
+     *@exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "hasNoDataProvider"},
             priority = 66
     )
 
-    public void CO3_Invalid_Use() throws InterruptedException, IOException {
+    public void CO3_Invalid_Use() throws InterruptedException{
 
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
@@ -241,15 +247,16 @@ public class Complaint implements ITest
 
 
     /**
-     * Regression test for Login feature within several different browsers.
+     * Regression test for Login feature with one browser.
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Regression","Complaint"},
             priority = 84
     )
-    public void CO_Regression() throws IOException, InterruptedException {
+    public void CO_Regression() throws InterruptedException {
 
         //Create the Test Environment
         WebDriver browserWindow = environment.makeDriver();
@@ -319,6 +326,13 @@ public class Complaint implements ITest
 
     }
 
+    /**
+     * Helper method to navigate to Complaint page
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     *
+     */
     private void navigateToComplaint(WebDriver browserWindow) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -336,6 +350,14 @@ public class Complaint implements ITest
 
 
 
+    /**
+     * Helper method to login
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -355,7 +377,11 @@ public class Complaint implements ITest
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
     }
 
-
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {

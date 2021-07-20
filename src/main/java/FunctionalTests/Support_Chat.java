@@ -165,7 +165,7 @@ public class Support_Chat implements ITest
 
 
     /**
-     * Smoke tests for Invalid use of support chat
+     * Regression test on Support Chat using one browser
      * Includes test case SC_003,SC_004,SC_007,SC_008
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
@@ -249,8 +249,7 @@ public class Support_Chat implements ITest
     }
 
     /**
-     * Helper method to check if the required fields are displayed
-     * Includes test case SC_003,SC_004,SC_007,SC_008
+     * Helper method to Login
      * Programmer: Seyedmehrad Adimi
      * @param browserWindow is the driver
      * @param email is the email to login

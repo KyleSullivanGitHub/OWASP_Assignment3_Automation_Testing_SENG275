@@ -16,7 +16,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
@@ -25,9 +24,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
 
+
+/*
+Tests for verifying the full functionality of the Photo Wall feature
+*/
 public class Photo_Wall implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
@@ -56,6 +58,8 @@ public class Photo_Wall implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Photo_Wall","hasDataProvider"},
@@ -143,12 +147,13 @@ public class Photo_Wall implements ITest
      *Smoke tests for Invalid use of Photo_Wall feature and posting picture
      * Includes test cases PW_006, PW_007
      *Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Photo_Wall","hasNoDataProvider"},
             priority = 46
     )
-    public void PW2_Valid_Use() throws InterruptedException, IOException{
+    public void PW2_Valid_Use() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -219,16 +224,16 @@ public class Photo_Wall implements ITest
 
 
     /**
-     *Smoke tests for Valid use of Photo_Wall feature and posting picture
-     * Includes test cases
-     *Programmer: Seyedmehrad Adimi
+     * Smoke tests for Valid use of Photo_Wall feature and posting picture
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
 
     @Test(
             groups = {"Sanity","Photo_Wall", "hasNoDataProvider"},
             priority = 72
     )
-    public void PW3_Valid_Use() throws InterruptedException, IOException{
+    public void PW3_Valid_Use() throws InterruptedException{
         ///Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -295,12 +300,17 @@ public class Photo_Wall implements ITest
 
     }
 
+    /**
+     * Regression test for Photo Wall feature within one browser.
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
 
     @Test(
             groups = {"Regression","Photo_Wall", "hasNoDataProvider"},
             priority = 90
     )
-    public void PW_Regression() throws InterruptedException, IOException{
+    public void PW_Regression() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -370,7 +380,14 @@ public class Photo_Wall implements ITest
     }
 
 
-
+    /**
+     * Helper method to Login
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.get (TestFunctions.website);
@@ -389,6 +406,12 @@ public class Photo_Wall implements ITest
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
     }
 
+
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {

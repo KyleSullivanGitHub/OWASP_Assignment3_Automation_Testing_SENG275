@@ -15,7 +15,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
@@ -23,6 +22,11 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
+
+
+/*
+Tests for verifying the full functionality of the Account Management feature
+*/
 public class Account_Management implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
@@ -50,6 +54,8 @@ public class Account_Management implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Account_Management","hasDataProvider"},
@@ -106,12 +112,13 @@ public class Account_Management implements ITest
      * Includes test case SC_006
      *Programmer: Seyedmehrad Adimi
      * link: https://ibb.co/6gBdXKJ
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Account_Management Smoke","Invalid_Account_Manegement", "hasNoDataProvider"},
             priority = 36
     )
-    public void MA2_Update_Profile() throws InterruptedException, IOException {
+    public void MA2_Update_Profile() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -167,23 +174,22 @@ public class Account_Management implements ITest
 
     }
 
-    private void navToAccountManagement(WebDriver browserWindow, WebDriverWait wait, By navbarAccount) {
-        wait.until (ExpectedConditions.visibilityOfElementLocated (navbarAccount));
-        browserWindow.findElement (navbarAccount).click ();
-
-        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)")));
-        WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
-        AccountManagement.click ();
-    }
 
 
+
+    /**
+     * Sanity tests for updating Profile page fields -> 1st one
+     *Programmer: Seyedmehrad Adimi
+     * link: https://ibb.co/6gBdXKJ
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     @Test(
-            groups = {"Regression","Account_Management","noDataProvider"},
+            groups = {"Sanity","Account_Management","noDataProvider"},
             priority = 87,
             enabled = true
     )
 
-    public void MA3_1_Update() throws InterruptedException, IOException {
+    public void MA3_1_Update() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -221,12 +227,18 @@ public class Account_Management implements ITest
     }
 
 
+    /**
+     * Sanity tests for updating Profile page fields -> 2nd one
+     *Programmer: Seyedmehrad Adimi
+     * link: https://ibb.co/6gBdXKJ
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     @Test(
-            groups = {"Regression","Account_Management_Regression","hasNoDataProvider"},
+            groups = {"Sanity","Account_Management_Sanity","hasNoDataProvider"},
             priority = 1
     )
 
-    public void MA3_2_Update() throws InterruptedException, IOException {
+    public void MA3_2_Update() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -262,12 +274,19 @@ public class Account_Management implements ITest
         }
 
     }
+
+    /**
+     * Sanity tests for updating Profile page fields -> 3rd one
+     * Programmer: Seyedmehrad Adimi
+     * link: https://ibb.co/6gBdXKJ
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     @Test(
-            groups = {"Regression","Account_Management_Regression","hasNoDataProvider"},
+            groups = {"Sanity","Account_Management_Sanity","hasNoDataProvider"},
             priority = 1
     )
 
-    public void MA3_3_Update() throws InterruptedException, IOException {
+    public void MA3_3_Update() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -306,13 +325,21 @@ public class Account_Management implements ITest
 
     }
 
+
+
+
+    /**
+     * Regression test for Account Management feature within one browser.
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     @Test(
             groups = {"Regression","Account_Management","hasNoDataProvider"},
             priority =87,
             enabled = true
     )
 
-    public void MA_Regression() throws InterruptedException, IOException {
+    public void MA_Regression() throws InterruptedException{
         //Create driver and browser for this particular test
 
         WebDriver browserWindow = environment.makeDriver();
@@ -374,6 +401,32 @@ public class Account_Management implements ITest
             browserWindow.quit ();
         }
     }
+    /**
+     * Helper method to navigate to Profile page
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param wait is the wait driver
+     * @param navbarAccount is the locator
+     */
+
+    private void navToAccountManagement(WebDriver browserWindow, WebDriverWait wait, By navbarAccount) {
+        wait.until (ExpectedConditions.visibilityOfElementLocated (navbarAccount));
+        browserWindow.findElement (navbarAccount).click ();
+
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)")));
+        WebElement AccountManagement = browserWindow.findElement (By.cssSelector ("#mat-menu-panel-0 > div > button:nth-child(1)"));
+        AccountManagement.click ();
+    }
+
+
+    /**
+     * Helper method to Login
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -393,6 +446,13 @@ public class Account_Management implements ITest
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (Complaint.titleCSS)));
     }
 
+
+
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {
