@@ -49,8 +49,8 @@ public class Checkout implements ITest {
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Checkout Smoke","Checkout", "hasDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Checkout", "hasDataProvider"},
+            priority = 22,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -131,8 +131,8 @@ public class Checkout implements ITest {
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Checkout Smoke","Checkout", "noDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Checkout", "noDataProvider"},
+            priority = 23,
             enabled = true
     )
     public void CO2_Valid_Usage() throws InterruptedException, IOException
@@ -240,8 +240,8 @@ public class Checkout implements ITest {
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Checkout Smoke","Checkout", "noDataProvider"},
-            priority = 1,
+            groups = {"Smoke","Checkout", "noDataProvider"},
+            priority = 24,
             enabled = true
     )
     public void CO3_Invalid_Usage() throws InterruptedException, IOException
@@ -280,8 +280,8 @@ public class Checkout implements ITest {
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Regression","Checkout Regression","Checkout", "noDataProvider"},
-            priority = 1,
+            groups = {"Regression","Checkout", "noDataProvider"},
+            priority = 82,
             enabled = true
     )
     public void CO_Regression() throws InterruptedException, IOException
@@ -320,19 +320,31 @@ public class Checkout implements ITest {
         browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
     }
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
-
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

@@ -14,14 +14,17 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
 
+
+
+/*
+Tests for verifying the full functionality of the Complaint feature
+*/
 public class Complaint implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
@@ -44,13 +47,11 @@ public class Complaint implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
     }
-
-
 
 
 
@@ -60,26 +61,28 @@ public class Complaint implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password to login
      * @param chosenBrowser browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Valid_Complaint", "has_Data_Provider"},
+            groups = {"Smoke","Complaint","hasDataProvider"},
             dataProvider = "LG3_Input",
-            priority = 1,
+            priority = 27,
             dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
             enabled = true
     )
     public void CO1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
+
+        //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        //Website
+        // Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
-
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
+
 
 
         // C_001 test case: Verify  'Complaints' field is not visible before login
@@ -112,7 +115,7 @@ public class Complaint implements ITest
             assertTrue (customer.isDisplayed ());
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("complaintMessage")));
-            WebElement Message = browserWindow.findElement (By.id ("complaintMessage"));
+            WebElement Message = browserWindow.findElement (By.cssSelector ("#complaintMessage"));
             assertTrue (Message.isDisplayed ());
 
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#complaint-form > div > label")));
@@ -121,6 +124,8 @@ public class Complaint implements ITest
 
             // C_005 test case: Verify whether the required details and fields are displayed in the 'Complaint' page after login (Customer, Message. INvoice)
 
+
+            sleep (1);
             Message.click ();
             Message.sendKeys (complaintMessageToSend);
 
@@ -145,24 +150,20 @@ public class Complaint implements ITest
 
 
     /**
-     *Smoke (also included in Sanity) test for Invalid use of Complaint feature
+     * Sanity-Smoke (also included in Sanity) test for Invalid use of Complaint feature
      * Includes test cases C_006
-     *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Smoke","Complaint Smoke","Sanity Smoke","Invalid_Complaint", "noDataProvider"},
+            priority = 28,
             enabled = true
     )
-    public void CO2_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+    public void CO2_Invalid_Use() throws InterruptedException {
+
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -175,7 +176,7 @@ public class Complaint implements ITest
 
         try {
             // C_006 test case: Verify submitting the Complaints in 'Complaint' page by not providing any details
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
             navigateToComplaint (browserWindow);
 
@@ -195,21 +196,18 @@ public class Complaint implements ITest
      * Sanity test for Invalid use of Complaint feature
      * Includes test cases C_004
      *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to login
-     * @param chosenBrowser browser used for that test
+     *@exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "has_Data_Provider"},
-            dataProvider = "LG3_Input",
-            priority = 1,
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Sanity","Sanity Smoke","Invalid_Complaint", "noDataProvider"},
+            priority = 66,
             enabled = true
     )
-    public void CO3_Invalid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //Browser setup
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+
+    public void CO3_Invalid_Use() throws InterruptedException{
+
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
         //Website
@@ -221,7 +219,7 @@ public class Complaint implements ITest
         try {
 
             // C_004 test case: Verify all the text fields in the 'Complaint' page are mandatory
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (sideMenuCSS)));
 
             navigateToComplaint (browserWindow);
@@ -251,26 +249,21 @@ public class Complaint implements ITest
 
 
     /**
-     * Regression test for Login feature within several different browsers.
+     * Regression test for Login feature with one browser.
      * Considers test cases TC_C_007, TC_C_008
      * Programmer: Seyedmehrad Adimi
-     * @param chosenBrowser browser used for that test
-     * @param dataSet provides email and password to Login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
-            groups = {"Regression","Complaint","Login_Complaint","hasDataProvider"},
-            priority = 0,
-            dataProvider = "LG3_Input",
-            dataProviderClass = Test_Data.class,
-            threadPoolSize = 3,
+            groups = {"Regression","Complaint","noDataProvider"},
+            priority = 84,
             enabled = true
     )
-    public void CO_Regression(String chosenBrowser, Object[] dataSet) throws IOException, InterruptedException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
+    public void CO_Regression() throws InterruptedException {
 
+        //Create the Test Environment
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
 
         //Website setup
         browserWindow.get(TestFunctions.website);
@@ -280,7 +273,7 @@ public class Complaint implements ITest
 
             /* Test cases TC_LF_007, TC_LF_008: Verify the Page Heading, Page Title and Page URL of Complaint page, Verify the UI of the Complaint page*/
             // Login First
-            Login.fillOutLogGoogle(browserWindow, dataSet[0].toString (), dataSet[1].toString ());
+            Login.fillOutLogGoogle(browserWindow, Login.googleEmail, Login.googlePass);
             sleep (3);
 
             // Navigate to Complaint Page
@@ -336,6 +329,13 @@ public class Complaint implements ITest
 
     }
 
+    /**
+     * Helper method to navigate to Complaint page
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     *
+     */
     private void navigateToComplaint(WebDriver browserWindow) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
@@ -353,6 +353,14 @@ public class Complaint implements ITest
 
 
 
+    /**
+     * Helper method to login
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
 
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
@@ -372,7 +380,11 @@ public class Complaint implements ITest
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
     }
 
-
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {
@@ -397,15 +409,31 @@ public class Complaint implements ITest
         }
     }
 
-
-
-
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {

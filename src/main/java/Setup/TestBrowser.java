@@ -30,7 +30,7 @@ public abstract class TestBrowser
 
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
-    static String primaryBrowser = "Firefox";
+    static String primaryBrowser = "Chrome";
 //********************************************************************************************************************//
     //String containing driver text
     String driver;
