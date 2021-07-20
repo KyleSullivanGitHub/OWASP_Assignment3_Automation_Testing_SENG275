@@ -152,9 +152,8 @@ public class Login implements ITest
 
 
     /**
-     * Smoke test for valid Google Login within several different browsers
+     * Smoke test for valid Google Login with a single browser
      * Programmer: Seyedmehrad Adimi
-
      */
     @Test(
             groups = {"Smoke","Login","hasNoDataProvider"},
@@ -221,6 +220,10 @@ public class Login implements ITest
 
 
 
+    /**
+     *Smoke tests a single invalid Google login attempt.
+     *Programmer: Seyedmehrad Adimi
+     */
     @Test(
             groups = {"Sanity","Login","hasDataProvider"},
             priority = 55,
