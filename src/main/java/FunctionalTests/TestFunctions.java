@@ -17,40 +17,55 @@ public class TestFunctions
 {
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
-    public static String website = "https://juice-shop.herokuapp.com/#/";
-    public static String OS = System.getProperty("os.name").toLowerCase();
+    public static String website = "https://juice-shop.herokuapp.com/#/";//main website
+    public static String OS = System.getProperty("os.name").toLowerCase(); //operation system of user
 
+    //site title
     private static String siteTitle = "OWASP Juice Shop";
-
+    //css path to cookie element
     private static final String cookieElement = "#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper";
+    //css path to navigation bar element
     public static String navPath = "#navbarAccount";
+    //css path to login button
     public static String navbarLogin = "#navbarLoginButton";
+    //css path to register button
     public static String regButton = "#registerButton";
+    //css path to the google login button
     public static String loginButtonG = "#loginButtonGoogle";
+    //css path to the email field on google login
     public static String identifierID = "#identifierId";
+    //css path to the password field on google login
     public static String googlePasswordTarget = "#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)";
+    //id path to the login button
     public static String logButton = "loginButton";
+    //common css path components
     public static String mInput = "#mat-input-";
     public static String mRadio = "#mat-radio-";
+    //xpath to the basket
     public static String basketXpath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]";
 
+    //amount of time to wait after test is concluded before ending the test
     public static int endTestWait = 500;
 
     //Declarations for constant account values
-    private static boolean registerSetup = false;
+    private static boolean registerSetup = false; //has the constant account constants been set for this test session.
     public static String constEmail;//String containing the email for the constant session
     public static String constPassword;//password for the constant session
     public static String constAnswer; //answer for security question
 
     //Declarations for constant google account values
-    private static boolean googleSetup = false;
-    public static String googleEmail;
-    public static String googlePassword;
+    private static boolean googleSetup = false; //has the google login constants been set up for this test session
+    public static String googleEmail; //google email login
+    public static String googlePassword; //google password login
 
     //Declarations for constant address values
     private static boolean addressSetup = false;
     public static Object[] addressSet;
 
+
+    /**
+     *
+     */
     private static void constRandomAccount()
     {
         if(!registerSetup)
@@ -230,12 +245,20 @@ public class TestFunctions
      */
     public static void navToReg(WebDriver test) throws InterruptedException
     {
-        //navigate to login page
-        navToLogin(test);
-        //ensure that we can navigate to the sign up page
-        WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
-        assertTrue(signUpLink.isEnabled());
-        signUpLink.click();//enter sign up page
+        if(!test.getCurrentUrl().equals(website+"register"))
+        {
+            //navigate to login page
+            navToLogin(test);
+            //ensure that we can navigate to the sign up page
+            WebElement signUpLink = test.findElement(By.cssSelector("#newCustomerLink"));
+            assertTrue(signUpLink.isEnabled());
+            signUpLink.click();//enter sign up page
+        }
+        else
+        {
+            test.navigate().refresh();
+            waitForSite(test,navPath);
+        }
     }
     public static void navToSavedAddresses(WebDriver test) throws InterruptedException
     {
@@ -424,14 +447,12 @@ public class TestFunctions
         }
     }
 
-    //Regression Constants
-    static String[] menuOption = new String[]{constEmail,"Orders & Payment","Privacy & Security","Logout"};
+    //Regression Constants Orders & Payment
+    static String[] menuOption = new String[]{"helloworld.owasp@gmail.com","Orders & Payment","Privacy & Security","Logout"};
     static String[] ordersPay = new String[]{"Order History","Recycle","My saved addresses","My Payment Options", "Digital Wallet"};
     static String[] privSec = new String[]{"Privacy Policy","Request Data Export","Request Data Erasure","Change Password", "2FA Configuration", "Last Login IP"};
     static Object[] navbarLoggedIn = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
     static Object[] navbarLoggedOut = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
-    private static boolean languageListCreated = false;
-    private static Object[] languageList;
 
 
     /**
@@ -467,7 +488,8 @@ public class TestFunctions
             //check Search tools
             if(!expectedURL.contains(website+"search?"))
             {
-                WebElement searchElement = test.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)"));
+                WebElement searchElement = test.findElement(By.className("mat-search_icon-search"));
+                Thread.sleep(1000);
                 searchElement.click();
                 TestFunctions.waitForSite(test, "#mat-input-0");
                 searchElement = test.findElement(By.cssSelector("#mat-input-0"));
@@ -482,6 +504,8 @@ public class TestFunctions
                 searchElement.sendKeys(OSspecific + "c");
                 //Confirm that the clipboard does not contain the password
                 assertEquals(cb.getData(DataFlavor.stringFlavor), "testing");
+                test.findElement(By.className("mat-search_icon-close")).click();
+
             }
             //check account button
             waitForSite(test, navPath);
@@ -490,33 +514,71 @@ public class TestFunctions
             accountMenu.click();
             if (loggedIn)
             {
-                WebElement menu;
-                for (String lookingFor : menuOption)
-                {
+                WebElement account = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(1) > span:nth-child(2)"));
+                assertWebElement(account);
+                assertEquals(account.getText(),menuOption[0]);
 
-                    try
-                    {
-                        menu = accountMenu.findElement(By.linkText(lookingFor));
-                        assertWebElement(menu);
-                        if (lookingFor.equals("Orders & Payment") || lookingFor.equals("Privacy & Security"))
-                        {
-                            try
-                            {
-                                menu.click();
-                            } catch (ElementClickInterceptedException ignore)
-                            {
-                            }
-                            for (String subMenu : (lookingFor.equals("Privacy & Security") ? privSec : ordersPay))
-                            {
-                                try
-                                {
-                                    WebElement subMenuElement = menu.findElement(By.linkText(subMenu));
-                                    assertWebElement(subMenuElement);
-                                } catch (NoSuchElementException noSubMenu) { assertEquals(subMenu, "No Such Submenu Element");}
-                            }
-                        }
-                    } catch (NoSuchElementException noMenu) { assertEquals(lookingFor, "No Such element"); }
-                }
+                WebElement OandP = test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(2) > span:nth-child(2)"));
+                assertWebElement(OandP);
+                assertEquals(OandP.getText(),menuOption[1]);
+                test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(2)")).click();
+                Thread.sleep(1000);
+
+
+                WebElement OrderHistory = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(1) > span:nth-child(2)"));
+                assertWebElement(OrderHistory);
+                assertEquals(OrderHistory.getText(),ordersPay[0]);
+
+                WebElement recycle = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(2) > span:nth-child(2)"));
+                assertWebElement(recycle);
+                assertEquals(recycle.getText(),ordersPay[1]);
+
+                WebElement addresses = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(4) > span:nth-child(2)"));
+                assertWebElement(addresses);
+                assertEquals(addresses.getText(),ordersPay[2]);
+
+                WebElement payment = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(5) > span:nth-child(2)"));
+                assertWebElement(payment);
+                assertEquals(payment.getText(),ordersPay[3]);
+
+                WebElement wallet = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(6) > span:nth-child(2)"));
+                assertWebElement(wallet);
+                assertEquals(wallet.getText(),ordersPay[4]);
+
+                WebElement PandS = test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(3) > span:nth-child(2)"));
+                assertWebElement(PandS);
+                assertEquals(PandS.getText(),menuOption[2]);
+
+                test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(3)")).click();
+                Thread.sleep(2000);
+
+                WebElement policy = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(1) > span:nth-child(2)"));
+                assertWebElement(policy);
+                assertEquals(policy.getText(),privSec[0]);
+
+                WebElement export = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(2) > span:nth-child(2)"));
+                assertWebElement(export);
+                assertEquals(export.getText(),privSec[1]);
+
+                WebElement erasure = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(3) > span:nth-child(2)"));
+                assertWebElement(erasure);
+                assertEquals(erasure.getText(),privSec[2]);
+
+                WebElement changePassword = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(5) > span:nth-child(2)"));
+                assertWebElement(changePassword);
+                assertEquals(changePassword.getText(),privSec[3]);
+
+                WebElement config = test.findElement(By.cssSelector("button.mat-focus-indicator:nth-child(6) > span:nth-child(2)"));
+                assertWebElement(config);
+                assertEquals(config.getText(),privSec[4]);
+
+                WebElement loginIP = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(7) > span:nth-child(2)"));
+                assertWebElement(loginIP);
+                assertEquals(loginIP.getText(),privSec[5]);
+
+                WebElement Logout = test.findElement(By.cssSelector("#navbarLogoutButton > span:nth-child(2)"));
+                assertWebElement(Logout);
+                assertEquals(Logout.getText(),menuOption[3]);
             }
             else
             {
@@ -536,71 +598,19 @@ public class TestFunctions
             test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
 
             //Change Language
-            WebElement changeLanguageMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)"));
+            WebElement changeLanguageMenu;
+            try
+            { changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)")); }
+            catch (NoSuchElementException tryAlt){ changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(8)")); }
+
             assertWebElement(changeLanguageMenu);
             changeLanguageMenu.click();
-            if (!languageListCreated)
-                createLanguageList();
-            for (int i = 1; i <= 37; i++)
-            {
-                try
-                {
-                    test.findElement(By.linkText((String) languageList[i]));
-                } catch (NoSuchElementException missingLanguage)
-                {
-                    assertEquals(languageList[i], "No Such Element");
-                }
-            }
             test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
         }
-        catch (NoSuchElementException | UnsupportedFlavorException | IOException elementNotFound) { assertEquals("Missing","Header Bar Option");}
+        catch (/*NoSuchElementException  | */UnsupportedFlavorException | IOException elementNotFound) { assertEquals("Missing","Header Bar Option");}
     }
 
 
-    private static void createLanguageList()
-    {
-        languageList = new Object[]{
-                "",
-                "Azərbaycanca",
-                "Bahasa Indonesia",
-                "Catalan",
-                "Česky",
-                "Dansk",
-                "Deutsch",
-                "Eesti",
-                "English",
-                "Español",
-                "Français",
-                "Italiano",
-                "Język Polski",
-                "Latvijas",
-                "Magyar",
-                "Nederlands",
-                "Norsk",
-                "Português",
-                "Português (Brasil)",
-                "Pусский",
-                "Românesc",
-                "Schwizerdütsch",
-                "Suomalainen",
-                "Svenska",
-                "Türkçe",
-                "Ελληνικά",
-                "български (език)",
-                "ქართული",
-                "עברית",
-                "عربي",
-                "हिंदी",
-                "ไทย",
-                "ျမန္မာ",
-                "한국어",
-                "中文",
-                "日本の",
-                "繁體中文",
-                "繁體中文",
-        };
-        languageListCreated = true;
-    }
 
     private static void assertWebElement(WebElement testing)
     {

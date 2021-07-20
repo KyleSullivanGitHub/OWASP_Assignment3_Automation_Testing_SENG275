@@ -4,10 +4,7 @@ import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.*;
 import org.testng.ITest;
-import org.testng.annotations.BeforeGroups;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -38,7 +35,7 @@ public class NavigationMenu implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Kyle Sullivan
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();

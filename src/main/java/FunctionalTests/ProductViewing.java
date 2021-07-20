@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -44,7 +45,7 @@ public class ProductViewing implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
@@ -190,7 +191,7 @@ public class ProductViewing implements ITest
     }
 
     @Test(
-            groups = {"Regression", "Product_View", "NoDataProvider"},
+            groups = {"Regression", "Product_View", "noDataProvider"},
             priority = 77,
             enabled = true
     )
@@ -205,8 +206,6 @@ public class ProductViewing implements ITest
 
         try
         {
-            for(int isLogged = 0; isLogged <=1; isLogged++)
-            {
                 int[] temp = new int[]{5, 2, 1};
                 for (int pages : temp)
                 {
@@ -230,21 +229,23 @@ public class ProductViewing implements ITest
 
                     for (int page = 1; page <= pages; page++)
                     {
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, false);
                         TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]", true);
-
-                        ProductReviews.testReview(browserWindow);
-                        if(isLogged == 1)
+                        while(true)
                         {
-                            ProductReviews.fillReview(browserWindow,"Test Review");
-                            ProductReviews.submitReview(browserWindow);
+                            try
+                            {
+                                browserWindow.findElement(By.className("mat-expansion-panel-header"));
+                                break;
+                            }
+                            catch(NoSuchElementException ignore){}
                         }
+                        ProductReviews.testReview(browserWindow);
 
                         WebElement product = browserWindow.findElement(By.xpath(productContainer));
                         product.findElement(By.className("close-dialog")).click();
-                        assertTrue(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[3]/button")).isEnabled());
 
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
+                        TestFunctions.commonRegression(browserWindow, TestFunctions.website,  false);
 
                         if (page < pages) //go to the next page if we have not reached the end
                             TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
@@ -253,14 +254,12 @@ public class ProductViewing implements ITest
                     }
 
                 }
-                if(isLogged == 0)
-                    TestFunctions.login(browserWindow);
-            }
+
 
         } finally
         {
             Thread.sleep(TestFunctions.endTestWait);
-            //browserWindow.quit();
+            browserWindow.quit();
         }
     }
 

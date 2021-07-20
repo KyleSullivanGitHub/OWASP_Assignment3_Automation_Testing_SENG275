@@ -4,6 +4,7 @@ import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.*;
 import org.testng.ITest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -33,7 +34,7 @@ public class ProductSearching implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
@@ -224,6 +225,7 @@ public class ProductSearching implements ITest
                             TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
                     }
                 }
+                browserWindow.findElement(By.className("mat-search_icon-close")).click();
             }
         }
         finally
@@ -235,7 +237,8 @@ public class ProductSearching implements ITest
 
     public void searching(WebDriver browserWindow, String toSearchFor) throws InterruptedException
     {
-        browserWindow.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)")).click();
+        TestFunctions.waitForSite(browserWindow,"mat-icon.mat-icon:nth-child(2)",true);
+        //browserWindow.findElement(By.cssSelector("mat-icon.mat-icon:nth-child(2)")).click();
         TestFunctions.waitForSite(browserWindow,"#mat-input-0");
         browserWindow.findElement(By.id("mat-input-0")).sendKeys(toSearchFor + Keys.ENTER);
     }

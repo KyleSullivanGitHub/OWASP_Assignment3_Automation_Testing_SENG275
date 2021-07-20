@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -22,6 +23,9 @@ public class RecyclingBox implements ITest
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
+    WebDriver browserWindow;
+    boolean inTest = false;
+    int counter = 0;
 
     /**
      * Create an environment for all tests using the same browser app.
@@ -29,7 +33,7 @@ public class RecyclingBox implements ITest
      * @exception IOException Thrown if no browser is chosen for a test
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
@@ -105,24 +109,38 @@ public class RecyclingBox implements ITest
     )
     public void RB3_Invalid_Usage_Comprehensive(String testing, Object[] dataSet) throws InterruptedException, IOException
     {
-        //Create Test environment and browser
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        //Go to Website
-        browserWindow.get(TestFunctions.website);
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
+        if(!inTest)
+        {
+            //Create Test environment and browser
+            browserWindow = environment.makeDriver();
+            browserWindow.manage().window().maximize();
+            //Go to Website
+            browserWindow.get(TestFunctions.website);
+            //Ensure the site is ready for testing
+            TestFunctions.waitForSite(browserWindow);
+            inTest = true;
+            counter = 0;
+        }
 
         try
         {
             navToRecycle(browserWindow);
             fillRecycling(browserWindow,dataSet);
-            assertEquals(browserWindow.findElement(By.cssSelector("#recycleButton")).getAttribute("disabled"), "true");
+            assertEquals((browserWindow.findElement(By.cssSelector("#recycleButton")).getAttribute("disabled") == null ? "false" : "true"), "true");
+            counter++;
+        }
+        catch (Exception badTest)
+        {
+            inTest = false;
         }
         finally
         {
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            if(!inTest || counter == 7)
+            {
+                Thread.sleep(TestFunctions.endTestWait);
+                browserWindow.quit();
+                inTest = false;
+            }
         }
     }
 
@@ -178,7 +196,7 @@ public class RecyclingBox implements ITest
 
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
 
-            assertEquals(browserWindow.findElement(By.linkText("Quantity")).getText(),"Quantity");
+            assertEquals(browserWindow.findElement(By.cssSelector("mat-label.ng-tns-c126-10")).getText(),"Quantity");
 
             WebElement inputBox;
             //test for red
@@ -197,49 +215,56 @@ public class RecyclingBox implements ITest
                 browserWindow.findElement(By.id("recycle-form")).click();
             }
             catch (Exception ignore){}
-            assertEquals(inputBox.getAttribute("aria-invalid"),"true");
+            assertEquals(inputBox.getAttribute("aria-invalid"),"false");
 
             //test invalid input
             fillRecycling(browserWindow,new Object[]{0,true,false,false,""});
             TestFunctions.commonRegression(browserWindow,TestFunctions.website+"recycle", true);
 
             //test valid input
-            fillRecycling(browserWindow,new Object[]{1001,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"});
+            fillRecycling(browserWindow,new Object[]{101,true,true,true,"tr.ng-star-inserted:nth-child(5) > td:nth-child(6)"});
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"recycle", true);
         }
         finally
         {
             Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            //browserWindow.quit();
         }
     }
 
     private void navToRecycle(WebDriver browserWindow) throws InterruptedException
     {
-        String xPathPart1 = "/html/body/div[3]/div[";
-        String xPathPart2 = "]/div/div/div/button[2]";
 
-        TestFunctions.login(browserWindow);
-        TestFunctions.waitForSite(browserWindow,TestFunctions.navPath,true);
-        Thread.sleep(500);
-
-        boolean notFound = true;
-        while (notFound)
+        if(!browserWindow.getCurrentUrl().equals(TestFunctions.website+"recycle"))
         {
-            try
+            String xPathPart1 = "/html/body/div[3]/div[";
+            String xPathPart2 = "]/div/div/div/button[2]";
+            TestFunctions.login(browserWindow);
+            TestFunctions.waitForSite(browserWindow, TestFunctions.navPath, true);
+            Thread.sleep(500);
+
+            boolean notFound = true;
+            while (notFound)
             {
-                browserWindow.findElement(By.xpath(xPathPart1 + 2 + xPathPart2)).click();
-                Thread.sleep(200);
-                browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2)).click();
-                notFound = false;
+                try
+                {
+                    browserWindow.findElement(By.xpath(xPathPart1 + 2 + xPathPart2)).click();
+                    Thread.sleep(200);
+                    browserWindow.findElement(By.xpath(xPathPart1 + 3 + xPathPart2)).click();
+                    notFound = false;
+                } catch (NoSuchElementException tryOther)
+                {
+                    browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
+                    Thread.sleep(500);
+                    browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[2]")).click();
+                    notFound = false;
+                }
             }
-            catch (NoSuchElementException tryOther)
-            {
-                browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
-                Thread.sleep(500);
-                browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[2]")).click();
-                notFound = false;
-            }
+        }
+        else
+        {
+            browserWindow.navigate().refresh();
+            TestFunctions.waitForSite(browserWindow,TestFunctions.navPath);
         }
     }
 
@@ -288,7 +313,7 @@ public class RecyclingBox implements ITest
                 if((boolean) dataSet[3])
                 {
                     TestFunctions.waitForSiteXpath(browserWindow,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-recycle/mat-card/div[1]/div/mat-form-field[3]/div/div[1]/div[4]/mat-datepicker-toggle",true);
-                    TestFunctions.waitForSiteXpath(browserWindow,(String)dataSet[4],true);
+                    TestFunctions.waitForSite(browserWindow,(String)dataSet[4],true);
                 }
             }
         }
@@ -299,7 +324,7 @@ public class RecyclingBox implements ITest
         TestFunctions.waitForSite(browserWindow,"#recycleButton",true);
         Thread.sleep(1000);
         boolean foundPopup = false;
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 20; i++)
         {
             try
             {

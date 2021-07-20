@@ -6,12 +6,15 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.v85.log.Log;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
@@ -19,12 +22,21 @@ import java.util.Random;
 
 import static org.testng.Assert.*;
 
+
+
+/*
+Tests for verifying the full functionality of the Account Management feature
+*/
 public class Account_Management implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
 
+
+    public static final String submitButtonCSS = "#card > div > div:nth-child(2) > form:nth-child(3) > button";
+    public static final String inputImageUrlCSS = "#url";
+    public static final String headingProfileCSS = "#card > div > h1";
     /**
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
@@ -37,12 +49,12 @@ public class Account_Management implements ITest
 
 
     /**
-     *Smoke tests for Valid use of Account Management
+     * Smoke tests for Valid use of Account Management
      * Includes test cases MA_001, MA_002, MA_005
-     *Programmer: Seyedmehrad Adimi
-     * @param email email text for test
-     * @param password password text for test
+     * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     //TODO Check MA_005 and how to apply it
     @Test(
