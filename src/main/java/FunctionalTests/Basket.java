@@ -55,7 +55,7 @@ public class Basket implements ITest{
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -209,8 +209,26 @@ public class Basket implements ITest{
             priority = 4,
             enabled = true
     )
-    public void BA_Regression() {
-        //TODO ADD Basket REGRESSION TEST
+    public void BA_Regression() throws InterruptedException{
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/basket", true);
+        } finally {
+            browserWindow.quit();
+        }
     }
 
 

@@ -34,7 +34,7 @@ public class Checkout implements ITest {
      * Create an environment for all tests using the same browser app.
      * Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         environment = passBrowser.createBrowser();
     }
@@ -55,7 +55,7 @@ public class Checkout implements ITest {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void CO1_Valid_Usage(String chosenBrowser) throws InterruptedException, IOException
+    public void CK1_Valid_Usage(String chosenBrowser) throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -135,7 +135,7 @@ public class Checkout implements ITest {
             priority = 23,
             enabled = true
     )
-    public void CO2_Valid_Usage() throws InterruptedException, IOException
+    public void CK2_Valid_Usage() throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         browserWindow = environment.makeDriver();
@@ -244,7 +244,7 @@ public class Checkout implements ITest {
             priority = 24,
             enabled = true
     )
-    public void CO3_Invalid_Usage() throws InterruptedException, IOException
+    public void CK3_Invalid_Usage() throws InterruptedException, IOException
     {
 
         browserWindow = environment.makeDriver();
@@ -284,14 +284,34 @@ public class Checkout implements ITest {
             priority = 82,
             enabled = true
     )
-    public void CO_Regression() throws InterruptedException, IOException
-    {}
+    public void CK_Regression() throws InterruptedException, IOException {
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/basket", true);
+        } finally {
+            browserWindow.quit();
+        }
+    }
 
     void addSavedAddress(WebDriver browserWindow) {
         //add new address
         browserWindow.findElement(By.xpath(addSavedAddress_XPath)).click();
 
         //Populate Info
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys("USA");//Country
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-2\"]")).sendKeys("Hello World");//Name
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")).sendKeys("1234567890");//Phone
         browserWindow.findElement(By.xpath( "//*[@id=\"mat-input-4\"]")).sendKeys("12346");//Zip

@@ -30,7 +30,7 @@ public class OrderHistory implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -136,7 +136,29 @@ public class OrderHistory implements ITest
             enabled = true
     )
     public void OH_Regression() throws InterruptedException, IOException
-    {}
+    {
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps??
+            TestFunctions.login(browserWindow);
+            Thread.sleep(1000);
+
+            //Navigate to orders and payments
+            browserWindow.findElement(By.id("navbarAccount")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[1]")).click();
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/order-history", true);
+        } finally {
+            browserWindow.quit();
+        }
+    }
 
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
