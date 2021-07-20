@@ -439,7 +439,6 @@ public class Photo_Wall implements ITest
 
 
 
-    // TODO PW3 and PW1
 
     /**
      * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
