@@ -146,6 +146,7 @@ public class OrderHistory implements ITest
 
             //Login/Initial steps??
             TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
             Thread.sleep(1000);
 
             //Navigate to orders and payments

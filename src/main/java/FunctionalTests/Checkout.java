@@ -292,8 +292,9 @@ public class Checkout implements ITest {
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
             Thread.sleep(1000);
 
             //Navigate to Basket
