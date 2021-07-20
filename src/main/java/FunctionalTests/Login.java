@@ -77,6 +77,8 @@ public class Login implements ITest
      * Programmer: Seyedmehrad Adimi
      * @param dataSet has email, password, and answer used to register
      * @param chosenBrowser browser used for that test
+     * @exception IOException Thrown if no browser is chosen for a test
+     *  @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
 
     @Test(

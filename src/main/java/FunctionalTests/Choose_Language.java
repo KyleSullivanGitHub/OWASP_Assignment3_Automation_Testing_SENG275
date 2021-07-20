@@ -60,6 +60,7 @@ public class Choose_Language implements ITest
      * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
      * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Choose_Language", "hasDataProvider"},
