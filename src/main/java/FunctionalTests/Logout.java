@@ -10,6 +10,8 @@ import org.testng.ITest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import static org.testng.Assert.*;
 
 
@@ -32,7 +34,7 @@ public class Logout implements ITest
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         passBrowser = new CreateEnvironment();
@@ -47,8 +49,8 @@ public class Logout implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Logout Smoke", "Logout", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Logout", "hasDataProvider"},
+            priority = 9,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -87,8 +89,8 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown when the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Sanity", "Logout Sanity", "Logout","noDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Logout","noDataProvider"},
+            priority = 59,
             enabled = true
     )
     public void LO2_Logout_Sanity() throws InterruptedException
@@ -136,9 +138,15 @@ public class Logout implements ITest
             TestFunctions.waitForSite(browserSecondary, TestFunctions.navPath,true);
             Thread.sleep(100);
 
+            String actualResult = "Second browser is not logged out";
+            String validResult = "Second browser is logged out";
             boolean secondaryIsLoggedOut = browserSecondary.findElement(By.cssSelector("#navbarLogoutButton")).isDisplayed();
-            assertFalse(secondaryIsLoggedOut);
+            if(secondaryIsLoggedOut)
+            {
+                actualResult = "Second browser is logged out";
 
+            }
+            assertEquals(actualResult,validResult);
         }
         finally
         {
@@ -157,9 +165,9 @@ public class Logout implements ITest
      * @throws InterruptedException Thrown if Test was interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Sanity", "Registration Sanity", "Registration","noDataProvider"},
-            priority = 1,
-            enabled = false
+            groups = {"Sanity", "Registration","noDataProvider","Extended_Period_Test"},
+            priority = 999,
+            enabled = true
     )
     public void LO3_Logout_Automated() throws InterruptedException
     {
@@ -179,7 +187,7 @@ public class Logout implements ITest
             TestFunctions.login(browserWindow);
 
             //Perform the following loop a number of times equal to timeoutTime.
-            for (int minutesPassed = 1; minutesPassed < timeoutTime; minutesPassed++)
+            for (int minutesPassed = 0; minutesPassed < timeoutTime; minutesPassed++)
             {
                 //Wait one minute
                 Thread.sleep(60000);
@@ -227,9 +235,6 @@ public class Logout implements ITest
         {
             assertFalse(logoutVisible);//Ensure that while logged out, the logout button is not visible
         }
-
-        //Find the overlay blocking the account menu button and remove it
-        TestFunctions.waitForSite(browserWindow,"body > div.cdk-overlay-container.bluegrey-lightgreen-theme > div.cdk-overlay-backdrop.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing",true);
 
         //Log the user back in via google
         TestFunctions.login(browserWindow);

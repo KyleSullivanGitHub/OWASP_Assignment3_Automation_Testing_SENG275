@@ -128,6 +128,26 @@ public class Test_Data
         };
     }
 
+    //*******************************************************************************************************
+
+    /**
+     * This dataProvider passes valid random email and password strings for the LG1 valid input test
+     * Programmer: Seyedmehrad Adimi
+     * @return object with email and password for that test.
+     */
+    @DataProvider(
+            name = "LG_RandomInput"
+    )
+    public static Object[][] LG_RandomInput()
+    {
+        setUpEmail();
+        Random randomNum = new Random ();
+        int randomInteger = randomNum.nextInt(1000);
+        return new Object[][]{
+                {new Object[]{email+randomNum1+randomInteger+"@gmail.com",password,answer}},
+        };
+    }
+
 
     //*******************************************************************************************************
 
@@ -167,7 +187,7 @@ public class Test_Data
                 {"Negative_Quantity",new Object[]{-1,true,false,false,""}},
                 {"No_Address",new Object[]{validQuantity,false,false,false,""}},
                 {"Bulk_No_Date",new Object[]{200,true,true,false,""}},
-                {"Bulk_Past_Date",new Object[]{200,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[5]/td[7]"}},
+                {"Bulk_Past_Date",new Object[]{200,true,true,true,"tr.ng-star-inserted:nth-child(2) > td:nth-child(1)"}},
         };
     }
 
@@ -179,7 +199,7 @@ public class Test_Data
         int validQuantity = 200;
         return new Object[][]{
                 {"Bulk_No_Pickup",new Object[]{validQuantity,true,false,false,""}},
-                {"Bulk_Valid_Date",new Object[]{validQuantity,true,true,true,"/html/body/div[3]/div[2]/div/mat-datepicker-content/div[2]/mat-calendar/div/mat-month-view/table/tbody/tr[3]/td[4]"}},
+                {"Bulk_Valid_Date",new Object[]{validQuantity,true,true,true,"tr.ng-star-inserted:nth-child(5) > td:nth-child(6)"}},
         };
     }
 
