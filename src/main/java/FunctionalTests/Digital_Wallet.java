@@ -7,10 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.devtools.v85.log.Log;
 import org.testng.ITest;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import static org.testng.Assert.*;
 import org.openqa.selenium.support.ui.Select;
 
@@ -37,7 +35,7 @@ public class Digital_Wallet {
      * Programmer: Ewan Morgan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         environment = passBrowser.createBrowser();
     }
@@ -62,7 +60,7 @@ public class Digital_Wallet {
     )
 
 
-    public void DW1_Valid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
+    public void DW1_ValidFunds(String chosenBrowser) throws IOException, InterruptedException {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         browserWindow = browser.makeDriver();
@@ -92,19 +90,32 @@ public class Digital_Wallet {
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[5]")).click();
 
             //Verify Digital Wallet Page
-            assertEquals(browserWindow.getCurrentUrl(), website + "/#/saved-payment-methods");
+            assertEquals(browserWindow.getCurrentUrl(), website + "/#/wallet");
 
             //Add 100$ to Digital Wallet
-            WebElement digit = browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]"));
-            digit.sendKeys("100");
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-wallet/mat-card/mat-form-field/div/div[1]/div[3]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys("100");
 
             //press continue
             browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
 
+            if(browserWindow.findElements(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/app-payment-method/div/div[1]")).isEmpty()) {
+                //select new card dropdown
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-0\"]")).click();
+                addSavedPayment(browserWindow);
+
+                //Select Submit
+                browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
+            }
+            Thread.sleep(500);
+            //select new card
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-radio-38\"]")).click();
+
+            Thread.sleep(500);
             //Select Continue on card page
             browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div/button[2]")).click();
-
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/simple-snack-bar/span")).getText(), "Wallet successfully charged.");
+            Thread.sleep(500);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/div[3]")).getText(), "Wallet successfully charged.\nX");
 
         }
         finally
@@ -124,6 +135,8 @@ public class Digital_Wallet {
     @Test(
             groups = {"Sanity","Digital_Wallet Sanity","Digital_Wallet"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DW3_InvalidAmount(String chosenBrowser) throws IOException, InterruptedException {
@@ -156,8 +169,8 @@ public class Digital_Wallet {
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[5]")).click();
 
             //Add -100$ to Digital Wallet
-            WebElement digit = browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]"));
-            digit.sendKeys("-100");
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-wallet/mat-card/mat-form-field/div/div[1]/div[3]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys("-100");
 
             //press continue
             browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
@@ -174,82 +187,6 @@ public class Digital_Wallet {
         }
 
     }
-    /**
-     *Sanity tests adding funds to digital wallet using Add New Card feature.
-     * Verifies can add funds to digital wallet using add new card feature
-     *Programmer: Ewan Morgan
-     */
-    @Test(
-            groups = {"Sanity","Digital_Wallet sanity","Digital_Wallet"},
-            priority = 0,
-            enabled = true
-    )
-    public void DW4_Invalid_DigitalWallet(String chosenBrowser) throws IOException, InterruptedException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
-
-        try {
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to Account
-            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
-            Thread.sleep(300);
-
-            //Navigate to Orders & Payment
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
-            Thread.sleep(300);
-
-            //Navigate to Digital Wallet
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[5]")).click();
-
-            //Add 100$ to Digital Wallet
-            WebElement digit = browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]"));
-            digit.sendKeys("100");
-
-            //press continue
-            browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
-
-            //select add new card drop down menu
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-2\"]")).click();
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/mat-form-field[1]/div/div[1]/div[3]")).sendKeys("helloworld");
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/mat-form-field[2]/div/div[1]/div[3]")).sendKeys("1111111111111111");
-
-            //Verify Expiry Month dropdown is functional
-            Select month = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-13\"]")));
-            month.selectByValue("3");
-            Thread.sleep(500);
-
-            //Verify Expiry Year dropdown is functional
-            Select year = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-14\"]")));
-            year.selectByValue("2081");
-            Thread.sleep(500);
-
-            //Navigate to Submit
-            browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/span")).getText(), "Your card ending with 1111 has been saved for your convenience.");
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div/button[2]")).click();
-
-            //navigate to new card
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-radio-74\"]")).click();
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/simple-snack-bar/span")).getText(), "Wallet successfully charged.");
-
-        } finally {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-        }
-    }
 
     /**
      *Regression tests for Digital_Wallet
@@ -262,6 +199,18 @@ public class Digital_Wallet {
     )
     public void DW_Regression() {
         //TODO ADD Digital Wallet REGRESSION TEST
+    }
+
+    void addSavedPayment (WebDriver browserWindow){
+
+        //Populate info
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-2\"]")).sendKeys("Hello World");//Name
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")).sendKeys("1111222233334444");//Card No
+        Select monthSelector = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-4\"]")));
+        monthSelector.selectByVisibleText("1");
+        Select yearSelector = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-5\"]")));
+        yearSelector.selectByVisibleText("2080");
+
     }
 
 }

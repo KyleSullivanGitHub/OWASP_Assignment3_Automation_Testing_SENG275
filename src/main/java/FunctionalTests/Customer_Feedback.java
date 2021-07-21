@@ -9,10 +9,7 @@ import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.devtools.v85.log.Log;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -38,7 +35,7 @@ public class Customer_Feedback {
      *Create an environment for all tests using the same browser app.
      *Programmer: Ewan Morgan
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
@@ -62,7 +59,7 @@ public class Customer_Feedback {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void CF1_Feedback(String chosenBrowser) throws IOException, InterruptedException
+    public void CF1_LoggedOut(String chosenBrowser) throws IOException, InterruptedException
     {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -102,7 +99,8 @@ public class Customer_Feedback {
 
             //submit button functionality
             browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"cdk-overlay-2\"]/snack-bar-container/div/div/simple-snack-bar")).getText(), "Thank you so much for your amazing 5-star feedback!");
+            Thread.sleep(300);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/div[3]")).getText(), "Thank you so much for your amazing 5-star feedback!\nX");
 
         }
 
@@ -129,7 +127,7 @@ public class Customer_Feedback {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void CF2_Feedback_Loggedin(String chosenBrowser) throws IOException, InterruptedException, ScriptException
+    public void CF2_Loggedin(String chosenBrowser) throws IOException, InterruptedException, ScriptException
     {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -171,7 +169,7 @@ public class Customer_Feedback {
 
             //submit button functionality
             browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"cdk-overlay-2\"]/snack-bar-container/div/div/simple-snack-bar/span")).getText(), "Thank you for your feedback.");
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/div[3]")).getText(), "Thank you so much for your amazing 5-star feedback!\nX");
 
         }
 
@@ -212,8 +210,6 @@ public class Customer_Feedback {
         TestFunctions.waitForSite(browserWindow);
 
         try{
-
-
             //Navigate to side bar Menu
             browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
             Thread.sleep(300);
@@ -224,7 +220,6 @@ public class Customer_Feedback {
 
             //submit button functionality
             assertFalse(browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).isEnabled());
-
         }
 
         finally
@@ -235,8 +230,6 @@ public class Customer_Feedback {
 
         }
     }
-
-
 
     public Object captcha_Calc(String captcha){
         ScriptEngineManager mgr = new ScriptEngineManager();
