@@ -104,7 +104,7 @@ public class Photo_Wall implements ITest
 
 
             // PW_005 : Verify can't post picture without caption
-            // CANNOT upload picture as discussed with the prof
+            // CANNOT upload picture as discussed with Dr. Popli
             // Assuming it works
 
 
@@ -226,6 +226,7 @@ public class Photo_Wall implements ITest
 
     /**
      * Sanity tests for Valid use of Photo_Wall feature and posting picture
+     * includes test cases PW_002 and PW_003
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */

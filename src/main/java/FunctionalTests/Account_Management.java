@@ -49,12 +49,12 @@ public class Account_Management implements ITest
 
 
     /**
-     * Smoke tests for Valid use of Account Management
+     * Smoke tests for Valid use of Account Management within several browsers.
      * Includes test cases MA_001, MA_002, MA_005
      * Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password text for test
      * @param chosenBrowser browser used for that test
-     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception IOException Thrown if no browser is chosen or a test
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
@@ -108,8 +108,8 @@ public class Account_Management implements ITest
 
 
     /**
-     * Smoke tests for Invalid use of support chat
-     * Includes test case SC_006
+     * Smoke tests for updating the profile fields (email and photo) in Profile page
+     * Includes test case MA_006
      * Programmer: Seyedmehrad Adimi
      * link: https://ibb.co/6gBdXKJ
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
@@ -161,11 +161,19 @@ public class Account_Management implements ITest
             Thread.sleep (1000);
             profilePicUrl.sendKeys ("https://ibb.co/6gBdXKJ");
 
-
             wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#submitUrl")));
             WebElement setPicture = browserWindow.findElement (By.cssSelector ("#submitUrl"));
 
             setPicture.click ();
+
+            // After setting the picture of the University of Victoria's logo, the height should change to 236
+            // Since Link Image does not work, the tets should fail
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector ("#card > div > div:nth-child(2) > img")));
+            WebElement piCuploaded = browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > img"));
+            assertEquals (piCuploaded.getAttribute ("height"), "236");
+
+
+
 
         }finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -210,18 +218,28 @@ public class Account_Management implements ITest
            //Navigate to Account Management
            navToAccountManagement (browserWindow, wait, By.id ("navbarAccount"));
 
-           wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (submitButtonCSS)));
+           sleep (1);
 
            // Assert that no file is chosen -> No file is chosen because we are not able to upload any picture
+           // This assert statement only verifies that there is an input for the image
            assertEquals (browserWindow.findElement (By.id("picture")).getAttribute ("aria-label"), "Input for selecting the profile picture");
 
 
-           // Assert that upload button is greyed out and clickable -> or error message shows up when clicking on the button
+
+           // Assert that error message shows up when clicking on the button
+           // Since no error message shows up when clicking on the "Upload Picture" button, we are not able to assert that
+           // it exists!!
+           // However, we can verify if the page contains the error message after clicking on the "Upload Picture" button
+           // The button is enabled but no error message shows up
            // The test should FAIL
-           assertFalse (browserWindow.findElement (By.cssSelector (submitButtonCSS)).isEnabled ());
+           browserWindow.findElement (By.cssSelector ("#card > div > div:nth-child(2) > form:nth-child(3) > button")).click ();
+           assertTrue( browserWindow.getPageSource ().contains ("No file has been chosen!"));
+
+
+
 
        }finally {
-           Thread.sleep(TestFunctions.endTestWait);
+           sleep (1);
            browserWindow.quit();
        }
 
@@ -253,7 +271,7 @@ public class Account_Management implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try {
-            /*TC_MA_007 = Verify Uploading image without a file selected*/
+
 
             loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
@@ -264,10 +282,17 @@ public class Account_Management implements ITest
 
 
             /*TC_MA_008 = Verify Uploading image without an Image URL set*/
+            // Assert that no link is passed to the link input
             assertEquals (browserWindow.findElement (By.cssSelector (inputImageUrlCSS)).getText (),"");
-            // Assert that upload button is greyed out and clickable -> or error message shows up when clicking on the button
+
+            // Since no error message shows up when clicking on the "Link Image" button, we are not able to assert that
+            // it exists!!
+            // However, we can verify if the page contains the error message after clicking on the "Link Image" button
+            // The button is enabled but no error message shows up
             // The test should FAIL
-            assertFalse (browserWindow.findElement (By.cssSelector (submitButtonCSS)).isEnabled ());
+            browserWindow.findElement (By.cssSelector ("#submitUrl")).click ();
+            String body = browserWindow.findElement(By.tagName("body")).getText();
+            assertTrue(body.contains("No file has been chosen!"));
 
 
         }finally {
@@ -302,7 +327,7 @@ public class Account_Management implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         try {
-            /*TC_MA_007 = Verify Uploading image without a file selected*/
+
 
             loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
 
@@ -317,6 +342,7 @@ public class Account_Management implements ITest
             browserWindow.findElement (By.cssSelector ("#submitUrl")).click ();
             wait.until (ExpectedConditions.urlToBe ("https://juice-shop.herokuapp.com/profile/image/url"));
             assertEquals (browserWindow.getCurrentUrl (),"https://juice-shop.herokuapp.com/profile/image/url");
+            // Assert that an error page shows up
             assertTrue (browserWindow.getPageSource ().contains ("Invalid URI"));
 
 
@@ -396,6 +422,9 @@ public class Account_Management implements ITest
             Login.assertElement (linkInput);
             Login.assertElement (LinkImageBtn);
             Login.assertElement (UploadPicBtn);
+
+            browserWindow.navigate ().back ();
+            Login.testRegressionForMe (browserWindow,true);
 
 
 

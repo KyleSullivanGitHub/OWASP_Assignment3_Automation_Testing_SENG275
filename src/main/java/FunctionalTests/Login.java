@@ -17,6 +17,7 @@ import org.testng.annotations.*;
 import org.openqa.selenium.interactions.Actions;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import static org.testng.Assert.*;
 
@@ -100,6 +101,7 @@ public class Login implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         try
         {
+
             // Navigate to registration page and register for a new account
             fillOutReg(browserWindow, dataSet[0].toString (), dataSet[1].toString (), dataSet[1].toString (),true, dataSet[2].toString ());
             sleep (1);
@@ -229,7 +231,7 @@ public class Login implements ITest
 
 
     /**
-     * Sanity tests a single invalid Google login attempt.
+     * Sanity tests a single invalid normal login attempt.
      * Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
@@ -384,23 +386,21 @@ public class Login implements ITest
 
             assertEquals(browserWindow.getCurrentUrl(),"https://juice-shop.herokuapp.com/#/");
 
+
             // During testing, the login memory does not get saved.
             // It only happens when the user manually closes the browser
             // and opens it again
-            // Therefore Login Memory by closing the browser cannot be tested
-            // The code is below
 
-          /*  sleep(1);
+
+            browserWindow.quit ();
 
             WebDriver browserWindow1 = environment.makeDriver();
             browserWindow1.manage().window().maximize();
-            browserWindow1.get(website);
+            browserWindow1.get(TestFunctions.website);
+            TestFunctions.waitForSite (browserWindow1);
 
-            sleep(2);
-            browserWindow1.findElement (By.cssSelector ("body")).sendKeys (Keys.ESCAPE);
-            sleep(1);
-            assertTrue (browserWindow1.findElement (By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button.mat-focus-indicator.buttons.mat-button.mat-button-base.ng-star-inserted")).isDisplayed ());
-         */
+            // Check if you are still logged in
+            assertTrue (browserWindow1.getPageSource ().contains ("Your Basket"));
         }
         finally {
             Thread.sleep(TestFunctions.endTestWait);
@@ -448,9 +448,10 @@ public class Login implements ITest
             assertEquals (emailInputField.getAttribute ("aria-label"),"Text field for the login email");
             assertElement (emailInputField);
 
-
+            wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("password")));
             WebElement passwordInputField = browserWindow.findElement (By.id ("password"));
             passwordInputField.click ();
+
             assertEquals (passwordInputField.getAttribute ("aria-label"),"Text field for the login password");
             assertElement (passwordInputField);
 
@@ -595,6 +596,7 @@ public class Login implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         //check Main logo
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector(mainLogoCSS)));
         WebElement mainPage = browserWindow.findElement(By.cssSelector(mainLogoCSS));
         assertEquals( mainPage.getAttribute ("class"),"logo");
         assertElement (mainPage);
@@ -767,10 +769,17 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
+        sleep (1);
+
         Actions pressESC = new Actions (browserWindow);
         pressESC.sendKeys (Keys.ESCAPE).perform ();
 
         TestFunctions.navToReg (browserWindow);
+
+        sleep (1);
+
+        Actions pressESC1 = new Actions (browserWindow);
+        pressESC1.sendKeys (Keys.ESCAPE).perform ();
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
@@ -826,11 +835,12 @@ public class Login implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         browserWindow.get(TestFunctions.website);
-        sleep (1);
+        TestFunctions.waitForSite (browserWindow);
+        sleep (2);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
 
-
+        sleep (2);
 
 
         //verify that we can access the login page

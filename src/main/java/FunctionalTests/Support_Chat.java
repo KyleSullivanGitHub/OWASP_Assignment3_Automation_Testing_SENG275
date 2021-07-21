@@ -166,7 +166,7 @@ public class Support_Chat implements ITest
 
     /**
      * Regression test on Support Chat using one browser
-     * Includes test case SC_003,SC_004,SC_007,SC_008
+     * Includes test case SC_003,SC_007,SC_008
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -199,7 +199,15 @@ public class Support_Chat implements ITest
             // Testing SC_003: Verify whether the required details and fields are displayed in the 'Support Chat' page -> NO submit button
             checkFieldsAreDisplayed (browserWindow, wait);
 
-            // Testing SC_004: Verify all the text fields in the 'Support Chat' page are mandatory -> not mandatory
+            // Use the Support Chat and check again
+            WebElement inputText = browserWindow.findElement (By.id ("message-input"));
+
+            inputText.sendKeys ("Hello");
+            inputText.sendKeys (Keys.ENTER);
+            sleep (1);
+
+            checkFieldsAreDisplayed (browserWindow, wait);
+
 
             // Testing SC_007: Verify the Page URL, Page Heading and Page Title of 'Support Chat' page
             Login.testUrlAndTitleAndHeading (browserWindow,"https://juice-shop.herokuapp.com/#/chatbot", "OWASP Juice Shop", "Support Chat (powered by juicy-chat-bot)", SupportChatTitleCSS );
