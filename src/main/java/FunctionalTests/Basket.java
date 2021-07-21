@@ -55,7 +55,7 @@ public class Basket implements ITest{
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -88,7 +88,7 @@ public class Basket implements ITest{
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -157,7 +157,7 @@ public class Basket implements ITest{
             priority = 3,
             enabled = true
     )
-    public void BA3_Alternate_Usages() throws IOException, InterruptedException {
+    public void BA3_Basket_Functions() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
         try {
@@ -165,7 +165,7 @@ public class Basket implements ITest{
             browserWindow.manage().window().maximize();
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -182,17 +182,17 @@ public class Basket implements ITest{
 
             //Increase Quantity by one
             browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
 
             //Decrease Quantity by one
             browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
             //Remove Product
             browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 0¤");
         }
         finally {
@@ -209,8 +209,27 @@ public class Basket implements ITest{
             priority = 4,
             enabled = true
     )
-    public void BA_Regression() {
-        //TODO ADD Basket REGRESSION TEST
+    public void BA_Regression() throws InterruptedException{
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps
+            TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/basket", true);
+        } finally {
+            browserWindow.quit();
+        }
     }
 
 
