@@ -74,7 +74,9 @@ public class Login implements ITest
     }
 
     /**
-     * Smoke test for valid inputs within several different browsers
+     * Smoke test for Login with valid inputs within several different browsers
+     * The account data regularly gets deleted from the website and that is why
+     * registration is used before Login in this Test class.
      * Programmer: Seyedmehrad Adimi
      * @param dataSet has email, password, and answer used to register
      * @param chosenBrowser browser used for that test
@@ -122,7 +124,7 @@ public class Login implements ITest
 
 
     /**
-     *Smoke tests a single invalid login attempt.
+     * Smoke test. A single invalid login attempt with invalid credentials with one browser.
      *Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -159,7 +161,7 @@ public class Login implements ITest
 
 
     /**
-     * Smoke test for valid Google Login with a single browser
+     * Smoke test for valid Google Login with a single browser using Google account credentials
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -194,7 +196,7 @@ public class Login implements ITest
 
 
     /**
-     *Smoke tests a single invalid Google login attempt.
+     * Smoke tests a single invalid Google login attempt with invalid credentials
      *Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
@@ -231,7 +233,7 @@ public class Login implements ITest
 
 
     /**
-     * Sanity tests a single invalid normal login attempt.
+     * Sanity test. A single invalid normal login attempt with three different cases mentioned in the comments
      * Programmer: Seyedmehrad Adimi
      * @param dataSet provides email and password
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
@@ -774,12 +776,14 @@ public class Login implements ITest
         Actions pressESC = new Actions (browserWindow);
         pressESC.sendKeys (Keys.ESCAPE).perform ();
 
-        TestFunctions.navToReg (browserWindow);
+        //navigate to login page
+        TestFunctions.navToLogin(browserWindow);
 
-        sleep (1);
+        // Nnavigate to Registration
+        WebElement signUpLink = browserWindow.findElement(By.cssSelector("#newCustomerLink"));
+        assertTrue(signUpLink.isEnabled());
+        signUpLink.click();//enter sign up page
 
-        Actions pressESC1 = new Actions (browserWindow);
-        pressESC1.sendKeys (Keys.ESCAPE).perform ();
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
@@ -837,7 +841,6 @@ public class Login implements ITest
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite (browserWindow);
         sleep (2);
-        browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
 
         sleep (2);

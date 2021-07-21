@@ -288,7 +288,7 @@ public class Support_Chat implements ITest
     }
 
     /**
-     * This is a helper method that helps use Thread.sleep method easily
+     * This is a helper method that helps to use Thread.sleep method easily
      * Programmer: Seyedmehrad Adimi
      * @exception InterruptedException is thrown if a test is interrupted during a wait time
      **/
