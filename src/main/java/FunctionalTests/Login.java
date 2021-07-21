@@ -769,11 +769,17 @@ public class Login implements ITest
 
         browserWindow.get(TestFunctions.website);
 
+        sleep (1);
 
         Actions pressESC = new Actions (browserWindow);
         pressESC.sendKeys (Keys.ESCAPE).perform ();
 
         TestFunctions.navToReg (browserWindow);
+
+        sleep (1);
+
+        Actions pressESC1 = new Actions (browserWindow);
+        pressESC1.sendKeys (Keys.ESCAPE).perform ();
 
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys(email); //enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys(password); //enter password
@@ -829,11 +835,12 @@ public class Login implements ITest
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
 
         browserWindow.get(TestFunctions.website);
-        sleep (1);
+        TestFunctions.waitForSite (browserWindow);
+        sleep (2);
         browserWindow.findElement(By.cssSelector("#mat-dialog-0 > app-welcome-banner > div > div:nth-child(3) > button.mat-focus-indicator.close-dialog.mat-raised-button.mat-button-base.mat-primary.ng-star-inserted > span.mat-button-wrapper")).click();
         browserWindow.findElement(By.id ("navbarAccount")).click ();
 
-
+        sleep (2);
 
 
         //verify that we can access the login page
