@@ -34,7 +34,7 @@ public class AccountSafety implements ITest
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         //Create an environment to set up browser specific test environments

@@ -7,8 +7,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class ProductViewing implements ITest
      * Create an environment for all tests using the same browser app.
      * Programmer: Kyle Sullivan
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         passBrowser = new CreateEnvironment();
@@ -54,13 +54,14 @@ public class ProductViewing implements ITest
     /**
      * Smoke test to check basic product page functionality, such as the product expanded view, and page navigation.
      * Programmer: Kyle Sullivan
+     *
      * @param chosenBrowser Browser for this particular test
-     * @throws IOException Thrown if a browser is not set for the test
+     * @throws IOException          Thrown if a browser is not set for the test
      * @throws InterruptedException Thrown if the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Smoke", "Navigation Menu Smoke", "Navigation menu", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Product_View", "hasDataProvider"},
+            priority = 11,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -79,19 +80,19 @@ public class ProductViewing implements ITest
         try
         {
             //click on main page button
-            TestFunctions.waitForSiteXpath(browserWindow,headerButton,true);
+            TestFunctions.waitForSiteXpath(browserWindow, headerButton, true);
             Thread.sleep(500);
             //confirm user is on the product page
-            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website+"search");
+            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "search");
 
 
             //check product
-            TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]",true);
+            TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]", true);
             //confirm the expanded view is on display
             TestFunctions.waitForSiteXpath(browserWindow, productContainer);
             WebElement product = browserWindow.findElement(By.xpath(productContainer));
             //check that a product name is present
-            assertFalse(product.findElement(By.xpath(productContainer +"/mat-dialog-content/div/div[1]/div[2]/h1")).getText().isEmpty());
+            assertFalse(product.findElement(By.xpath(productContainer + "/mat-dialog-content/div/div[1]/div[2]/h1")).getText().isEmpty());
             //check that a product description is present
             assertFalse(product.findElement(By.xpath(productContainer + "/mat-dialog-content/div/div[1]/div[2]/div[1]")).getText().isEmpty());
             //check taht a product price is present
@@ -100,15 +101,14 @@ public class ProductViewing implements ITest
             product.findElement(By.className("close-dialog")).click();
 
             //open products per page sub menu to test feature
-            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath+"div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
+            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
 
             //specific path can switch between 0 and 3 randomly, but regardless, select one of the product per page amounts
             try
             {
                 //Try an potential option
-                browserWindow.findElement(By.xpath("//*[@id=\"mat-option-"+0+"\"]")).click();
-            }
-            catch (NoSuchElementException exception)
+                browserWindow.findElement(By.xpath("//*[@id=\"mat-option-" + 0 + "\"]")).click();
+            } catch (NoSuchElementException exception)
             {
                 //If the option was invalid, prepare to try the next one
                 browserWindow.findElement(By.xpath("//*[@id=\"mat-option-" + 3 + "\"]")).click();
@@ -116,10 +116,10 @@ public class ProductViewing implements ITest
 
             //navigate to next page of products
             TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
-            assertEquals(browserWindow.findElement(By.xpath(productAmountPath+pageNumPath)).getText(),"13 – 24 of 36");
+            assertEquals(browserWindow.findElement(By.xpath(productAmountPath + pageNumPath)).getText(), "13 – 24 of 36");
             //navigate to previous product page
-            TestFunctions.waitForSiteXpath(browserWindow, pageNav+"1]", true);
-            assertEquals(browserWindow.findElement(By.xpath(productAmountPath+pageNumPath)).getText(),"1 – 12 of 36");
+            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
+            assertEquals(browserWindow.findElement(By.xpath(productAmountPath + pageNumPath)).getText(), "1 – 12 of 36");
 
         } finally
         {
@@ -131,15 +131,16 @@ public class ProductViewing implements ITest
 
     /**
      * Confirm full functionality of product grid features, such as control of number of products displayed, and page navigation
-     * @param testing What is being tested. Only used by test name
+     *
+     * @param testing       What is being tested. Only used by test name
      * @param browserWindow Browser window to use for all tests
-     * @param itemPerPage Amount of products per page to test
-     * @throws IOException Thrown if a browser is not set for the test, or if no product amount was set
+     * @param itemPerPage   Amount of products per page to test
+     * @throws IOException          Thrown if a browser is not set for the test, or if no product amount was set
      * @throws InterruptedException Thrown if the test is interrupted during a thread sleep period,
      */
     @Test(
-            groups = {"Sanity", "Product View Sanity", "Product View", "hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Product_View", "hasDataProvider"},
+            priority = 61,
             dataProvider = "PV2_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -150,37 +151,42 @@ public class ProductViewing implements ITest
         {
             int select;
             //determine which web element to pick for the test
-            try { select = itemPerPage == 12 ? 0 : itemPerPage == 24 ? 1 : itemPerPage == 36 ? 2 : null;}
-            catch (NullPointerException exception) { throw new IOException("No Product per page Amount Set");}
+            try
+            {
+                select = itemPerPage == 12 ? 0 : itemPerPage == 24 ? 1 : itemPerPage == 36 ? 2 : null;
+            } catch (NullPointerException exception)
+            {
+                throw new IOException("No Product per page Amount Set");
+            }
 
             //amount of pages available
-            int pageAmount = 36/itemPerPage + (itemPerPage == 24 ? 1 : 0);
+            int pageAmount = 36 / itemPerPage + (itemPerPage == 24 ? 1 : 0);
             //amount of pages we will test, going forwards and then back through in reverse
-            int pagesToCheck = 2*pageAmount-1;
+            int pagesToCheck = 2 * pageAmount - 1;
 
             //select the amount of product per page to display
-            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath+"div[1]/mat-form-field/div/div[1]/div/mat-select/div",true);
-            TestFunctions.waitForSiteXpath(browserWindow,"//*[@id=\"mat-option-"+select+"\"]",true);
+            TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
+            TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + select + "\"]", true);
 
             //check each page available
-            for(int page = 1; page <= pagesToCheck; page++)
+            for (int page = 1; page <= pagesToCheck; page++)
             {
                 //check each product in the product grid to confirm the correct amount is present
                 for (int i = 1; i <= itemPerPage; i++)
                 {
                     assertTrue(browserWindow.findElement(By.xpath(listElement + i + "]")).isDisplayed());
-                    if(itemPerPage == 24 && page == 2 && i == 12)
+                    if (itemPerPage == 24 && page == 2 && i == 12)
                         break;
                 }
-                if(page < pageAmount) //go to the next page if we have not reached the end
+                if (page < pageAmount) //go to the next page if we have not reached the end
                     TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
-                else if(page >= pageAmount && page != pagesToCheck) //go to the previous page if we have reached the end
+                else if (page >= pageAmount && page != pagesToCheck) //go to the previous page if we have reached the end
                     TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
             }
 
         } finally
         {
-            if(itemPerPage == 36)
+            if (itemPerPage == 36)
             {
                 //end test
                 Thread.sleep(TestFunctions.endTestWait);
@@ -189,13 +195,20 @@ public class ProductViewing implements ITest
         }
     }
 
+    /**
+     * Regression Test for product viewing
+     *
+     * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
+     * @throws IOException          Thrown if no browser is selected for the test
+     */
     @Test(
-            groups = {"Regression", "Product View Regression", "Product View", "NoDataProvider"},
-            priority = 0,
+            groups = {"Regression", "Product_View", "noDataProvider"},
+            priority = 77,
             enabled = true
     )
     public void PV_Regression() throws InterruptedException, IOException
     {
+        //create the environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         //Go to Website
@@ -205,62 +218,62 @@ public class ProductViewing implements ITest
 
         try
         {
-            for(int isLogged = 0; isLogged <=1; isLogged++)
+            //create and iterate through an object of page numbers
+            int[] temp = new int[]{5, 2, 1};
+            for (int pages : temp)
             {
-                int[] temp = new int[]{5, 2, 1};
-                for (int pages : temp)
+                //Deterimne which xpath extension to use to detecte how many products to put on each page
+                int select;
+                try{ select = pages == 5 ? 0 : pages == 2 ? 1 : pages == 1 ? 2 : null; }
+                catch (NullPointerException exception)
                 {
-                    int select;
+                    //Alternate path becuase of stupid website
                     try
                     {
-                        select = pages == 5 ? 0 : pages == 2 ? 1 : pages == 1 ? 2 : null;
-                    } catch (NullPointerException exception)
+                        select = pages == 5 ? 3 : pages == 2 ? 4 : pages == 1 ? 5 : null;
+                    } catch (NullPointerException badTest)
                     {
-                        try
-                        {
-                            select = pages == 5 ? 3 : pages == 2 ? 4 : pages == 1 ? 5 : null;
-                        }
-                        catch (NullPointerException badTest){ throw new IOException("No Product per page Amount Set");}
                         throw new IOException("No Product per page Amount Set");
                     }
-
-                    //select the amount of product per page to display
-                    TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
-                    TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + select + "\"]", true);
-
-                    for (int page = 1; page <= pages; page++)
-                    {
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
-                        TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]", true);
-
-                        ProductReviews.testReview(browserWindow);
-                        if(isLogged == 1)
-                        {
-                            ProductReviews.fillReview(browserWindow,"Test Review");
-                            ProductReviews.submitReview(browserWindow);
-                        }
-
-                        WebElement product = browserWindow.findElement(By.xpath(productContainer));
-                        product.findElement(By.className("close-dialog")).click();
-                        assertTrue(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[1]/figure/mat-card/div[3]/button")).isEnabled());
-
-                        TestFunctions.commonRegression(browserWindow, TestFunctions.website, (isLogged == 1 ? true : false));
-
-                        if (page < pages) //go to the next page if we have not reached the end
-                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
-                        else if (page >= pages && page != pages) //go to the previous page if we have reached the end
-                            TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
-                    }
-
+                    throw new IOException("No Product per page Amount Set");
                 }
-                if(isLogged == 0)
-                    TestFunctions.login(browserWindow);
-            }
 
+                //select the amount of product per page to display
+                TestFunctions.waitForSiteXpath(browserWindow, productAmountPath + "div[1]/mat-form-field/div/div[1]/div/mat-select/div", true);
+                TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-option-" + select + "\"]", true);
+
+                //iterate thorough all pages and then back through all purpose
+                for (int page = 1; page <= pages; page++)
+                {
+                    //test common features for page
+                    TestFunctions.commonRegression(browserWindow, TestFunctions.website, false);
+                    //check that each list element is present, and can be opened
+                    TestFunctions.waitForSiteXpath(browserWindow, listElement + "1]", true);
+                    while (true)
+                    {
+                        try { browserWindow.findElement(By.className("mat-expansion-panel-header"));break; }
+                        catch (NoSuchElementException ignore) { }
+                    }
+                    //tests the reviews feature
+                    ProductReviews.testReview(browserWindow);
+
+                    //close the proudct expanded view
+                    WebElement product = browserWindow.findElement(By.xpath(productContainer));
+                    product.findElement(By.className("close-dialog")).click();
+
+                    //test common features
+                    TestFunctions.commonRegression(browserWindow, TestFunctions.website, false);
+
+                    if (page < pages) //go to the next page if we have not reached the end
+                        TestFunctions.waitForSiteXpath(browserWindow, pageNav + "2]", true);
+                    else if (page >= pages && page != pages) //go to the previous page if we have reached the end
+                        TestFunctions.waitForSiteXpath(browserWindow, pageNav + "1]", true);
+                }
+            }
         } finally
         {
             Thread.sleep(TestFunctions.endTestWait);
-            //browserWindow.quit();
+            browserWindow.quit();
         }
     }
 
@@ -268,7 +281,8 @@ public class ProductViewing implements ITest
      * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
      * Programmer: Canberk Akduygu
-     * @param method Test method whose name is to be changed
+     *
+     * @param method   Test method whose name is to be changed
      * @param testData The data parameters for the method
      */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
@@ -277,16 +291,19 @@ public class ProductViewing implements ITest
         //Set name to (method name)_(first value in data provider)
         testName.set(method.getName() + "_" + testData[0]);
     }
+
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
+
     /**
      * Returns the name of the test. Used to alter the name of tests performed multiple times
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
      * Programmer: Canberk Akduygu
+     *
      * @return Name of test
      */
     @Override
