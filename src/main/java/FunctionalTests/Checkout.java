@@ -55,7 +55,7 @@ public class Checkout implements ITest {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void CK1_Valid_Usage(String chosenBrowser) throws InterruptedException, IOException
+    public void CK1_Card_Usage(String chosenBrowser) throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -135,7 +135,7 @@ public class Checkout implements ITest {
             priority = 23,
             enabled = true
     )
-    public void CK2_Valid_Usage() throws InterruptedException, IOException
+    public void CK2_Digital_Wallet_Usage() throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         browserWindow = environment.makeDriver();

@@ -157,7 +157,7 @@ public class Basket implements ITest{
             priority = 3,
             enabled = true
     )
-    public void BA3_Alternate_Usages() throws IOException, InterruptedException {
+    public void BA3_Basket_Functions() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
         try {
@@ -182,17 +182,17 @@ public class Basket implements ITest{
 
             //Increase Quantity by one
             browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
 
             //Decrease Quantity by one
             browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
             //Remove Product
             browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 0¤");
         }
         finally {
