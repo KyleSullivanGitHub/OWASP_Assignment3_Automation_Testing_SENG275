@@ -7,10 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.devtools.v85.log.Log;
 import org.testng.ITest;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import static org.testng.Assert.*;
 import org.openqa.selenium.support.ui.Select;
 
@@ -37,7 +35,7 @@ public class Data_Management {
      * Programmer: Ewan Morgan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         environment = passBrowser.createBrowser();
     }
@@ -81,8 +79,7 @@ public class Data_Management {
             Thread.sleep(1000);
 
             //Navigate to account Menu
-
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -116,7 +113,7 @@ public class Data_Management {
             priority = 0,
             enabled = true
     )
-    public void DM3_DE(String chosenBrowser) throws IOException, InterruptedException{
+    public void DM2_DE(String chosenBrowser) throws IOException, InterruptedException{
 
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);

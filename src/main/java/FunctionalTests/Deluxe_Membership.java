@@ -1,58 +1,42 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package FunctionalTests;
+
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
+import java.io.IOException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v85.browser.Browser;
-import org.openqa.selenium.devtools.v85.log.Log;
-import org.testng.ITest;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 import org.openqa.selenium.support.ui.Select;
-
-
-
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-
-/**
- * Tests for verifying the full functionality of the Deluxe Membership Feature
- */
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class Deluxe_Membership {
-    private final ThreadLocal<String> testName = new ThreadLocal<>(); //Thread for renaming tests in console
-    String website = "https://juice-shop.herokuapp.com"; //default website URL
+    private final ThreadLocal<String> testName = new ThreadLocal();
+    String website = "https://juice-shop.herokuapp.com";
     TestBrowser environment;
     CreateEnvironment passBrowser = new CreateEnvironment();
     WebDriver browserWindow;
 
+    public Deluxe_Membership() {
+    }
 
-    /**
-     * Create an environment for all tests using the same browser app.
-     * Programmer: Ewan Morgan
-     * @exception IOException Thrown if no browser is chosen for a test
-     */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
-        environment = passBrowser.createBrowser();
+        this.environment = this.passBrowser.createBrowser();
     }
 
     @AfterTest
-    public void  tearDown(){
-        browserWindow.quit();
+    public void tearDown() {
+        this.browserWindow.quit();
     }
-    /**
-     * Smoke Test to confirm the Deluxe Membership is usable
-     * Programmer: Ewan Morgan
-     * @param chosenBrowser Browser type for this test
-     * @exception IOException Thrown if no browser is chosen for a test
-     * @exception InterruptedException Thrown if the test is interrupted during a wait period
-     */
+
     @Test(
             groups = {"Smoke", "Deluxe_Membership Smoke", "Deluxe_Membership", "hasDataProvider"},
             priority = 0,
@@ -60,76 +44,32 @@ public class Deluxe_Membership {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-
-
     public void DL1_Valid_Deluxe(String chosenBrowser) throws IOException, InterruptedException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
 
         try {
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-
-            //Verify deluxe membership does not exist
-            WebElement deluxe =  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div"));
-            assertFalse(deluxe.isDisplayed());
-
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-
-            //Navigate to deluxe membership
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
-
-            //Verify navigation to deluxe membership
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/deluxe-membership");
-
-            //Navigate to become a member
-            Thread.sleep(500);
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
-
-            //Verify become a member button is functional
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/payment/deluxe");
-
-        }
-        finally
-        {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-
+            TestFunctions.login(this.browserWindow);
+            Thread.sleep(1000L);
+            this.browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
+            Thread.sleep(300L);
+            this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
+            Thread.sleep(500L);
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), this.website + "/#/deluxe-membership");
+            Thread.sleep(500L);
+            this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
+            Thread.sleep(500L);
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), this.website + "/#/payment/deluxe");
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
         }
 
     }
 
-
-
-    /**
-     * Smoke Test to confirm the Deluxe Membership is usable
-     * Programmer: Ewan Morgan
-     * @param chosenBrowser Browser type for this test
-     * @exception IOException Thrown if no browser is chosen for a test
-     * @exception InterruptedException Thrown if the test is interrupted during a wait period
-     */
     @Test(
             groups = {"Smoke", "Deluxe_Membership Smoke", "Deluxe_Membership", "hasDataProvider"},
             priority = 0,
@@ -137,406 +77,245 @@ public class Deluxe_Membership {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
+    public void DL2_Invalid(String chosenBrowser) throws IOException, InterruptedException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
 
-    public void DL2_Usability(String chosenBrowser) throws IOException, InterruptedException {
-
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
-
-        try{
-
+        try {
+            this.browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
+            Thread.sleep(300L);
+            Assert.assertTrue(this.browserWindow.findElements(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).isEmpty());
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
         }
-        finally
-        {
-        //End the Test
-        Thread.sleep(TestFunctions.endTestWait);
-        browserWindow.quit();
-
-        }
-
 
     }
 
-    /**
-     *Sanity tests the add a new card deluxe membership.
-     * Verifies user can purchase a deluxe memebership by adding a new card
-     *Programmer: Ewan Morgan
-     */
     @Test(
-            groups = {"Sanity","deluxe_membership Sanity","deluxe_membership"},
+            groups = {"Smoke", "Deluxe_Membership Smoke", "Deluxe_Membership", "hasDataProvider"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void DL3_NewCard(String chosenBrowser) throws InterruptedException, IOException{
+    public void DL3_Usability(String chosenBrowser) throws IOException, InterruptedException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
+        Thread.sleep((long)TestFunctions.endTestWait);
+        this.browserWindow.quit();
+    }
 
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
+    @Test(
+            groups = {"Sanity", "deluxe_membership Sanity", "deluxe_membership"},
+            priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void DL4_NewCard(String chosenBrowser) throws InterruptedException, IOException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
 
         try {
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Verify deluxe membership does not exist
-            WebElement deluxe =  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div"));
-            assertFalse(deluxe.isDisplayed());
-
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Navigate to deluxe membership
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
-
-            //Verify navigation to deluxe membership
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/deluxe-membership");
-
-            //Navigate to become a member
-            Thread.sleep(500);
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
-
-            //Navigate to Add a new card dropdown
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-0\"]")).click();
-            Thread.sleep(1000);
-
-            //verify Add a New Card dropdown function
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-3\"]/mat-label")).getText(), "Named");
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-5\"]")).getText(), "Card Number");
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-39\"]")).getText(), "Expiry Month");
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-41\"]")).getText(), "Expiry Year");
-
-            Thread.sleep(500);
-            WebElement name = browserWindow.findElement(By.className("mat-input-element mat-form-field-autofill-control ng-tns-c126-9 ng-pristine ng-invalid cdk-text-field-autofill-monitored ng-touched"));
-            name.click();
-            name.sendKeys("Bill");
-
-            Thread.sleep(500);
-            WebElement card = browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-0\"]/div/div/mat-form-field[2]/div/div[1]/div[3]"));
-            card.click();
-            card.sendKeys("1111111111111111");
-            Thread.sleep(500);
-
-            //Verify Expiry Month dropdown is functional
-            Select month = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")));
-            month.selectByValue("3");
-            Thread.sleep(500);
-
-            //Verify Expiry Year dropdown is functional
-            Select year = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-10\"]")));
-            year.selectByValue("2081");
-            Thread.sleep(500);
-
-            //Navigate to Submit Button
-
-            //Verify Submit Button is functional after adding card
-            WebElement button = browserWindow.findElement(By.xpath("//*[@id=\"mat-radio-39\"]/label/span[1]/span[1]"));
-            assertTrue(button.isEnabled());
+            this.navToDeluxe(this.browserWindow);
+            this.browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-0\"]")).click();
+            Thread.sleep(1000L);
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-0\"]/div/div/mat-form-field[1]/div/div[1]/div[3]")).getText(), "Name");
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-0\"]/div/div/mat-form-field[2]/div/div[1]")).getText(), "Card Number");
+            this.addSavedPayment(this.browserWindow);
+            WebElement button = this.browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]"));
+            Assert.assertTrue(button.isEnabled());
             button.click();
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"cdk-overlay-21\"]/snack-bar-container/div/div/simple-snack-bar/span")).getText(), "Your card ending with 2345 has been saved for your convenience.");
-
-
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("/html/body/div[3]")).getText(), "Your card ending with 4444 has been saved for your convenience.\nX");
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
         }
-        finally
-        {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
 
-        }
     }
 
-    /**
-     *Sanity tests the digital wallet feature to purchase the deluxe membership.
-     * Verifies user can purchase a deluxe memebership by using digital wallet
-     *Programmer: Ewan Morgan
-     */
     @Test(
-            groups = {"Sanity","deluxe_membership Sanity","deluxe_membership"},
+            groups = {"Sanity", "deluxe_membership Sanity", "deluxe_membership"},
+            priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void DL5_DigitalWallet(String chosenBrowser) throws InterruptedException, IOException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
+
+        try {
+            this.navToDeluxe(this.browserWindow);
+            String amount = this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[1]/div/div[2]/b/span[2]")).getText();
+            double number = 0.0D;
+
+            try {
+                number = Double.parseDouble(amount);
+            } catch (NumberFormatException var11) {
+                var11.printStackTrace();
+            }
+
+            if (number < 49.0D) {
+                this.browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
+                Thread.sleep(300L);
+                this.browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
+                Thread.sleep(300L);
+                this.browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[5]")).click();
+                Thread.sleep(500L);
+                this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-wallet/mat-card/mat-form-field/div/div[1]/div[3]")).click();
+                this.browserWindow.findElement(By.xpath("//*[@id=\"mat-input-6\"]")).sendKeys(new CharSequence[]{"49"});
+                this.browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
+                if (this.browserWindow.findElements(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/app-payment-method/div/div[1]")).isEmpty()) {
+                    this.browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-3\"]")).click();
+                    this.browserWindow.findElement(By.xpath("//*[@id=\"mat-input-7\"]")).sendKeys(new CharSequence[]{"Hello World"});
+                    this.browserWindow.findElement(By.xpath("//*[@id=\"mat-input-8\"]")).sendKeys(new CharSequence[]{"1111222233334444"});
+                    Select monthSelector = new Select(this.browserWindow.findElement(By.xpath("//*[@id=\"mat-input-9\"]")));
+                    monthSelector.selectByVisibleText("1");
+                    Select yearSelector = new Select(this.browserWindow.findElement(By.xpath("//*[@id=\"mat-input-10\"]")));
+                    yearSelector.selectByVisibleText("2080");
+                    this.browserWindow.findElement(By.xpath("//*[@id=\"submitButton\"]")).click();
+                }
+
+                this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div/button[2]")).click();
+                Thread.sleep(500L);
+                this.browserWindow.findElement(By.xpath("//*[@id=\"mat-radio-39\"]")).click();
+                this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div/button[2]")).click();
+                this.navToDeluxe(this.browserWindow);
+            }
+
+            this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[1]/div/div[3]/button")).click();
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/div[1]/div/p")).getText(), "You are already a deluxe member!");
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
+        }
+
+    }
+
+    @Test(
+            groups = {"Sanity", "deluxe_membership Sanity", "deluxe_membership"},
+            priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void DL6_Coupon(String chosenBrowser) throws InterruptedException, IOException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
+
+        try {
+            this.navToDeluxe(this.browserWindow);
+            this.browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-5\"]")).click();
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-11\"]/mat-label")).getText(), "Coupon");
+            WebElement redeem = this.browserWindow.findElement(By.xpath("//*[@id=\"applyCouponButton\"]"));
+            Assert.assertTrue(redeem.isDisplayed());
+            WebElement coupon = this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-4\"]/div/mat-form-field/div"));
+            coupon.sendKeys(new CharSequence[]{"n(XLuf!Cdm"});
+            Assert.assertTrue(redeem.isEnabled());
+            this.browserWindow.findElement(By.xpath("//*[@id=\"applyCouponButton\"]")).click();
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-4\"]/div/div")).getText(), "Your discount of 20% will be applied during checkout.");
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
+        }
+
+    }
+
+    @Test(
+            groups = {"Sanity", "deluxe_membership Sanity", "deluxe_membership"},
+            priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
+            enabled = true
+    )
+    public void DL7_Other(String chosenBrowser) throws InterruptedException, IOException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        this.browserWindow = browser.makeDriver();
+        this.browserWindow.manage().window().maximize();
+        this.browserWindow.get(TestFunctions.website);
+        TestFunctions.waitForSite(this.browserWindow);
+
+        try {
+            this.navToDeluxe(this.browserWindow);
+            this.browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-2\"]")).click();
+            Thread.sleep(200L);
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[1]/div[1]/label")).getText(), "Donations");
+            Assert.assertEquals(this.browserWindow.findElement(By.xpath("///*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[1]/label")).getText(), "Merchandise");
+            this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[1]/div[2]/a/button")).click();
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), "https://pwning.owasp-juice.shop/part3/donations.html");
+            this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[1]/button")).click();
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), "https://shop.spreadshirt.com/juiceshop");
+            this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[2]/button")).click();
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), "https://shop.spreadshirt.de/juiceshop");
+            this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[3]/button")).click();
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), "https://www.stickeryou.com/products/owasp-juice-shop/794");
+            this.browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[4]/button")).click();
+            Assert.assertEquals(this.browserWindow.getCurrentUrl(), "https://leanpub.com/juice-shop");
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
+            this.browserWindow.quit();
+        }
+
+    }
+
+    @Test(
+            groups = {"Regression", "Deluxe_Membership Regression", "Deluxe_Membership", "noDataProvider"},
             priority = 0,
             enabled = true
     )
-    public void DL4_DigitalWallet(String chosenBrowser) throws InterruptedException, IOException {
-
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
+    public void DL_Regression(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
+        TestBrowser browser = this.passBrowser.createBrowser(chosenBrowser);
+        WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
         browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
         TestFunctions.waitForSite(browserWindow);
 
         try {
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Verify deluxe membership does not exist
-            WebElement deluxe =  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div"));
-            assertFalse(deluxe.isDisplayed());
-
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Navigate to deluxe membership
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
-
-            //Verify navigation to deluxe membership
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/deluxe-membership");
-
-            //Navigate to become a member
-            Thread.sleep(500);
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
-
-            //Navigate to Pay using Digital Wallet
-            String amount = browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[1]/div/div[2]/b/span[2]")).getText();
-            int number =0;
-            try{
-                number = Integer.parseInt(amount);
-            }
-            catch (NumberFormatException ex){
-                ex.printStackTrace();
-            }
-            if(number < 49)
-            {
-                //Navigate to sidebar
-                browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-                Thread.sleep(300);
-                //Navigate to Orders & Payments
-                browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/mat-list-item[1]/div")).click();
-                Thread.sleep((300));
-                //Navigate to Digital Wallet
-                browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/div/a[5]/div")).click();
-
-            }
-            //Click pay
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[1]/div/div[3]/button")).click();
-
-            //Verify digital wallet payment worked
-            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/div[1]/div/p")).getText(), "You are already a deluxe member!");
-
-
-        }
-        finally
-        {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
+            Login.fillOutLogGoogle(browserWindow, dataSet[0].toString(), dataSet[1].toString());
+            Thread.sleep(300L);
+        } finally {
+            Thread.sleep((long)TestFunctions.endTestWait);
             browserWindow.quit();
-
         }
+
     }
 
-
-    /**
-     *Sanity tests the coupon feature to discount the deluxe membership.
-     * Verifies user can get a discount on the a deluxe memebership by using coupon feature
-     *Programmer: Ewan Morgan
-     */
-    @Test(
-            groups = {"Sanity","deluxe_membership Sanity","deluxe_membership"},
-            priority = 0,
-            enabled = true
-    )
-    public void DL5_Coupon(String chosenBrowser) throws InterruptedException, IOException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
-
-        try {
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Verify deluxe membership does not exist
-            WebElement deluxe =  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div"));
-            assertFalse(deluxe.isDisplayed());
-
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Navigate to deluxe membership
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
-
-            //Verify navigation to deluxe membership
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/deluxe-membership");
-
-            //Navigate to become a member
-            Thread.sleep(500);
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
-
-            //Navigate to Add a Coupon dropdown
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-5\"]")).click();
-
-            //Verify Add a Coupon dropdown fucntional
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"mat-form-field-label-11\"]/mat-label")).getText(), "Coupon");
-
-            //Verify redeem button is not clickable before adding coupon
-            WebElement redeem = browserWindow.findElement(By.xpath("//*[@id=\"applyCouponButton\"]"));
-            assertTrue(redeem.isDisplayed());
-
-            //Verify Redeem button is clickable after adding coupon
-            WebElement coupon = browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-4\"]/div/mat-form-field/div"));
-            coupon.sendKeys("n(XLuf!Cdm");
-            assertTrue(redeem.isEnabled());
-            browserWindow.findElement(By.xpath("//*[@id=\"applyCouponButton\"]")).click();
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-4\"]/div/div")).getText(), "Your discount of 20% will be applied during checkout.");
-
-        }
-        finally
-        {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-
-        }
+    private void navToDeluxe(WebDriver browserWindow) throws InterruptedException {
+        TestFunctions.login(browserWindow);
+        Thread.sleep(1000L);
+        browserWindow.findElement(By.cssSelector("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
+        Thread.sleep(300L);
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
+        Thread.sleep(500L);
+        Assert.assertEquals(browserWindow.getCurrentUrl(), this.website + "/#/deluxe-membership");
+        Thread.sleep(500L);
+        browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
     }
 
-    /**
-     *Sanity tests the Other Payment Options feature to purchase the deluxe membership.
-     * Verifies user can get a discount on the a deluxe memebership by using Other payment Options feature
-     *Programmer: Ewan Morgan
-     */
-    @Test(
-            groups = {"Sanity","deluxe_membership Sanity","deluxe_membership"},
-            priority = 0,
-            enabled = true
-    )
-    public void DL6_Other(String chosenBrowser) throws InterruptedException, IOException {
-        //Create driver and browser for this particular test
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        browserWindow = browser.makeDriver();
-        browserWindow.manage().window().maximize();
-
-
-        //Navigate both to the website
-        browserWindow.get(TestFunctions.website);
-
-        //Wait for site to fully load
-        TestFunctions.waitForSite(browserWindow);
-
-        try {
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Verify deluxe membership does not exist
-            WebElement deluxe =  browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div"));
-            assertFalse(deluxe.isDisplayed());
-
-            //Login
-            TestFunctions.login(browserWindow);
-            Thread.sleep(1000);
-
-            //Navigate to side bar Menu
-            browserWindow.findElement(By.cssSelector ("body > app-root > div > mat-sidenav-container > mat-sidenav-content > app-navbar > mat-toolbar > mat-toolbar-row > button:nth-child(1)")).click();
-            Thread.sleep(300);
-
-            //Navigate to deluxe membership
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/a[6]/div")).click();
-
-            //Verify navigation to deluxe membership
-            Thread.sleep(500);
-            assertEquals(browserWindow.getCurrentUrl(),website+"/#/deluxe-membership");
-
-            //Navigate to become a member
-            Thread.sleep(500);
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-deluxe-user/div/mat-card/div[2]/div[3]/div[2]/button")).click();
-
-            //Verify Other payment option is clickable
-            browserWindow.findElement(By.xpath("//*[@id=\"mat-expansion-panel-header-2\"]")).click();
-            Thread.sleep(200);
-            assertEquals(browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[1]/div[1]/label")).getText(), "Donations");
-            assertEquals(browserWindow.findElement(By.xpath("///*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[1]/label")).getText(), "Merchandise");
-
-            //Verify Other Payment Option links are working
-            //stripe credit card
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[1]/div[2]/a/button")).click();
-            assertEquals(browserWindow.getCurrentUrl(), "https://pwning.owasp-juice.shop/part3/donations.html");
-
-            //Spreadshirt(US)
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[1]/button")).click();
-            assertEquals(browserWindow.getCurrentUrl(), "https://shop.spreadshirt.com/juiceshop");
-
-            //Spreadshirt(DE)
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[2]/button")).click();
-            assertEquals(browserWindow.getCurrentUrl(), "https://shop.spreadshirt.de/juiceshop");
-
-            //StickerYou
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[3]/button")).click();
-            assertEquals(browserWindow.getCurrentUrl(), "https://www.stickeryou.com/products/owasp-juice-shop/794");
-
-            //Leanpub
-            browserWindow.findElement(By.xpath("//*[@id=\"cdk-accordion-child-2\"]/div/div/div[2]/div[2]/a[4]/button")).click();
-            assertEquals(browserWindow.getCurrentUrl(), "https://leanpub.com/juice-shop");
-        }
-        finally
-        {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-
-        }
+    void addSavedPayment(WebDriver browserWindow) {
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(new CharSequence[]{"Hello World"});
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-2\"]")).sendKeys(new CharSequence[]{"1111222233334444"});
+        Select monthSelector = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")));
+        monthSelector.selectByVisibleText("1");
+        Select yearSelector = new Select(browserWindow.findElement(By.xpath("//*[@id=\"mat-input-4\"]")));
+        yearSelector.selectByVisibleText("2080");
     }
-    /**
-     *Regression tests for Deluxe_Membership
-     *Programmer: Ewan Morgan
-     */
-    @Test(
-            groups = {"Regression","Deluxe_Membership Regression","Deluxe_Membership"},
-            priority = 0,
-            enabled = true
-    )
-    public void DL_Regression() {
-        //TODO ADD Basket REGRESSION TEST
-    }
-
 }
+
