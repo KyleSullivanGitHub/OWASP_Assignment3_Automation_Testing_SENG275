@@ -37,8 +37,8 @@ public class RecyclingBox implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Recycling Box", "hasDataProvider"},
+            priority = 47,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -68,8 +68,8 @@ public class RecyclingBox implements ITest
 
 
     @Test(
-            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box","noDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Recycling Box","noDataProvider"},
+            priority = 48,
             enabled = true
     )
     public void RB2_Invalid_Usage() throws InterruptedException, IOException
@@ -97,8 +97,8 @@ public class RecyclingBox implements ITest
     }
 
     @Test(
-            groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Recycling Box", "hasDataProvider"},
+            priority = 73,
             dataProvider = "RB3_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -128,7 +128,7 @@ public class RecyclingBox implements ITest
 
     @Test(
             groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
-            priority = 0,
+            priority = 73,
             dataProvider = "RB4_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -158,9 +158,9 @@ public class RecyclingBox implements ITest
     }
 
     @Test(
-            groups = {"Regression", "Recycling Box Regression", "Recycling Box","noDataProvider"},
-            priority = 0,
-            enabled = false
+            groups = {"Regression", "Recycling Box","noDataProvider"},
+            priority = 91,
+            enabled = true
     )
     public void RB_Regression() throws InterruptedException, IOException
     {
@@ -282,7 +282,7 @@ public class RecyclingBox implements ITest
             {
                 for(int i = 0; i < 10; i++)
                 {
-                    try {TestFunctions.waitForSite(browserWindow,"#mat-checkbox-"+i,true);}
+                    try {browserWindow.findElement(By.cssSelector( "#mat-checkbox-"+i)).click(); break;}
                     catch (NoSuchElementException ignored ) {}
                 }
                 if((boolean) dataSet[3])

@@ -59,8 +59,8 @@ public class ProductViewing implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread sleep period
      */
     @Test(
-            groups = {"Smoke", "Navigation Menu Smoke", "Navigation menu", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Product_View", "hasDataProvider"},
+            priority = 11,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -138,8 +138,8 @@ public class ProductViewing implements ITest
      * @throws InterruptedException Thrown if the test is interrupted during a thread sleep period,
      */
     @Test(
-            groups = {"Sanity", "Product View Sanity", "Product View", "hasDataProvider"},
-            priority = 0,
+            groups = {"Sanity", "Product_View", "hasDataProvider"},
+            priority = 61,
             dataProvider = "PV2_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -190,8 +190,8 @@ public class ProductViewing implements ITest
     }
 
     @Test(
-            groups = {"Regression", "Product View Regression", "Product View", "NoDataProvider"},
-            priority = 0,
+            groups = {"Regression", "Product_View", "NoDataProvider"},
+            priority = 77,
             enabled = true
     )
     public void PV_Regression() throws InterruptedException, IOException

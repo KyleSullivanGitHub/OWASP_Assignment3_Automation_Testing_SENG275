@@ -45,8 +45,8 @@ public class Registration implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Registration", "Registration Smoke", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Registration", "hasDataProvider"},
+            priority = 1,
             dataProvider = "RF1_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -91,8 +91,8 @@ public class Registration implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Smoke", "Registration Smoke", "Registration","noDataProvider"},
-            priority = 1,
+            groups = {"Smoke", "Registration","noDataProvider"},
+            priority = 2,
             enabled = true
     )
     public void RF2_Invalid_Input() throws InterruptedException
@@ -132,8 +132,8 @@ public class Registration implements ITest
      * @exception InterruptedException Thrown if the test is interrupted during a wait period
      */
     @Test(
-            groups = {"Sanity", "Registration Sanity", "Registration", "hasDataProvider"},
-            priority = 3,
+            groups = {"Sanity", "Registration", "hasDataProvider"},
+            priority = 51,
             dataProvider = "RF4_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -189,8 +189,8 @@ public class Registration implements ITest
      * @param
      */
     @Test(
-            groups = {"Regression", "Registration Regression", "Registration", "noDataProvider"},
-            priority = 4,
+            groups = {"Regression", "Registration", "noDataProvider"},
+            priority = 75,
             enabled = false
     )
     public void RF_Regression() throws InterruptedException

@@ -55,8 +55,8 @@ public class ProductReviews implements ITest
      * @throws InterruptedException
      */
     @Test(
-            groups = {"Smoke", "Review Smoke", "Review Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Review", "hasDataProvider"},
+            priority = 31,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -83,7 +83,7 @@ public class ProductReviews implements ITest
             product.findElement(By.className("close-dialog")).click();
 
             TestFunctions.waitForSiteXpath(browserWindow, listElement,true);
-
+            Thread.sleep(1000);
             browserWindow.findElement(By.cssSelector("#mat-expansion-panel-header-1")).click();
 
             TestFunctions.waitForSiteXpath(browserWindow,reviewNumPath);
@@ -97,13 +97,42 @@ public class ProductReviews implements ITest
     }
 
     @Test(
-            groups = {"Smoke", "Review Smoke", "Review Box", "hasDataProvider"},
-            priority = 0,
+            groups = {"Smoke", "Review", "noDataProvider"},
+            priority = 32,
+            enabled = true
+    )
+    public void RE2_Invalid_Review() throws IOException, InterruptedException, UnsupportedFlavorException
+    {
+        //Create Test environment and browser
+        WebDriver browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        //Go to Website
+        browserWindow.get(TestFunctions.website);
+        //Ensure the site is ready for testing
+        TestFunctions.waitForSite(browserWindow);
+        String input = "";
+
+        try
+        {
+            fillReview(browserWindow,input);
+            assertEquals(browserWindow.findElement(By.cssSelector("#submitButton")).getAttribute("disabled"),"true");
+        }
+        finally
+        {
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
+        }
+    }
+
+
+    @Test(
+            groups = {"Sanity", "Review", "hasDataProvider"},
+            priority = 67,
             dataProvider = "RE2_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void RE2_Invalid_Review(String testing, String input) throws IOException, InterruptedException, UnsupportedFlavorException
+    public void RE3_Invalid_Review_Comprehensive(String testing, String input) throws IOException, InterruptedException, UnsupportedFlavorException
     {
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
@@ -156,17 +185,17 @@ public class ProductReviews implements ITest
         //check product
         TestFunctions.waitForSiteXpath(browserWindow, listElement,true);
         //confirm the expanded view is on display
-        TestFunctions.waitForSiteXpath(browserWindow, productContainer);
+        TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-dialog-0\"]");
         //fill Review
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(input);
     }
 
     public static void submitReview(WebDriver browserWindow) throws InterruptedException
     {
-        browserWindow.findElement(By.cssSelector("#submitButton")).click();
+        TestFunctions.waitForSite(browserWindow,"#submitButton",true);
 
         TestFunctions.waitForSiteXpath(browserWindow, reviewPath+numOfReviews+"]");
-
+        Thread.sleep(1000);
         numOfReviews2 = getNumOfReviews(browserWindow);
         checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
 
@@ -189,14 +218,16 @@ public class ProductReviews implements ITest
     }
 
 
-    public static int getNumOfReviews(WebDriver browserWindow)
+    public static int getNumOfReviews(WebDriver browserWindow) throws InterruptedException
     {
+        TestFunctions.waitForSiteXpath(browserWindow,reviewNumPath);
         String reviewAmount = browserWindow.findElement(By.xpath(reviewNumPath)).getText();
         return Integer.parseInt(reviewAmount.substring(1,reviewAmount.length()-1));
     }
 
-    public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString)
+    public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString) throws InterruptedException
     {
+        Thread.sleep(1000);
         assertEquals(actual, previous);
         assertEquals(browserWindow.findElement(By.xpath(reviewPath+actual+reviewContents)).getText(),expectedString);
     }
