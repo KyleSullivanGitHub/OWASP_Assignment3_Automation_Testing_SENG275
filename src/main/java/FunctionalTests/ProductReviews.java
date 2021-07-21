@@ -6,7 +6,6 @@ import org.openqa.selenium.*;
 import org.testng.ITest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -14,7 +13,6 @@ import static org.testng.Assert.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -279,19 +277,27 @@ public class ProductReviews implements ITest
         TestFunctions.waitForSiteXpath(browserWindow, listElement,true);
         //confirm the expanded view is on display
         TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"mat-dialog-0\"]");
-        System.out.println("clicked found display");
         //fill Review
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys(input);
-        System.out.println("sent keyes");
     }
 
+    /**
+     * Submits the completed Review, checks  Separated for Regression Purposes
+     * Programmer: Kyle Sullivan
+     * @param browserWindow Test environment to act in
+     * @throws InterruptedException
+     */
     public static void submitReview(WebDriver browserWindow) throws InterruptedException
     {
+        //Wait to prevent errors
         Thread.sleep(1000);
+        //submitt the review
         browserWindow.findElement(By.id("submitButton")).click();
-        System.out.println("clicked Submitt. looking for "+reviewPath+numOfReviews);
+        //repeat until you have found the path to the previously newest review
         while(true)
         {
+            //Due to the nature of the website, the specific path to the new review  changes randomly between two values.
+            //Occasionally, a third unknown value may be chosen, causing a freeze. As such, if this happens, re run the test.
             try
             {
                 try
@@ -307,16 +313,22 @@ public class ProductReviews implements ITest
             }
             catch (Exception ignore){}
         }
-        System.out.println("checked review num");
         Thread.sleep(2000);
+        //find the new number of reviews
         numOfReviews2 = getNumOfReviews(browserWindow);
+        //compare the two, to see that the new amount is one higher than the previous.
         checkReview(browserWindow, numOfReviews2, numOfReviews+1, validInput);
-
     }
 
+    /**
+     * Quick test to confirm that there is an amount of reviews present equal to the stated value
+     * Programmer: Kyle Sullivan
+     * @param browserWindow
+     * @throws InterruptedException
+     */
     public static void testReview(WebDriver browserWindow) throws InterruptedException
     {
-        System.out.println("Testing Reviews");
+        //open the list of reviews
         browserWindow.findElement(By.className("mat-expansion-panel-header")).click();
         //identify how many reviews are supposed to be present.
         numOfReviews = getNumOfReviews(browserWindow);
@@ -325,38 +337,39 @@ public class ProductReviews implements ITest
         {
             try
             {
-                System.out.println("checking review: " + i);
                 assertTrue(browserWindow.findElement(By.xpath(reviewPath + i + "]")).isEnabled());
             } catch (NoSuchElementException ignore) {}
         }
     }
 
-
+    /**
+     * Gets the suggested number of reviews for other tests.
+     * @param browserWindow Test environment to work in
+     * @return number of reviews stated in header
+     * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period.
+     */
     public static int getNumOfReviews(WebDriver browserWindow) throws InterruptedException
     {
+        //String version of review amount to parse from
         String reviewAmount;
         while (true)
         {
             try
             {
                 Thread.sleep(2000);
+                //Default path
                 try
                 {
-                    System.out.println("0");
-                    browserWindow.findElement(By.xpath(reviewNumPath));
-                    System.out.println("1");
+                    //find the string containing the amount of reviews
                     reviewAmount = browserWindow.findElement(By.xpath(reviewNumPath)).getText();
-                    System.out.println("2");
-                    System.out.println(Integer.parseInt(reviewAmount.substring(1, reviewAmount.length() - 1)));
+                    //parse out the number values in the string, minus the enclosing brackets in teh string
                     return Integer.parseInt(reviewAmount.substring(1, reviewAmount.length() - 1));
                 } catch (NoSuchElementException tryAlt)
                 {
-                    System.out.println("3");
-                    browserWindow.findElement(By.cssSelector(".mat-expansion-panel-header-title > span:nth-child(2)"));
-                    System.out.println("4");
+                    //Fallback path
+                    //find the string containing the amount of reviews
                     reviewAmount = browserWindow.findElement(By.cssSelector(".mat-expansion-panel-header-title > span:nth-child(2)")).getText();
-                    System.out.println("5");
-                    System.out.println(Integer.parseInt(reviewAmount.substring(1, reviewAmount.length() - 1)));
+                    //parse out the number values in the string, minus the enclosing brackets in teh string
                     return Integer.parseInt(reviewAmount.substring(1, reviewAmount.length() - 1));
                 }
             }
@@ -364,11 +377,21 @@ public class ProductReviews implements ITest
         }
     }
 
+    /**
+     * Compare two integers corresponding the an expected and actual number of string, and that the newsest string is teh same one we inputed
+     * Programmer: Kyle Sullivan
+     * @param browserWindow Test Environment to act in
+     * @param actual Actual number in review header
+     * @param previous previous or expected number in review header
+     * @param expectedString review inputted
+     * @throws InterruptedException Thrown if the test was interrupted during a Thread waiting period.
+     */
     public static void checkReview(WebDriver browserWindow, int actual, int previous, String expectedString) throws InterruptedException
     {
         Thread.sleep(1000);
         assertEquals(actual, previous);
         TestFunctions.waitForSiteXpath(browserWindow,reviewPath+actual+reviewContents);
+        //Check the newest reivew to ours
         assertEquals(browserWindow.findElement(By.xpath(reviewPath+actual+reviewContents)).getText(),expectedString);
     }
 

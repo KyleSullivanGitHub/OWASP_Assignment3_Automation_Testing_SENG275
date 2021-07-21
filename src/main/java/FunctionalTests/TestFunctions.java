@@ -86,6 +86,10 @@ public class TestFunctions
         }
     }
 
+    /**
+     * Establishes string values fro the constant google account
+     * Programmer: Kyle Sullivan
+     */
     private static void constGoogleAccount()
     {
         if(!googleSetup)
@@ -96,6 +100,10 @@ public class TestFunctions
         }
     }
 
+    /**
+     * Establishes string values fro the constant address
+     * Programmer: Kyle Sullivan
+     */
     public static void constAddressValues()
     {
         if(!addressSetup)
@@ -187,9 +195,9 @@ public class TestFunctions
      */
     private static void waitForSitePrimary(WebDriver test, String path,boolean interactive, boolean xPath) throws InterruptedException
     {
-        boolean ready = false;
+        boolean ready = false; //whether the element has been found
         WebElement element;
-        By find = !xPath ? By.cssSelector(path) : By.xpath(path);
+        By find = !xPath ? By.cssSelector(path) : By.xpath(path); //Whether to check by xpath or cssinput
         while(!ready)
         {
             try
@@ -222,6 +230,7 @@ public class TestFunctions
      */
     public static void navToLogin(WebDriver test) throws InterruptedException
     {
+
         try{
             test.findElement(By.cssSelector(navbarLogin)).click();
         }
@@ -245,7 +254,7 @@ public class TestFunctions
      */
     public static void navToReg(WebDriver test) throws InterruptedException
     {
-        if(!test.getCurrentUrl().equals(website+"register"))
+        if (!test.getCurrentUrl().equals(website + "register"))
         {
             //navigate to login page
             navToLogin(test);
@@ -257,17 +266,27 @@ public class TestFunctions
         else
         {
             test.navigate().refresh();
-            waitForSite(test,navPath);
+            waitForSite(test, navPath);
         }
     }
+
+    /**
+     * Navigate to the saved address page via the account menu
+     * Programmer: Kyle Sullivan
+     * @param test Test environment to act in
+     * @throws InterruptedException Thrown if the test was interruped during a thread waiting period
+     */
     public static void navToSavedAddresses(WebDriver test) throws InterruptedException
     {
         String xPathPart1 = "/html/body/div[3]/div[";
         String xPathPart2 = "]/div/div/div/button[";
         String xPathPart3 = "]";
 
+        //click on account menu
         test.findElement(By.cssSelector(navPath)).click();
+        //click on orders and payments
         waitForSiteXpath(test,xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3,true);
+        //click on my addresses
         waitForSiteXpath(test,xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3,true);
     }
 
@@ -331,17 +350,20 @@ public class TestFunctions
         if(!test.getCurrentUrl().startsWith(website))
         {
             constGoogleAccount();
+            //fill out email
             waitForSite(test, identifierID);
             WebElement emailUser = test.findElement(By.cssSelector(identifierID));
             emailUser.click();
             emailUser.sendKeys(googleEmail + Keys.ENTER);//enter email
 
+            //fill out password
             waitForSite(test, googlePasswordTarget);
             WebElement passwordInput = test.findElement(By.cssSelector(googlePasswordTarget));
             Thread.sleep(500);
             passwordInput.click();
             passwordInput.sendKeys(googlePassword + Keys.ENTER);//enter password
         }
+        //as long as we are not back on the main page fo the website, wait
         while(!test.getCurrentUrl().equals(website))
             Thread.sleep(100);
 
@@ -429,6 +451,7 @@ public class TestFunctions
                 waitForSiteXpath(test,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button",true);
                 constAddressValues();
 
+                //Set address values
                 for (int i = 1; i <= 7; i++)
                 {
                     if (i != 5)
@@ -448,10 +471,15 @@ public class TestFunctions
     }
 
     //Regression Constants Orders & Payment
+    //Logged in account menu options
     static String[] menuOption = new String[]{"helloworld.owasp@gmail.com","Orders & Payment","Privacy & Security","Logout"};
+    //Logged in account menu -> Orders and payment submenu options
     static String[] ordersPay = new String[]{"Order History","Recycle","My saved addresses","My Payment Options", "Digital Wallet"};
+    //Logged in account menu -> privacy and security submenu options
     static String[] privSec = new String[]{"Privacy Policy","Request Data Export","Request Data Erasure","Change Password", "2FA Configuration", "Last Login IP"};
+    //navmenu options while logged in
     static Object[] navbarLoggedIn = new Object[]{"","Customer Feedback","Complaint","Support Chat","About Us","Photo Wall", "Deluxe Membership"};
+    //navemenu options while logged out
     static Object[] navbarLoggedOut = new Object[]{"","Customer Feedback","About Us","Photo Wall"};
 
 
@@ -459,10 +487,12 @@ public class TestFunctions
      * Common regression tests performed for most regression test sets
      * Programmer: Kyle Sullivan
      * @param test the browser for the regression test
+     * @param expectedURL expected url for the test to be on
      * @param loggedIn whether the test is logged in or not
      */
     public static void commonRegression(WebDriver test, String expectedURL, Boolean loggedIn) throws InterruptedException
     {
+        //confirm header and site title
         assertEquals(test.getCurrentUrl(), expectedURL);
         assertEquals(test.getTitle(),siteTitle);
         try
@@ -470,40 +500,49 @@ public class TestFunctions
             //check dropdown nav menu
             WebElement navMenu = test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(1)"));
             assertWebElement(navMenu);
+            //check if we should be checkign the logged in or logged out options
             if (loggedIn)
                 NavigationMenu.menuOptions = navbarLoggedIn;
             else
                 NavigationMenu.menuOptions = navbarLoggedOut;
+            //test the values
             NavigationMenu.checkNav(test);
+            //close the nav menu
             test.findElement(By.className("mat-drawer-shown")).click();
 
             //check Main logo
             WebElement mainPageLink = test.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[2]"));
             assertWebElement(mainPageLink);
+            //check that the element is correct
             assertEquals(mainPageLink.getAttribute("aria-label"), "Back to homepage");
+            //check teh logo
             WebElement mainPageLogo = test.findElement(By.className("logo"));
             assertWebElement(mainPageLogo);
             assertEquals(mainPageLogo.getAttribute("src"), "https://juice-shop.herokuapp.com/assets/public/images/JuiceShop_Logo.png");
 
-            //check Search tools
+            //check Search tools, unless we are doing a search regression
             if(!expectedURL.contains(website+"search?"))
             {
+                //find search element
                 WebElement searchElement = test.findElement(By.className("mat-search_icon-search"));
                 Thread.sleep(1000);
+                //open it
                 searchElement.click();
                 TestFunctions.waitForSite(test, "#mat-input-0");
                 searchElement = test.findElement(By.cssSelector("#mat-input-0"));
                 assertWebElement(searchElement);
+                //enter search value
                 searchElement.sendKeys("testing");
 
 
                 Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-                //Try to copy the contents of the password field
+                //Try to copy the contents of the search field
                 Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
                 searchElement.sendKeys(OSspecific + "a");
                 searchElement.sendKeys(OSspecific + "c");
-                //Confirm that the clipboard does not contain the password
+                //Confirm that the clipboard has the search value
                 assertEquals(cb.getData(DataFlavor.stringFlavor), "testing");
+                //close the search menu
                 test.findElement(By.className("mat-search_icon-close")).click();
 
             }
@@ -511,81 +550,109 @@ public class TestFunctions
             waitForSite(test, navPath);
             WebElement accountMenu = test.findElement(By.cssSelector(navPath));
             assertWebElement(accountMenu);
-            accountMenu.click();
+            //open the menu, closing other menus if neccessary
+            while(true)
+            {
+                try
+                {
+                    accountMenu.click();
+                    break;
+                } catch (ElementNotInteractableException ignore)
+                {
+                }
+            }
             if (loggedIn)
             {
+                //check the account element of the account menu
                 WebElement account = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(1) > span:nth-child(2)"));
                 assertWebElement(account);
                 assertEquals(account.getText(),menuOption[0]);
 
+                //check the Orders and Payment element of the account Menu
                 WebElement OandP = test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(2) > span:nth-child(2)"));
                 assertWebElement(OandP);
                 assertEquals(OandP.getText(),menuOption[1]);
+                //click to open the submenu
                 test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(2)")).click();
                 Thread.sleep(1000);
 
-
+                //check the order history element of the Orders and Payment Menu
                 WebElement OrderHistory = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(1) > span:nth-child(2)"));
                 assertWebElement(OrderHistory);
                 assertEquals(OrderHistory.getText(),ordersPay[0]);
 
+                //check the recycle element of the Orders and Payment Menu
                 WebElement recycle = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(2) > span:nth-child(2)"));
                 assertWebElement(recycle);
                 assertEquals(recycle.getText(),ordersPay[1]);
 
+                //check the My saved addresses element of the Orders and Payment Menu
                 WebElement addresses = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(4) > span:nth-child(2)"));
                 assertWebElement(addresses);
                 assertEquals(addresses.getText(),ordersPay[2]);
 
+                //check the My Saved Payments element of the Orders and Payment Menu
                 WebElement payment = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(5) > span:nth-child(2)"));
                 assertWebElement(payment);
                 assertEquals(payment.getText(),ordersPay[3]);
 
+                //check the wallet element of the Orders and Payment Menu
                 WebElement wallet = test.findElement(By.cssSelector("button.ng-tns-c245-5:nth-child(6) > span:nth-child(2)"));
                 assertWebElement(wallet);
                 assertEquals(wallet.getText(),ordersPay[4]);
 
+                //check the privacy and security element of the Account Menu
                 WebElement PandS = test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(3) > span:nth-child(2)"));
                 assertWebElement(PandS);
                 assertEquals(PandS.getText(),menuOption[2]);
 
+                //click to open the privacy and security sebmenu
                 test.findElement(By.cssSelector("button.mat-menu-trigger:nth-child(3)")).click();
                 Thread.sleep(2000);
 
+                //check the privacy policy element of the privacy and security Menu
                 WebElement policy = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(1) > span:nth-child(2)"));
                 assertWebElement(policy);
                 assertEquals(policy.getText(),privSec[0]);
 
+                //check the export data element of the privacy and security Menu
                 WebElement export = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(2) > span:nth-child(2)"));
                 assertWebElement(export);
                 assertEquals(export.getText(),privSec[1]);
 
+                //check the Data Erasure element of the privacy and security Menu
                 WebElement erasure = test.findElement(By.cssSelector("button.ng-tns-c245-4:nth-child(3) > span:nth-child(2)"));
                 assertWebElement(erasure);
                 assertEquals(erasure.getText(),privSec[2]);
 
+                //check the change password element of the privacy and security Menu
                 WebElement changePassword = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(5) > span:nth-child(2)"));
                 assertWebElement(changePassword);
                 assertEquals(changePassword.getText(),privSec[3]);
 
+                //check the configuration element of the privacy and security Menu
                 WebElement config = test.findElement(By.cssSelector("button.mat-focus-indicator:nth-child(6) > span:nth-child(2)"));
                 assertWebElement(config);
                 assertEquals(config.getText(),privSec[4]);
 
+                //check the last login IP element of the privacy and security Menu
                 WebElement loginIP = test.findElement(By.cssSelector("button.mat-menu-item:nth-child(7) > span:nth-child(2)"));
                 assertWebElement(loginIP);
                 assertEquals(loginIP.getText(),privSec[5]);
 
+                //check the Logout element of the account Menu
                 WebElement Logout = test.findElement(By.cssSelector("#navbarLogoutButton > span:nth-child(2)"));
                 assertWebElement(Logout);
                 assertEquals(Logout.getText(),menuOption[3]);
             }
-            else
+            else //if regression test is doen while logged out
             {
+                //Check the Login element of the account menu
                 WebElement accountMenuLogin = test.findElement(By.cssSelector(TestFunctions.navbarLogin));
                 assertWebElement(accountMenuLogin);
             }
 
+            //Check the basket and basket icon elements
             if (loggedIn)
             {
                 WebElement basket = test.findElement(By.xpath(basketXpath));
@@ -595,26 +662,35 @@ public class TestFunctions
                 WebElement basketCounter = test.findElement(By.xpath(Basket.basketIconQuantity_XPath));
                 assertWebElement(basketCounter);
             }
+            //close any open menu
             test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
 
-            //Change Language
+            //Check the change Language elements,
             WebElement changeLanguageMenu;
             try
-            { changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)")); }
-            catch (NoSuchElementException tryAlt){ changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(8)")); }
+            {changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(7)")); }
+            catch (NoSuchElementException tryAlt)
+            { //Fallback path
+                changeLanguageMenu= test.findElement(By.cssSelector("button.mat-tooltip-trigger:nth-child(8)"));
+            }
 
             assertWebElement(changeLanguageMenu);
             changeLanguageMenu.click();
             test.findElement(By.className("cdk-overlay-backdrop-showing")).click();
         }
-        catch (/*NoSuchElementException  | */UnsupportedFlavorException | IOException elementNotFound) { assertEquals("Missing","Header Bar Option");}
+        catch (UnsupportedFlavorException | IOException elementNotFound) { assertEquals("Missing","Header Bar Option");}
     }
 
-
-
+    /**
+     * Simple assetion of web elements for regression tests
+     * Programmer: Kyle Sullivan
+     * @param testing Test environment to test in
+     */
     private static void assertWebElement(WebElement testing)
     {
+        //Check that the element is enabled
         assertTrue(testing.isEnabled());
+        //Check that the element is displayed
         assertTrue(testing.isDisplayed());
     }
 

@@ -184,7 +184,7 @@ public class Logout implements ITest
             TestFunctions.login(browserWindow);
 
             //Perform the following loop a number of times equal to timeoutTime.
-            for (int minutesPassed = 1; minutesPassed < timeoutTime; minutesPassed++)
+            for (int minutesPassed = 0; minutesPassed < timeoutTime; minutesPassed++)
             {
                 //Wait one minute
                 Thread.sleep(60000);
