@@ -149,6 +149,7 @@ public class PaymentMethodAlteration implements ITest
             // Login and navigate to payment options page
             login(browserWindow);
             navigateToPaymentOptions(browserWindow);
+            Thread.sleep(1000);
 
             // Clear all existing payment methods
             clearPaymentMethods(browserWindow, cardNum, name);
