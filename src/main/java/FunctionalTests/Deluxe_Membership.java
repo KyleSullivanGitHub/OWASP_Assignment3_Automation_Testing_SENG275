@@ -294,7 +294,6 @@ public class Deluxe_Membership {
             Thread.sleep((long)TestFunctions.endTestWait);
             browserWindow.quit();
         }
-
     }
 
     private void navToDeluxe(WebDriver browserWindow) throws InterruptedException {

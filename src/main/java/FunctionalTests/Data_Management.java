@@ -89,8 +89,7 @@ public class Data_Management {
             //Navigate to Privacy Policy
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-2\"]/div/button[1]")).click();
 
-            //Verify Privacy Policy is functional
-            assertEquals(browserWindow.getCurrentUrl(), website+ "/#/privacy-security/privacy-policy");
+            //Verify Privacy Policy is functionalassertEquals(browserWindow.getCurrentUrl(), website+ "/#/privacy-security/privacy-policy");
 
         }
         finally
@@ -98,7 +97,6 @@ public class Data_Management {
             //End the Test
             Thread.sleep(TestFunctions.endTestWait);
             browserWindow.quit();
-
         }
 
     }
