@@ -109,6 +109,8 @@ public class Data_Management {
     @Test(
             groups = {"Smoke","Data Management Smoke","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM2_DE(String chosenBrowser) throws IOException, InterruptedException{
@@ -132,7 +134,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -140,7 +142,7 @@ public class Data_Management {
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[3]/span")).click();
 
             //Navigate to Request Data Export
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/div/a[2]/div/span")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-2\"]/div/button[2]")).click();
 
             //Verify Request Data Export is functional
             assertEquals(browserWindow.getCurrentUrl(), website+ "/#/privacy-security/data-export");
@@ -163,6 +165,8 @@ public class Data_Management {
     @Test(
             groups = {"Smoke","Data Management Smoke","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM3_Erasure(String chosenBrowser) throws IOException, InterruptedException{
@@ -186,7 +190,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -194,7 +198,7 @@ public class Data_Management {
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[3]/span")).click();
 
             //Navigate to Request Data Erasure
-            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav/div/sidenav/mat-nav-list/div/div/a[3]/div")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-2\"]/div/button[3]")).click();
 
             //Verify Request Data Erasure is functional
             assertEquals(browserWindow.getCurrentUrl(), website+ "/dataerasure");
@@ -217,6 +221,8 @@ public class Data_Management {
     @Test(
             groups = {"Smoke","Data Management Smoke","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM4_IP(String chosenBrowser) throws IOException, InterruptedException{
@@ -240,7 +246,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -271,6 +277,8 @@ public class Data_Management {
     @Test(
             groups = {"Smoke","Data Management Smoke","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM5_2FA(String chosenBrowser) throws IOException, InterruptedException{
@@ -294,7 +302,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -305,7 +313,7 @@ public class Data_Management {
             browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-2\"]/div/button[5]")).click();
 
             //Verify 2FA Config is functional
-            assertEquals(browserWindow.getCurrentUrl(), website+ "#/privacy-security/two-factor-authentication");
+            assertEquals(browserWindow.getCurrentUrl(), website+ "/#/privacy-security/two-factor-authentication");
 
         }
         finally
@@ -325,6 +333,8 @@ public class Data_Management {
     @Test(
             groups = {"Sanity","Data Management Sanity","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM6_JSON(String chosenBrowser) throws IOException, InterruptedException{
@@ -348,7 +358,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -384,6 +394,8 @@ public class Data_Management {
     @Test(
             groups = {"Sanity","Data Management Sanity","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM7_PDF(String chosenBrowser) throws IOException, InterruptedException{
@@ -407,7 +419,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
@@ -444,6 +456,8 @@ public class Data_Management {
     @Test(
             groups = {"Sanity","Data Management Sanity","Data Management"},
             priority = 0,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
     public void DM8_Excel(String chosenBrowser) throws IOException, InterruptedException{
@@ -467,7 +481,7 @@ public class Data_Management {
 
             //Navigate to account Menu
 
-            browserWindow.findElement(By.xpath ("/html/body/div[3]/div[1]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"navbarAccount\"]")).click();
             Thread.sleep(300);
 
 
