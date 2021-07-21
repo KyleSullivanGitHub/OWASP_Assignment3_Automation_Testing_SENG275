@@ -64,7 +64,8 @@ public class TestFunctions
 
 
     /**
-     *
+     * Method to set up the constant random account values
+     * Programmer: Kyle Sullivan
      */
     private static void constRandomAccount()
     {
@@ -78,7 +79,7 @@ public class TestFunctions
                 emailNumRandomizer += emailRandomizer.nextInt(9);
             }
             //set up the constant email for this session
-            constEmail = "HelloWorld934" + emailNumRandomizer + "@gmail.com";
+            constEmail = "HelloWorld9343332423423423411" + emailNumRandomizer + "@gmail.com";
             constPassword = "Seng265!";
             constAnswer = "Seng";
 
