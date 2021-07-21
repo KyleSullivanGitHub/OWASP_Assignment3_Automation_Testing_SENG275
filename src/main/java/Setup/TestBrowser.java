@@ -15,6 +15,7 @@ import java.io.IOException;
  * Programmer: Kyle Sullivan
  * Contains basic functions to allow a test to be called from any of three specific browser.
  */
+
 public abstract class TestBrowser
 {
     //Quick ternary operators to detrime what operating system is being used. Only Mac and Windows are supported
@@ -30,7 +31,7 @@ public abstract class TestBrowser
 
 
     //preferred driver to run all tests on. Change to whatever suits your fancy
-    static String primaryBrowser = "Firefox";
+    static String primaryBrowser = "Chrome";
 //********************************************************************************************************************//
     //String containing driver text
     String driver;

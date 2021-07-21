@@ -2,7 +2,6 @@ package FunctionalTests;
 
 import Setup.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
 import org.testng.annotations.*;
@@ -27,7 +26,7 @@ public class PasswordAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -44,7 +43,8 @@ public class PasswordAlteration implements ITest
      * @param chosenBrowser browser being used for test
      */
     @Test(
-            groups = {"Smoke","PasswordAlteration","PA_Smoke","hasDataProvider"},
+            groups = {"Smoke","Password_Alteration","hasDataProvider"},
+            priority = 42,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class
     )
@@ -88,23 +88,18 @@ public class PasswordAlteration implements ITest
     /**
      * Smoke test for invalid password recovery from log in page
      * Programmer: Salam Fazil
-     * @param chosenBrowser browser being used for test
      */
     @Test(
-            groups = {"Smoke","PasswordAlteration","PA_Smoke","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Smoke","Password_Alteration","noDataProvider"},
+            priority = 43
     )
 
-    public void PA2_invalidPasswordReset(String chosenBrowser) throws IOException, InterruptedException {
+    public void PA2_invalidPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -127,23 +122,18 @@ public class PasswordAlteration implements ITest
     /**
      * Sanity test for valid password reset from change password page
      * Programmer: Salam Fazil
-     * @param chosenBrowser browser used for test
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Sanity","Password_Alteration","noDataProvider"},
+            priority = 70
     )
 
-    public void PA3_validPasswordReset(String chosenBrowser) throws IOException, InterruptedException {
+    public void PA3_validPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -176,23 +166,18 @@ public class PasswordAlteration implements ITest
     /**
      * Sanity test for invalid password reset from change password page
      * Programmer: Salam Fazil
-     * @param chosenBrowser browser used for test
      */
     @Test(
-            groups = {"Sanity","PasswordAlteration","PA_Sanity","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Sanity","Password_Alteration","noDataProvider"},
+            priority = 70
     )
 
-    public void PA4_invalidPasswordReset(String chosenBrowser) throws IOException, InterruptedException {
+    public void PA4_invalidPasswordReset() throws IOException, InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -211,20 +196,16 @@ public class PasswordAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","PasswordAlteration","PA_Regression","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Regression","Password_Alteration","noDataProvider"},
+            priority = 89
     )
 
-    public void PA_regressionForgetPasswordPage(String chosenBrowser) throws IOException, InterruptedException {
+    public void PA_regressionForgetPasswordPage() throws IOException, InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -279,20 +260,16 @@ public class PasswordAlteration implements ITest
     }
 
     @Test(
-            groups = {"Regression","PasswordAlteration","PA_Regression","hasDataProvider"},
-            dataProvider = "browserSwitch",
-            dataProviderClass = Test_Data.class
+            groups = {"Regression","Password_Alteration","noDataProvider"},
+            priority = 89
     )
 
-    public void PA_regressionChangePasswordPage(String chosenBrowser) throws IOException, InterruptedException {
+    public void PA_regressionChangePasswordPage() throws IOException, InterruptedException {
         //Create Test environment and browser
-        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
-        WebDriver browserWindow = browser.makeDriver();
+        WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -468,12 +445,31 @@ public class PasswordAlteration implements ITest
         browserWindow.findElement(By.cssSelector("#mat-menu-panel-2 > div > button:nth-child(5)")).click();
     }
 
+    /**
+     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @param method Test method whose name is to be changed
+     * @param testData The data parameters for the method
+     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        testName.set(method.getName()+"_"+testData[0]);
+        //Set name to (method name)_(first value in data provider)
+        testName.set(method.getName() + "_" + testData[0]);
     }
-
+    @BeforeMethod(onlyForGroups = {"noDataProvider"})
+    public void BeforeMethod(Method method)
+    {
+        //Set name to (method name)
+        testName.set(method.getName());
+    }
+    /**
+     * Returns the name of the test. Used to alter the name of tests performed multiple times
+     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
+     * Programmer: Canberk Akduygu
+     * @return Name of test
+     */
     @Override
     public String getTestName()
     {
