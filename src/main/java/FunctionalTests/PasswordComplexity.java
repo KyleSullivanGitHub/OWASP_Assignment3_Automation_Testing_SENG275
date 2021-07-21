@@ -6,14 +6,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
-import org.testng.annotations.BeforeGroups;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import static org.testng.Assert.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 import static org.testng.Assert.assertEquals;
 
@@ -26,6 +25,12 @@ public class PasswordComplexity implements ITest
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
+    WebDriver browserWindow;
+    boolean inTest = false;
+    int counter = 0;
+    String currentElement;
+
+
 
     String validPassword = "aB3!aB3!";//Valid password for any complexity test
 
@@ -40,7 +45,7 @@ public class PasswordComplexity implements ITest
      * @throws IOException          Thrown if no browser is chosen for a test
      * @throws InterruptedException Thrown if the test is interrupted during a wait period
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         //Create an environment to set up browser specific test environments
@@ -139,22 +144,37 @@ public class PasswordComplexity implements ITest
     )
     public void PCS3_Password_Complexity_Invalid_Reg(String type, Object[] dataSet) throws InterruptedException
     {
-        //Create Test Environment
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        browserWindow.get(TestFunctions.website);
-        //Delay until site is ready
-        TestFunctions.waitForSite(browserWindow);
+        if(!inTest)
+        {
+            //Create Test Environment
+            browserWindow = environment.makeDriver();
+            browserWindow.manage().window().maximize();
+            browserWindow.get(TestFunctions.website);
+            //Delay until site is ready
+            TestFunctions.waitForSite(browserWindow);
+            inTest = true;
+            counter = 0;
+        }
 
         try
         {
             //Test password
             testPassAdviceReg(browserWindow, dataSet);
-        } finally
+            counter++;
+        }
+        catch (Exception badTest)
         {
-            //End Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            inTest = false;
+        }
+        finally
+        {
+            if(!inTest || counter == 5)
+            {
+                //End Test
+                Thread.sleep(TestFunctions.endTestWait);
+                browserWindow.quit();
+                inTest = false;
+            }
         }
     }
 
@@ -171,22 +191,23 @@ public class PasswordComplexity implements ITest
     )
     public void PCS4_Password_Complexity_Valid_FP() throws InterruptedException
     {
-        //Create the Test Environment
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        browserWindow.get(TestFunctions.website);
-        //Delay until site is ready
-        TestFunctions.waitForSite(browserWindow);
+            //Create the Test Environment
+            browserWindow = environment.makeDriver();
+            browserWindow.manage().window().maximize();
+            browserWindow.get(TestFunctions.website);
+            //Delay until site is ready
+            TestFunctions.waitForSite(browserWindow);
 
         try
         {
             //Test a valid password within Forgot Password
             testPassAdviceFP(browserWindow, new Object[]{validPassword, pass, pass, pass, pass, pass});
-        } finally
+        }
+        finally
         {
-            //End Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+                //End Test
+                Thread.sleep(TestFunctions.endTestWait);
+                browserWindow.quit();
         }
     }
 
@@ -207,22 +228,36 @@ public class PasswordComplexity implements ITest
     )
     public void PCS5_Password_Complexity_Invalid_FP(String type, Object[] dataSet) throws InterruptedException
     {
-        //Create the Test Environment
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        browserWindow.get(TestFunctions.website);
-        //Delay until site is ready
-        TestFunctions.waitForSite(browserWindow);
-
+        if(!inTest)
+        {
+            //Create the Test Environment
+            browserWindow = environment.makeDriver();
+            browserWindow.manage().window().maximize();
+            browserWindow.get(TestFunctions.website);
+            //Delay until site is ready
+            TestFunctions.waitForSite(browserWindow);
+            inTest = true;
+            counter = 0;
+        }
         try
         {
-            //Test the Invalid Input
+            //Test a valid password within Forgot Password
             testPassAdviceFP(browserWindow, dataSet);
-        } finally
+            counter++;
+        }
+        catch (Exception badTest)
         {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            inTest = false;
+        }
+        finally
+        {
+            if(!inTest || counter == 5)
+            {
+                //End Test
+                Thread.sleep(TestFunctions.endTestWait);
+                browserWindow.quit();
+                inTest = false;
+            }
         }
     }
 
@@ -244,8 +279,16 @@ public class PasswordComplexity implements ITest
     {
         //xPath to common part of icon elements on password advice element
         String xPathLoc = "register";
-        //Navigate to the Registration Page
-        TestFunctions.navToReg(browserWindow);
+        if(!browserWindow.getCurrentUrl().equals(TestFunctions.website+"register"))
+        {
+            //Navigate to the Registration Page
+            TestFunctions.navToReg(browserWindow);
+        }
+        else
+        {
+            browserWindow.navigate().refresh();
+            TestFunctions.waitForSite(browserWindow,"#passwordControl");
+        }
 
         //Activate password complexity advice by toggling the slider
         browserWindow.findElement(By.className("mat-slide-toggle-thumb")).click();
@@ -275,22 +318,36 @@ public class PasswordComplexity implements ITest
         //xPath to common part of icon elements on password advice element
         String xPathLoc = "forgot-password";
 
-        //Navigate to Forgot Password
-        TestFunctions.navToLogin(browserWindow);
-        browserWindow.get(TestFunctions.website+"forgot-password");
+        if(!browserWindow.getCurrentUrl().equals(TestFunctions.website+"forgot-password"))
+        {
+            //Navigate to Forgot Password
+            TestFunctions.navToLogin(browserWindow);
+            browserWindow.get(TestFunctions.website + "forgot-password");
+        }
+        else
+        {
+            browserWindow.navigate().refresh();
+            TestFunctions.waitForSite(browserWindow,"#email");
+        }
         try
         {
             //Fill out form
+            currentElement = "Email";
             browserWindow.findElement(By.cssSelector("#email")).sendKeys(TestFunctions.constEmail);//Fill out email
+            currentElement = "Security Answer";
             browserWindow.findElement(By.cssSelector("#securityAnswer")).sendKeys(TestFunctions.constAnswer);//Fill out security answer
 
             //Activate Password Advice by toggling the slider.
+            currentElement = "Password Advice Button";
             browserWindow.findElement(By.className("mat-slide-toggle")).click();
+            currentElement = "Password Field";
             browserWindow.findElement(By.cssSelector("#newPassword")).sendKeys((String) dataSet[0]); //enter password
         }
         catch (ElementNotInteractableException badCondition)
         {
-            assertTrue(false);
+            assertEquals("Could not Select: " + currentElement,"element should be selectable");
+            Thread.sleep(TestFunctions.endTestWait);
+            browserWindow.quit();
         }
 
         //Test the password

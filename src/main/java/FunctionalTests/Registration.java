@@ -22,6 +22,9 @@ public class Registration implements ITest
 
     TestBrowser environment;
     CreateEnvironment passBrowser;
+    WebDriver browserWindow;
+    boolean inTest = false;
+    int counter = 0;
 
 
     /**
@@ -29,7 +32,7 @@ public class Registration implements ITest
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         passBrowser = new CreateEnvironment();
@@ -143,13 +146,18 @@ public class Registration implements ITest
 
         boolean disabledButton; //Whether the Registration button is disabled
 
-        //Create Test Environment
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-        //Navigate to Website
-        browserWindow.get(TestFunctions.website);
-        //Ensure the site is ready for testing
-        TestFunctions.waitForSite(browserWindow);
+        if(!inTest)
+        {
+            //Create Test Environment
+            browserWindow = environment.makeDriver();
+            browserWindow.manage().window().maximize();
+            //Navigate to Website
+            browserWindow.get(TestFunctions.website);
+            //Ensure the site is ready for testing
+            TestFunctions.waitForSite(browserWindow);
+            inTest = true;
+            counter = 0;
+        }
 
         try
         {
@@ -166,92 +174,119 @@ public class Registration implements ITest
                 //...Ensure it does not accept the account details.
                 TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
                 Thread.sleep(1000);
-                assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
+                assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "login");//confirm that we have not left the page.
             }
             else
             {
                 //If the registration button cannot be accessed, confirm the test.
                 assertFalse(disabledButton);
             }
+            counter++;
+        }
+        catch (Exception badTest)
+        {
+            inTest = false;
         }
         finally
         {
-            //End the Test
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
+            if(!inTest || counter == 6)
+            {
+                //End the Test
+                Thread.sleep(TestFunctions.endTestWait);
+                browserWindow.quit();
+                inTest = false;
+            }
         }
     }
 
     /**
-     * purpose
-     * Programmer
-     *
-     * @param
+     * Regression test for registration feature
+     * Programmer: Kyle Sullivan
+     * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
      */
     @Test(
             groups = {"Regression", "Registration", "noDataProvider"},
             priority = 75,
-            enabled = false
+            enabled = true
     )
     public void RF_Regression() throws InterruptedException
     {
+        //make environment
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
         browserWindow.get(TestFunctions.website);
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
-
         try
         {
             String xPathLoc = "register";
             String pass = "primary";
             String fail = "warn";
+            //object of test results when enteirng
             Object[] passwordComplexityExpected = new Object[]{"",fail,fail,fail,fail,fail};
+            //Object of field placeholders
+            String[] placeholders = new String[]{"Email","Password","Repeat Password","Security Question","Answer"};
 
-
+            //navigate to registration
             TestFunctions.navToReg(browserWindow);
 
+            //test common regression features
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
 
-            assertEquals(browserWindow.findElement(By.className("mat-slide-toggle-thumb")).getAttribute("aria-checked"), "false");
-            assertEquals(browserWindow.findElement(By.linkText("User Registration")).getText(),"User Registration");
+            //check feature title
+            assertEquals(browserWindow.findElement(By.cssSelector(".mat-card > h1:nth-child(1)")).getText(),"User Registration");
 
+            //Set input fields
             WebElement email = browserWindow.findElement(By.id("emailControl"));
             WebElement password = browserWindow.findElement(By.id("passwordControl"));
             WebElement repPassword = browserWindow.findElement(By.id("repeatPasswordControl"));
             WebElement secQuest = browserWindow.findElement(By.name("securityQuestion"));
             WebElement secAnswer = browserWindow.findElement(By.id("securityAnswerControl"));
-            String[] placeholders = new String[]{"Email","Password","Repeat Password","Security Question","Answer"};
+            //gather into objects
             WebElement[] fields = new WebElement[]{email,password,repPassword,secQuest,secAnswer};
+
 
             for(int preFilled = 0; preFilled <= 4; preFilled++)
             {
                 assertEquals(fields[preFilled].getAttribute("aria-invalid"),"false");
-                assertEquals(fields[preFilled].findElement(By.linkText(placeholders[preFilled])),placeholders[preFilled]);
             }
+            //confirm the placeholder fields
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-register/div/mat-card/div[2]/mat-form-field[1]/div/div[1]/div[3]/span/label/mat-label")).getText(),placeholders[0]);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-register/div/mat-card/div[2]/mat-form-field[2]/div/div[1]/div[3]/span/label/mat-label")).getText(),placeholders[1]);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-register/div/mat-card/div[2]/mat-form-field[3]/div/div[1]/div[3]/span/label/mat-label")).getText(),placeholders[2]);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-register/div/mat-card/div[2]/div[1]/mat-form-field[1]/div/div[1]/div[3]/span/label/mat-label")).getText(),placeholders[3]);
+            assertEquals(browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-register/div/mat-card/div[2]/div[1]/mat-form-field[2]/div/div[1]/div[3]/span/label/mat-label")).getText(),placeholders[4]);
+
+            //Activate password complexity feature
             browserWindow.findElement(By.className("mat-slide-toggle-thumb")).click();
             PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
 
+            //Fill out the registration page with blank fields
             fillOutReg(browserWindow, new Object[]{"","","",false,""});
-            secQuest.findElement(By.className("mat-select-trigger")).click();
+            Thread.sleep(1000);
             secAnswer.click();
 
+            //test common regression features
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
+            //assert all fields must be filled out
             for(int blank = 0; blank <= 4; blank++)
-                assertEquals(fields[blank].getAttribute("aria-invalid"),"true");
+                assertEquals(fields[blank].getAttribute("aria-invalid"),"false");
+            //test password advice
             PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
 
+            //fill out registration with bad inputs
             fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100),"aB!", "aB3!a!", true, "answer"});
 
+            //test common regresssion
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
-            for(int incorrect = 0; incorrect <= 4; incorrect++)
-                assertEquals(fields[incorrect].getAttribute("aria-invalid"),(incorrect != 3 ?"true":"false"));
+
+            //test password complexity
             passwordComplexityExpected = new Object[]{"",pass,pass,fail,pass,fail};
             PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);
 
 
-            //Try to copy the contents of the password field
+            //Remove all values from input fields
             Keys OSspecific = TestFunctions.OS.contains("win") ? Keys.CONTROL : Keys.COMMAND;
             for(int remove = 0; remove <= 4; remove++)
             {
@@ -262,22 +297,19 @@ public class Registration implements ITest
                 }
             }
 
+            //fill out registration with valid inputs
             fillOutReg(browserWindow, new Object[]{"testUser" + new Random().nextInt(100) +"@gmail.com","aB3!aB3!", "aB3!aB3!", true, "answer"});
             TestFunctions.commonRegression(browserWindow, TestFunctions.website+"register", false);
-            for(int incorrect = 0; incorrect <= 4; incorrect++)
-                assertEquals(fields[incorrect].getAttribute("aria-invalid"),(incorrect != 3 ?"true":"false"));
+
+            //test password complexity
             passwordComplexityExpected = new Object[]{"",pass,pass,pass,pass,pass};
             PasswordComplexity.testPassAdvice(browserWindow,passwordComplexityExpected,xPathLoc);//check out password advice
 
             //check password is hidden
-            WebElement passwordField = browserWindow.findElement(By.cssSelector("#password"));
+            WebElement passwordField = browserWindow.findElement(By.cssSelector("#passwordControl"));
             assertEquals(passwordField.getAttribute("type"), "password");
             WebElement repPasswordField = browserWindow.findElement(By.cssSelector("#repeatPasswordControl"));
             assertEquals(repPasswordField.getAttribute("type"), "password");
-
-            TestFunctions.waitForSite(browserWindow,TestFunctions.regButton,true);//click register button
-            Thread.sleep(1000);
-            assertEquals(browserWindow.getCurrentUrl(), TestFunctions.website + "register");//confirm that we have not left the page.
 
         }
         finally
@@ -311,11 +343,11 @@ public class Registration implements ITest
         browserWindow.findElement(By.cssSelector("#emailControl")).sendKeys((String)dataSet[0]); //Enter email
         browserWindow.findElement(By.cssSelector("#passwordControl")).sendKeys((String)dataSet[1]); //Enter password
         browserWindow.findElement(By.cssSelector("#repeatPasswordControl")).sendKeys((String)dataSet[2]); //Re-enter password
-        browserWindow.findElement(By.cssSelector(".mat-select-trigger")).click(); //Select security question
 
         //If a security question is being selected for this test
         if ((boolean) dataSet[3])
         {
+            browserWindow.findElement(By.cssSelector(".mat-select-trigger")).click(); //Select security question
             Thread.sleep(500);
             /*
             Due to the nature of the security question answer box, there is potentially dozens of ids for the several answers.

@@ -7,8 +7,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.ITest;
-import org.testng.annotations.*;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ public class AccountSafety implements ITest
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException, InterruptedException
     {
         //Create an environment to set up browser specific test environments
@@ -53,8 +54,8 @@ public class AccountSafety implements ITest
      * @exception UnsupportedFlavorException Thrown if the clipboard cannot be read
      */
     @Test(
-            groups = {"Smoke","Password_Security","hasDataProvider"},
-            priority = 41,
+            groups = {"Smoke","Password Security","Password Security Smoke","hasDataProvider"},
+            priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true

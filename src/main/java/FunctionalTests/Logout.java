@@ -11,6 +11,8 @@ import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
 import static org.testng.Assert.*;
 
 
@@ -33,7 +35,7 @@ public class Logout implements ITest
      * Programmer: Kyle Sullivan
      * @exception IOException Thrown if no browser is chosen for a test
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         passBrowser = new CreateEnvironment();
@@ -186,7 +188,7 @@ public class Logout implements ITest
             TestFunctions.login(browserWindow);
 
             //Perform the following loop a number of times equal to timeoutTime.
-            for (int minutesPassed = 1; minutesPassed < timeoutTime; minutesPassed++)
+            for (int minutesPassed = 0; minutesPassed < timeoutTime; minutesPassed++)
             {
                 //Wait one minute
                 Thread.sleep(60000);

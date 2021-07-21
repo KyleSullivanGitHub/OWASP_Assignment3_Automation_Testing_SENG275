@@ -15,6 +15,7 @@ import java.io.IOException;
  * Programmer: Kyle Sullivan
  * Contains basic functions to allow a test to be called from any of three specific browser.
  */
+
 public abstract class TestBrowser
 {
     //Quick ternary operators to detrime what operating system is being used. Only Mac and Windows are supported
