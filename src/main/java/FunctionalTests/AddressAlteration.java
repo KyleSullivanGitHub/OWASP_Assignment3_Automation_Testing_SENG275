@@ -149,6 +149,7 @@ public class AddressAlteration implements ITest
             // Login and navigate to saved addresses
             login(browserWindow);
             navigateToSavedAddresses(browserWindow);
+            Thread.sleep(1000);
 
             // Initialize address set then clear all existing addresses
             clearExistingAddresses(browserWindow);
@@ -182,7 +183,7 @@ public class AddressAlteration implements ITest
      * Programmer: Salam Fazil
      */
     @Test(
-            groups = {"Sanity","Address_Alteration","hasDataProvider"},
+            groups = {"Sanity","Address_Alteration","NoDataProvider"},
             priority = 65,
             enabled = true
     )
