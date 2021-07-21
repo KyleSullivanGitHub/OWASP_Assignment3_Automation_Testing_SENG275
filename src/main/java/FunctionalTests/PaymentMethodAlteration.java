@@ -3,7 +3,6 @@ package FunctionalTests;
 import Setup.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.devtools.v85.browser.Browser;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.ITest;
 import org.testng.annotations.*;
@@ -30,7 +29,7 @@ public class PaymentMethodAlteration implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Salam Fazil
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         passBrowser = new CreateEnvironment();
         environment = passBrowser.createBrowser();
@@ -105,10 +104,8 @@ public class PaymentMethodAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -143,10 +140,8 @@ public class PaymentMethodAlteration implements ITest
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -189,15 +184,11 @@ public class PaymentMethodAlteration implements ITest
     )
 
     public void PMA4_invalidPaymentAddition() throws IOException, InterruptedException {
-        //TODO make a data provider for this and split into two cases
-
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 
@@ -231,14 +222,11 @@ public class PaymentMethodAlteration implements ITest
     )
 
     public void PMA_regression() throws IOException, InterruptedException {
-        //TODO implement TestFunctions.commonRegression. It works
         //Create Test environment and browser
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
-
         //Go to Website
         browserWindow.get(TestFunctions.website);
-
         //Ensure the site is ready for testing
         TestFunctions.waitForSite(browserWindow);
 

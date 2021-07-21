@@ -34,7 +34,7 @@ public class Checkout implements ITest {
      * Create an environment for all tests using the same browser app.
      * Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException {
         environment = passBrowser.createBrowser();
     }
@@ -45,7 +45,7 @@ public class Checkout implements ITest {
     }
 
     /**
-     *Smoke tests a single invalid login attempt.
+     *Tests purchasing an order using a card
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -55,7 +55,7 @@ public class Checkout implements ITest {
             dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void CO1_Valid_Usage(String chosenBrowser) throws InterruptedException, IOException
+    public void CK1_Card_Usage(String chosenBrowser) throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
@@ -66,7 +66,7 @@ public class Checkout implements ITest {
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -127,7 +127,7 @@ public class Checkout implements ITest {
 
     }
     /**
-     *Smoke tests a single invalid login attempt.
+     *Tests purchasing an order using digital wallet
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -135,7 +135,7 @@ public class Checkout implements ITest {
             priority = 23,
             enabled = true
     )
-    public void CO2_Valid_Usage() throws InterruptedException, IOException
+    public void CK2_Digital_Wallet_Usage() throws InterruptedException, IOException
     {
         //Create driver and browser for this particular test
         browserWindow = environment.makeDriver();
@@ -145,7 +145,7 @@ public class Checkout implements ITest {
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -236,7 +236,7 @@ public class Checkout implements ITest {
     }
 
     /**
-     *Smoke tests invalid purchase
+     *Tests invalid checkout usage
      *Programmer: Nicole Makarowski
      */
     @Test(
@@ -244,7 +244,7 @@ public class Checkout implements ITest {
             priority = 24,
             enabled = true
     )
-    public void CO3_Invalid_Usage() throws InterruptedException, IOException
+    public void CK3_Invalid_Usage() throws InterruptedException, IOException
     {
 
         browserWindow = environment.makeDriver();
@@ -254,7 +254,7 @@ public class Checkout implements ITest {
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -267,6 +267,58 @@ public class Checkout implements ITest {
 
             //Verify Checkout Button Disabled
             assertFalse(browserWindow.findElement(By.xpath(checkoutButton_XPath)).isEnabled());
+
+            //Add product to cart and click checkout button
+            browserWindow.get(website);
+            Thread.sleep(500);
+
+            browserWindow.findElement(By.xpath(addToCart_XPath)).click();
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();
+            Thread.sleep(750);
+            browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting address
+            TestFunctions.waitForSiteXpath(browserWindow, "//*[@id=\"card\"]/app-address/mat-card/button");
+            WebElement continueButton = browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button"));
+            assertFalse(continueButton.isEnabled());
+
+            //Add address and continue
+            //Select saved Address
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
+                addSavedAddress(browserWindow);
+                Thread.sleep(500);
+            }
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"card\"]/app-address/mat-card/button")).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting shipping address
+            continueButton = browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]"));
+            assertFalse(continueButton.isEnabled());
+
+            //select shipping method
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-delivery-method/mat-card/div[4]/button[2]")).click();
+            Thread.sleep(500);
+
+            //Verify continue button disabled before setting payment method
+            continueButton = browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]"));
+            assertFalse(continueButton.isEnabled());
+
+            //Select payment method
+            if (TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60) == null) {
+                addSavedPayment(browserWindow);
+                Thread.sleep(500);
+            }
+            TestFunctions.findRadioButton(browserWindow, "mat-radio-", 30, 60).click();
+            browserWindow.findElement(By.xpath("/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-payment/mat-card/div/div[2]/button[2]")).click();
+            Thread.sleep(500);
+
+            //Place order
+            browserWindow.findElement(By.xpath(checkoutButton_XPath)).click();
+            Thread.sleep(500);
+
 
         }
         finally {
@@ -284,14 +336,35 @@ public class Checkout implements ITest {
             priority = 82,
             enabled = true
     )
-    public void CO_Regression() throws InterruptedException, IOException
-    {}
+    public void CK_Regression() throws InterruptedException, IOException {
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps
+            TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/basket", true);
+        } finally {
+            browserWindow.quit();
+        }
+    }
 
     void addSavedAddress(WebDriver browserWindow) {
         //add new address
         browserWindow.findElement(By.xpath(addSavedAddress_XPath)).click();
 
         //Populate Info
+        browserWindow.findElement(By.xpath("//*[@id=\"mat-input-1\"]")).sendKeys("USA");//Country
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-2\"]")).sendKeys("Hello World");//Name
         browserWindow.findElement(By.xpath("//*[@id=\"mat-input-3\"]")).sendKeys("1234567890");//Phone
         browserWindow.findElement(By.xpath( "//*[@id=\"mat-input-4\"]")).sendKeys("12346");//Zip

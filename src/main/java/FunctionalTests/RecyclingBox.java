@@ -47,8 +47,8 @@ public class RecyclingBox implements ITest
      * @throws InterruptedException Thrown if test is interrupted during a thread waiting period
      */
     @Test(
-            groups = {"Smoke", "Recycling Box", "hasDataProvider"},
-            priority = 47,
+            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box", "hasDataProvider"},
+            priority = 0,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -86,8 +86,8 @@ public class RecyclingBox implements ITest
      * @throws IOException Thrown if no browser is selected for test
      */
     @Test(
-            groups = {"Smoke", "Recycling Box","noDataProvider"},
-            priority = 48,
+            groups = {"Smoke", "Recycling Box Smoke", "Recycling Box","noDataProvider"},
+            priority = 0,
             enabled = true
     )
     public void RB2_Invalid_Usage() throws InterruptedException, IOException
@@ -126,8 +126,8 @@ public class RecyclingBox implements ITest
      * @throws IOException Thrown if no browser was set for this test
      */
     @Test(
-            groups = {"Sanity", "Recycling Box", "hasDataProvider"},
-            priority = 73,
+            groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
+            priority = 0,
             dataProvider = "RB3_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -183,7 +183,7 @@ public class RecyclingBox implements ITest
      */
     @Test(
             groups = {"Sanity", "Recycling Box Sanity", "Recycling Box", "hasDataProvider"},
-            priority = 73,
+            priority = 0,
             dataProvider = "RB4_Input",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -222,9 +222,9 @@ public class RecyclingBox implements ITest
      * @throws IOException Thrown if no browser was set for this test
      */
     @Test(
-            groups = {"Regression", "Recycling Box","noDataProvider"},
-            priority = 91,
-            enabled = true
+            groups = {"Regression", "Recycling Box Regression", "Recycling Box","noDataProvider"},
+            priority = 0,
+            enabled = false
     )
     public void RB_Regression() throws InterruptedException, IOException
     {
@@ -385,7 +385,7 @@ public class RecyclingBox implements ITest
                 //try to find the bulk order checkbox. Randomly changes, so several checks may be neccessary
                 for(int i = 0; i < 10; i++)
                 {
-                    try {browserWindow.findElement(By.cssSelector( "#mat-checkbox-"+i)).click(); break;}
+                    try {TestFunctions.waitForSite(browserWindow,"#mat-checkbox-"+i,true);}
                     catch (NoSuchElementException ignored ) {}
                 }
                 //if we are inputing a date...

@@ -12,7 +12,7 @@ public class Test_Data
     private static int randomNum2 = emailRandomizer();
     private static int randomNum3 = emailRandomizer();
     private static int randomNum4 = emailRandomizer();
-    private static String email = "helloworld568" ;
+    private static String email = "helloworld8" ;
     private static String password = "Seng310@#$";
     private static String answer = "seng";
 
@@ -29,8 +29,8 @@ public class Test_Data
 
         return new Object[][]{
                 {"Firefox"},
-                {"Chrome"},
-                {"Edge"}
+                //{"Chrome"},
+                //{"Edge"}
                 //{"Safari"}
         };
     }
@@ -125,6 +125,26 @@ public class Test_Data
                 {"Chrome", new Object[]{email+"@gmail.com",password}},
                 {"Edge", new Object[]{email+"@gmail.com",password}}, //Edge is causing issues, always needs to be in focus for the test to actually pass. need to fix
               // {"Safari", new Object[]{email+"@gmail.com",password}}
+        };
+    }
+
+    //*******************************************************************************************************
+
+    /**
+     * This dataProvider passes valid random email and password strings for the LG1 valid input test
+     * Programmer: Seyedmehrad Adimi
+     * @return object with email and password for that test.
+     */
+    @DataProvider(
+            name = "LG_RandomInput"
+    )
+    public static Object[][] LG_RandomInput()
+    {
+        setUpEmail();
+        Random randomNum = new Random ();
+        int randomInteger = randomNum.nextInt(1000);
+        return new Object[][]{
+                {new Object[]{email+randomNum1+randomInteger+"@gmail.com",password,answer}},
         };
     }
 
@@ -260,7 +280,7 @@ public class Test_Data
 
         return new Object[][]{
                 {"No_Inputs", ""},
-                {"Bad Input","jarbagard"},
+                {"Bad Input","jarbagarad"},
         };
     }
 

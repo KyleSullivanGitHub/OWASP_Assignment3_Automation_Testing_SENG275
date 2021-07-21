@@ -8,19 +8,22 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
 
+
+/*
+Tests for verifying the full functionality of the Support Chat feature
+*/
 public class Support_Chat implements ITest
 {
     private ThreadLocal<String> testName = new ThreadLocal<>();
@@ -38,7 +41,7 @@ public class Support_Chat implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -46,11 +49,13 @@ public class Support_Chat implements ITest
 
 
     /**
-     *Smoke tests for Valid use of support chat
+     * Smoke tests for Valid use of support chat
      * Includes test cases SC_001, SC_002, SC_005, SC_009.
-     *Programmer: Seyedmehrad Adimi
+     * Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet provides email and password to Login
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Support_Chat","hasDataProvider"},
@@ -60,7 +65,6 @@ public class Support_Chat implements ITest
             enabled = true
     )
     public void SC1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //TODO remove that data set. use the google login instead
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -84,7 +88,6 @@ public class Support_Chat implements ITest
             }catch (Exception e){
                 assertFalse (false);
             }
-
 
             // SC_002 test case: Navigating to support chat after login
             loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
@@ -111,22 +114,20 @@ public class Support_Chat implements ITest
 
 
 
-
-
     /**
-     *Smoke tests for Invalid use of support chat
+     * Smoke tests for Invalid use of support chat
      * Includes test case SC_006
-     *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to Login
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Support_Chat","noDataProvider"},
             priority = 30,
             enabled = true
     )
-    public void SC2_Invalid_Use(Object[] dataSet) throws InterruptedException, IOException {
-        //TODO remove the dataset. Smoke tests run with only one set of inputs. If you have multiple cases, put them in a sanity test
+    public void SC2_Invalid_Use() throws InterruptedException{
         //Create driver and browser for this particular test
+
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
@@ -135,7 +136,7 @@ public class Support_Chat implements ITest
 
         try {
            // Login
-            loginForMe (browserWindow,dataSet[0].toString (),dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail,Login.googlePass);
             // navigate to support chat page
             navigateToSupportChat (browserWindow);
 
@@ -162,24 +163,21 @@ public class Support_Chat implements ITest
 
 
 
-    // TODO there is no submit button and message is not mandatory
 
     /**
-     *Smoke tests for Invalid use of support chat
-     * Includes test case SC_003,SC_004,SC_007,SC_008
-     *Programmer: Seyedmehrad Adimi
-     * @param dataSet provides email and password to Login
+     * Regression test on Support Chat using one browser
+     * Includes test case SC_003,SC_007,SC_008
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Regression","Support_Chat","noDataProvider"},
-            dataProvider = "LG3_Input",
             priority = 85,
-            dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void SC_Regression(Object[] dataSet) throws InterruptedException, IOException {
-        //TODO Remove your data set. Regression tests only run once, with all various inputs sequentially.
+    public void SC_Regression() throws InterruptedException{
         //Create driver and browser for this particular test
+
         WebDriver browserWindow = environment.makeDriver();
         browserWindow.manage().window().maximize();
 
@@ -193,7 +191,7 @@ public class Support_Chat implements ITest
             Login.testRegressionForMe (browserWindow,false);
 
             // Login now
-            loginForMe (browserWindow,dataSet[0].toString (), dataSet[1].toString ());
+            loginForMe (browserWindow,Login.googleEmail, Login.googlePass);
 
             // Common Regression After Login
             Login.testRegressionForMe (browserWindow,true);
@@ -201,7 +199,15 @@ public class Support_Chat implements ITest
             // Testing SC_003: Verify whether the required details and fields are displayed in the 'Support Chat' page -> NO submit button
             checkFieldsAreDisplayed (browserWindow, wait);
 
-            // Testing SC_004: Verify all the text fields in the 'Support Chat' page are mandatory -> not mandatory
+            // Use the Support Chat and check again
+            WebElement inputText = browserWindow.findElement (By.id ("message-input"));
+
+            inputText.sendKeys ("Hello");
+            inputText.sendKeys (Keys.ENTER);
+            sleep (1);
+
+            checkFieldsAreDisplayed (browserWindow, wait);
+
 
             // Testing SC_007: Verify the Page URL, Page Heading and Page Title of 'Support Chat' page
             Login.testUrlAndTitleAndHeading (browserWindow,"https://juice-shop.herokuapp.com/#/chatbot", "OWASP Juice Shop", "Support Chat (powered by juicy-chat-bot)", SupportChatTitleCSS );
@@ -215,6 +221,14 @@ public class Support_Chat implements ITest
         }
     }
 
+
+    /**
+     * Helper method to check if the required fields are displayed
+     * Includes test case SC_003,SC_004,SC_007,SC_008
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param wait is the wair driver
+     */
     private void checkFieldsAreDisplayed(WebDriver browserWindow, WebDriverWait wait) {
         navigateToSupportChat(browserWindow);
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("chat-window")));
@@ -224,7 +238,12 @@ public class Support_Chat implements ITest
         Login.assertElement (ChatBox);
         Login.assertElement (inputMessage);
     }
-
+    /**
+     * Helper method to navigate to Support Chat Page
+     * Includes test case SC_003,SC_004,SC_007,SC_008
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     */
     private void navigateToSupportChat(WebDriver browserWindow){
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (sideMenuCSS)));
@@ -238,10 +257,22 @@ public class Support_Chat implements ITest
         SupportChat.click ();
     }
 
+    /**
+     * Helper method to Login
+     * Programmer: Seyedmehrad Adimi
+     * @param browserWindow is the driver
+     * @param email is the email to login
+     * @param password is the password to login
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     */
     private void loginForMe(WebDriver browserWindow,  String email, String password) throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
-        browserWindow.get (TestFunctions.website);
+
+        browserWindow.navigate ().refresh ();
+
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
+        wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (TestFunctions.navPath)));
+        sleep (3);
         TestFunctions.navToLogin (browserWindow);
 
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.id ("loginButtonGoogle")));
@@ -256,6 +287,11 @@ public class Support_Chat implements ITest
         wait.until (ExpectedConditions.visibilityOfElementLocated (By.cssSelector (titleCSS)));
     }
 
+    /**
+     * This is a helper method that helps use Thread.sleep method easily
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
+     **/
     private static void sleep(int a) throws InterruptedException {
 
         switch (a) {
@@ -274,9 +310,13 @@ public class Support_Chat implements ITest
             case 5:
                 Thread.sleep (5000);
                 break;
+            case 6:
+                Thread.sleep (500);
 
         }
     }
+
+
     /**
      * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
      * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/

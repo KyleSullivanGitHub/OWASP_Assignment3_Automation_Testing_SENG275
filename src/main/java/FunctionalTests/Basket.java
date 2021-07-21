@@ -55,7 +55,7 @@ public class Basket implements ITest{
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -70,8 +70,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket", "hasDataProvider"},
-            priority = 14,
+            groups = {"Smoke","Basket Smoke","Basket", "hasDataProvider"},
+            priority = 1,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -88,7 +88,7 @@ public class Basket implements ITest{
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -128,8 +128,8 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket", "noDataProvider"},
-            priority = 15,
+            groups = {"Smoke","Basket Smoke","Basket", "noDataProvider"},
+            priority = 2,
             enabled = true
     )
     public void BA2_Invalid_Usage() throws InterruptedException{
@@ -153,11 +153,11 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Sanity","Basket", "noDataProvider"},
-            priority = 63,
+            groups = {"Sanity","Basket Sanity","Basket", "noDataProvider"},
+            priority = 3,
             enabled = true
     )
-    public void BA3_Alternate_Usages() throws IOException, InterruptedException {
+    public void BA3_Basket_Functions() throws IOException, InterruptedException {
         //Create  browser for this particular test
         browserWindow = environment.makeDriver();
         try {
@@ -165,7 +165,7 @@ public class Basket implements ITest{
             browserWindow.manage().window().maximize();
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -182,17 +182,17 @@ public class Basket implements ITest{
 
             //Increase Quantity by one
             browserWindow.findElement(By.xpath(increaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "2"); //Quantity updated
 
             //Decrease Quantity by one
             browserWindow.findElement(By.xpath(decreaseQuantity_XPath)).click();
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(basketIconQuantity_XPath)).getText(), "1"); //Quantity updated
 
             //Remove Product
             browserWindow.findElement(By.xpath(removeProduct_XPath)).click();//click trash icon
-            Thread.sleep(500);
+            Thread.sleep(1000);
             assertEquals(browserWindow.findElement(By.xpath(totalPrice_XPath)).getText(), "Total Price: 0¤");
         }
         finally {
@@ -205,45 +205,46 @@ public class Basket implements ITest{
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Regression","Basket","noDataProvider"},
-            priority = 79,
+            groups = {"Regression","Basket Regression","Basket"},
+            priority = 4,
             enabled = true
     )
-    public void BA_Regression() {
-        //TODO ADD Basket REGRESSION TEST
+    public void BA_Regression() throws InterruptedException{
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
+
+            //Login/Initial steps
+            TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
+            Thread.sleep(1000);
+
+            //Navigate to Basket
+            browserWindow.findElement(By.xpath(basketIcon_XPath)).click();//click basket icon
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/basket", true);
+        } finally {
+            browserWindow.quit();
+        }
     }
 
 
-    /**
-     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
-     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
-     * Programmer: Canberk Akduygu
-     * @param method Test method whose name is to be changed
-     * @param testData The data parameters for the method
-     */
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        //Set name to (method name)_(first value in data provider)
-        testName.set(method.getName() + "_" + testData[0]);
+        testName.set(method.getName()+"_"+testData[0]);
     }
-    @BeforeMethod(onlyForGroups = {"noDataProvider"})
-    public void BeforeMethod(Method method)
-    {
-        //Set name to (method name)
-        testName.set(method.getName());
-    }
-    /**
-     * Returns the name of the test. Used to alter the name of tests performed multiple times
-     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
-     * Programmer: Canberk Akduygu
-     * @return Name of test
-     */
+
     @Override
     public String getTestName()
     {
         return testName.get();
     }
+
 
 }
 

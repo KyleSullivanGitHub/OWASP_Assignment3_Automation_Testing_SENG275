@@ -30,7 +30,7 @@ public class OrderHistory implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Nicole Makarowski
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -41,8 +41,8 @@ public class OrderHistory implements ITest
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Order_History","hasDataProvider"},
-            priority = 25,
+            groups = {"Smoke","Order History Smoke","Order History","hasDataProvider"},
+            priority = 1,
             dataProvider = "browserSwitch",
             dataProviderClass = Test_Data.class,
             enabled = true
@@ -57,7 +57,7 @@ public class OrderHistory implements ITest
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.navToLogin(browserWindow);
             Thread.sleep(500);
             TestFunctions.manualLogin(browserWindow, "Seng265!");
@@ -86,8 +86,8 @@ public class OrderHistory implements ITest
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Order_History", "noDataProvider"},
-            priority = 26,
+            groups = {"Smoke","Order History Smoke","Order History", "noDataProvider"},
+            priority = 1,
             enabled = true
     )
     public void OH2_After_Order() throws InterruptedException, IOException
@@ -100,7 +100,7 @@ public class OrderHistory implements ITest
             browserWindow.get(website);
             TestFunctions.waitForSite(browserWindow);
 
-            //Login/Initial steps??
+            //Login/Initial steps
             TestFunctions.login(browserWindow);
             Thread.sleep(1000);
 
@@ -131,38 +131,49 @@ public class OrderHistory implements ITest
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Regression","Order_History", "noDataProvider"},
-            priority = 83,
+            groups = {"Regression","Order History Regression","Order History", "noDataProvider"},
+            priority = 1,
             enabled = true
     )
     public void OH_Regression() throws InterruptedException, IOException
-    {}
+    {
+        browserWindow = environment.makeDriver();
+        browserWindow.manage().window().maximize();
+        try {
+            //Wait for Website to load
+            browserWindow.get(website);
+            TestFunctions.waitForSite(browserWindow);
 
-    /**
-     * Method for changing the name of tests performed multiple times by adding the first value in their data provider to the end of their names
-     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
-     * Programmer: Canberk Akduygu
-     * @param method Test method whose name is to be changed
-     * @param testData The data parameters for the method
-     */
+            //Login/Initial steps
+            TestFunctions.login(browserWindow);
+            TestFunctions.constEmail = "helloworld.owasp@gmail.com";
+            Thread.sleep(1000);
+
+            //Navigate to orders and payments
+            browserWindow.findElement(By.id("navbarAccount")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-0\"]/div/button[2]")).click();
+            browserWindow.findElement(By.xpath("//*[@id=\"mat-menu-panel-3\"]/div/button[1]")).click();
+
+            //Test Common regression
+            TestFunctions.commonRegression(browserWindow, website + "/#/order-history", true);
+        } finally {
+            browserWindow.quit();
+        }
+    }
+
     @BeforeMethod(onlyForGroups = {"hasDataProvider"})
     public void BeforeMethod(Method method, Object[] testData)
     {
-        //Set name to (method name)_(first value in data provider)
-        testName.set(method.getName() + "_" + testData[0]);
+        testName.set(method.getName()+"_"+testData[0]);
     }
+
     @BeforeMethod(onlyForGroups = {"noDataProvider"})
     public void BeforeMethod(Method method)
     {
         //Set name to (method name)
         testName.set(method.getName());
     }
-    /**
-     * Returns the name of the test. Used to alter the name of tests performed multiple times
-     * Taken from: https://www.swtestacademy.com/change-test-name-testng-dataprovider/
-     * Programmer: Canberk Akduygu
-     * @return Name of test
-     */
+
     @Override
     public String getTestName()
     {

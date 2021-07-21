@@ -14,13 +14,16 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITest;
 import org.testng.annotations.*;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.NoSuchElementException;
 import java.util.Random;
-
 import static org.testng.Assert.*;
+
+
+/*
+Tests for verifying the full functionality of the Choose Language feature
+*/
 
 public class Choose_Language implements ITest
 {
@@ -43,7 +46,7 @@ public class Choose_Language implements ITest
      *Create an environment for all tests using the same browser app.
      *Programmer: Seyedmehrad Adimi
      */
-    @BeforeSuite
+    @BeforeClass
     public void SetUp() throws IOException
     {
         environment = passBrowser.createBrowser();
@@ -56,6 +59,8 @@ public class Choose_Language implements ITest
      *Programmer: Seyedmehrad Adimi
      * @param chosenBrowser browser used for that test
      * @param dataSet object provides email and password
+     * @exception IOException Thrown if no browser is chosen for a test
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
     @Test(
             groups = {"Smoke","Choose_Language", "hasDataProvider"},
@@ -65,7 +70,6 @@ public class Choose_Language implements ITest
             enabled = true
     )
     public void CL1_Valid_Use(String chosenBrowser, Object[] dataSet) throws InterruptedException, IOException {
-        //TODO remove dataset. Split into a smoke test and a sanity test of all potential langauges (that work)(use a data provider, and have a seperate run for each, though you can create the browser just once and use it for all sanity tests)
         //Create driver and browser for this particular test
         TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
         WebDriver browserWindow = browser.makeDriver();
@@ -92,45 +96,14 @@ public class Choose_Language implements ITest
         }
     }
 
+
+
+
     /**
-     * Regression tests for Valid use of Choose Language
-     * Includes test cases CL_004,CL_005,CL_006
-     *Programmer: Seyedmehrad Adimi
-     * @param dataSet object provides email and password
+     * This is a helper method to help verifiying the languages chosen
+     * Programmer: Seyedmehrad Adimi
+     * @exception InterruptedException is thrown if a test is interrupted during a wait time
      */
-    @Test(
-            groups = {"Regression","Choose_Language", "noDataProvider"},
-            priority = 999,
-            dataProvider = "LG1_Input",
-            dataProviderClass = Test_Data.class,
-            enabled = true
-    )
-    // TODO no title for choose language
-    public void CL_Regression(Object[] dataSet) throws InterruptedException, IOException {
-        //TODO Delete. This test class does not need a regression test.
-        //Create driver and browser for this particular test
-        WebDriver browserWindow = environment.makeDriver();
-        browserWindow.manage().window().maximize();
-
-        browserWindow.get(TestFunctions.website);
-        TestFunctions.waitForSite(browserWindow);
-
-        try {
-            // Testing CL_004 : Verify the Page URL, Page Heading and Page Title of 'Choose Language' page
-                Login.testUrlAndTitleAndHeading (browserWindow,"https://juice-shop.herokuapp.com/#/","OWASP Juice Shop","All Products", titleCSS );
-            // Testing CL_005 : Verify the UI of  'Choose Language' page functionality
-                Login.testRegressionForMe (browserWindow,false);
-            // Testing CL_006 : Verify the 'Choose Language' page  functionality in all the supported environments -> is Tested automtically
-
-
-        }finally {
-            Thread.sleep(TestFunctions.endTestWait);
-            browserWindow.quit();
-        }
-    }
-
-
-
     private void TestThisLanguage(WebDriver browserWindow, String Language) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
         browserWindow.findElement(By.cssSelector (chooseLanguageCSS)).click ();
@@ -143,6 +116,7 @@ public class Choose_Language implements ITest
             assertEquals (Title.getText (), "Alle produkter");
             return;
         }else if (Language.equals ("Italiano")){
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (ItalianoCSS)));
             browserWindow.findElement (By.cssSelector (ItalianoCSS)).click ();
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (ItalianoTitleCSS)));
@@ -151,6 +125,7 @@ public class Choose_Language implements ITest
             assertEquals (Title.getText (), "Tutti i prodotti");
             return;
         }else if (Language.equals ("Magyar")){
+            wait.until (ExpectedConditions.elementToBeClickable (By.cssSelector (MagyarCSS)));
             browserWindow.findElement (By.cssSelector (MagyarCSS)).click ();
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector (MagyarTitleCSS)));
