@@ -38,6 +38,7 @@ public class DatabaseTest {
             ResultSet EntityList = stm.executeQuery ("SELECT * FROM "+Entity);
             System.out.println ("**************************************** List of "+Entity);
             while (EntityList.next ()){
+
                 //Retrieve by column name
                 int id;
                 String name;
@@ -53,7 +54,6 @@ public class DatabaseTest {
                 System.out.print("ID: "+ id);
                 System.out.println(", NAME: "+ name);
             }
-
         }catch (Exception e){
             System.out.println (e);
         }
@@ -99,6 +99,107 @@ public class DatabaseTest {
             System.out.println (e);
         }
     }
+
+
+
+    @Test(
+            dataProvider = "addClient",
+            dataProviderClass = DatabaseTesting_DataProvider.class
+    )
+    public static void dataInsertion(int ClientID, String FirstName, String LastName, String username, int numberOfPurchases, int warehouseID){
+        try {
+            Class.forName ("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
+            Statement stm = con.createStatement ();
+
+
+
+            // Insert new Client with the passed parameters
+            stm.executeUpdate ("INSERT INTO `Client` VALUES ("+ClientID+",'"+FirstName+"','"+LastName+"','"+username+"',"+numberOfPurchases+","+warehouseID+")");
+
+
+
+            // Assertion
+            ResultSet newClientResult = stm.executeQuery ("SELECT `First Name` FROM Client WHERE `Client ID` = "+ClientID+";");
+            newClientResult.next ();
+            String newClientName = newClientResult.getString ("First Name");
+            newClientResult.next ();
+
+            assertEquals (newClientName,FirstName);
+
+            // Print new Client list
+            System.out.println ("************************************** After Adding " + FirstName + " " + LastName+ " with ID: "+ ClientID);
+            printClient (stm);
+
+
+            System.out.println ("************************************** After resetting ");
+           // reset and delete the added one. we dont want to mess with the tables
+            stm.executeUpdate ("DELETE FROM Client WHERE `Client ID`= "+ClientID+";");
+            printClient (stm);
+
+
+        }catch (Exception e){
+            System.out.println (e);
+        }
+    }
+
+
+    @Test(
+            dataProvider = "RemoveClient",
+            dataProviderClass = DatabaseTesting_DataProvider.class
+    )
+    public static void dataRemoval(int ClientID){
+        try {
+            Class.forName ("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
+            Statement stm = con.createStatement ();
+
+            ResultSet toDelete = stm.executeQuery ("SELECT * FROM Client WHERE `Client ID` ="+ClientID+";");
+            toDelete.next ();
+            String FirstName = toDelete.getString ("First Name");
+            String LastName = toDelete.getString ("Last Name");
+            String username = toDelete.getString ("Username");
+            int numberOfPurchases = toDelete.getInt ("Number Of Purchases");
+            int warehouseID = toDelete.getInt ("Warehouse ID");
+            toDelete.next ();
+
+
+
+            stm.executeQuery ("SET foreign_key_checks = 0;");
+            try {
+                // Delete Client using the passed ID
+                stm.executeUpdate ("DELETE FROM Client WHERE `Client ID`= "+ClientID+";");
+            }catch (Exception e){
+                System.out.println (e);
+                System.out.println ("Client does not exist!");
+                return;
+            }
+            stm.executeQuery ("SET foreign_key_checks = 1;");
+
+
+
+            // Assertion
+            ResultSet newClientResult = stm.executeQuery ("SELECT * FROM Client WHERE `Client ID` = "+ClientID+";");
+            assertFalse (newClientResult.next ());
+
+            // Print new Client list
+            System.out.println ("************************************** After Removing Client with ID: "+ ClientID);
+            printClient (stm);
+
+
+            stm.executeUpdate ("INSERT INTO `Client` VALUES ("+ClientID+",'"+FirstName+"','"+LastName+"','"+username+"',"+numberOfPurchases+","+warehouseID+");");
+
+            System.out.println ("************************************** After resetting: "+ ClientID);
+            printClient (stm);
+
+
+        }catch (Exception e){
+            System.out.println (e);
+        }
+    }
+
+
+
 
     private static void updateAndResetClientNameWithID(String newName, int ClientID, Statement stm) throws SQLException {
         String updateClientName = "UPDATE Client SET `First Name` = '" + newName + "' WHERE `Client ID` =" + ClientID + ";";

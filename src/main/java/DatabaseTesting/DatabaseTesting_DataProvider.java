@@ -33,4 +33,24 @@ public class DatabaseTesting_DataProvider {
                 {"Product"}
         };
     }
+
+    @DataProvider(
+            name = "addClient"
+    )
+    public static Object[][] addClient()
+    {
+        return new Object[][]{
+                {44,"James", "Frizzors", "JamieFriz", 111, 3}
+        };
+    }
+
+    @DataProvider(
+            name = "RemoveClient"
+    )
+    public static Object[][] RemoveClient()
+    {
+        return new Object[][]{
+                {1}
+        };
+    }
 }
