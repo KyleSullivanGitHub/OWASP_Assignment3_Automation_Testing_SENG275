@@ -1,12 +1,18 @@
 package DatabaseTesting;
 
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 
 
+/**
+ *Database Test Class for OWASP Juice Shop
+ * Database imported from Local Host
+ * Programmer: Seyedmehrad Adimi
+ */
 public class DatabaseTest {
 
     public static void main(String[] args) {
