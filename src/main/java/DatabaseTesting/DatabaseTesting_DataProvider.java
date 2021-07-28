@@ -7,6 +7,13 @@ import org.testng.annotations.*;
 import java.io.IOException;
 import java.util.Random;
 
+
+
+/**
+ * Database data provider class for OWASP Juice Shop Database testing
+ * Programmer: Seyedmehrad Adimi
+ */
+
 public class DatabaseTesting_DataProvider {
 
     @DataProvider(
