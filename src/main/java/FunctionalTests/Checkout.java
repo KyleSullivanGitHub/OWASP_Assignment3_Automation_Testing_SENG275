@@ -24,12 +24,12 @@ public class Checkout implements ITest {
     String addToCart_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-search-result/div/div/div[2]/mat-grid-list/div/mat-grid-tile[2]/figure/mat-card/div[2]/button";
     String basketIcon_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-navbar/mat-toolbar/mat-toolbar-row/button[4]/span[1]/mat-icon";
     String productName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-basket/mat-card/app-purchase-basket/mat-table/mat-row/mat-cell[2]";
-    String checkoutButton_XPath = "//*[@id=\"checkoutButton\"]";
-    String addSavedAddress_XPath = "//*[@id=\"card\"]/app-address/mat-card/div/button";
-    String checkoutProductName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[1]";
-    String checkoutProductPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[2]";
-    String checkoutProductQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[3]";
-    String checkoutTotalPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[4]";
+    static String checkoutButton_XPath = "//*[@id=\"checkoutButton\"]";
+    static String addSavedAddress_XPath = "//*[@id=\"card\"]/app-address/mat-card/div/button";
+    static String checkoutProductName_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[1]";
+    static String checkoutProductPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[2]";
+    static String checkoutProductQuantity_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[3]";
+    static String checkoutTotalPrice_XPath = "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-order-completion/mat-card/div[2]/mat-table/mat-row/mat-cell[4]";
     /**
      * Create an environment for all tests using the same browser app.
      * Programmer: Nicole Makarowski

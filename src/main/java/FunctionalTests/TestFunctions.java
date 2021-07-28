@@ -3,6 +3,7 @@ package FunctionalTests;
 import Setup.CreateEnvironment;
 import Setup.TestBrowser;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.Select;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -17,6 +18,7 @@ public class TestFunctions
 {
     private static boolean registerOnce = false;//boolean to see if the constant account has been created for this test session
     private static boolean addressMade = false;//Booelan to see if a shipping address has already been made for the google account.
+    private static boolean paymentMade = false;//boolean to see if a payment method has already been made for teh account
     public static String website = "https://juice-shop.herokuapp.com/#/";//main website
     public static String OS = System.getProperty("os.name").toLowerCase(); //operation system of user
 
@@ -62,14 +64,23 @@ public class TestFunctions
     private static boolean addressSetup = false;
     public static Object[] addressSet;
 
+    //Declarations for constant payment values
+    private static boolean paymentSetup = false;
+    public static String payName;
+    public static String cardNo;
+    public static String exMonth;
+    public static String exYear;
+    public static String finalFour;
+
+
 
     /**
      * Method to set up the constant random account values
      * Programmer: Kyle Sullivan
      */
-    private static void constRandomAccount()
+    public static void constRandomAccount()
     {
-        if(!registerSetup)
+        if (!registerSetup)
         {
             //Create a random number to add to the end of the email name
             int emailNumRandomizer = 0;
@@ -93,7 +104,7 @@ public class TestFunctions
      */
     private static void constGoogleAccount()
     {
-        if(!googleSetup)
+        if (!googleSetup)
         {
             googleEmail = "helloworld.owasp@gmail.com";
             googlePassword = "seng275@";
@@ -107,13 +118,19 @@ public class TestFunctions
      */
     public static void constAddressValues()
     {
-        if(!addressSetup)
+        if (!addressSetup)
         {
+            int nameNumRandomizer = 0;
+            Random emailRandomizer = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                nameNumRandomizer += emailRandomizer.nextInt(9);
+            }
             addressSet = new Object[]
                     {
                             "",
                             "Canada",//Country
-                            "Seng275",//Name
+                            "Seng275" + nameNumRandomizer,//Name
                             "9999999",//PhoneNumber
                             "A0A 0A0",//Zip Code
                             "Internet",//Address
@@ -121,93 +138,123 @@ public class TestFunctions
                             "BC",//State
                     };
             addressSetup = true;
+            finalFour = ""+nameNumRandomizer;
+        }
+    }
+
+    /**
+     * Declarations for the constant payment values.
+     */
+    public static void constPaymentValues()
+    {
+        String cardNumber = "";
+        Random emailRandomizer = new Random();
+        for (int i = 1; i <= 4; i++)
+        {
+            cardNumber += emailRandomizer.nextInt(9);
+        }
+
+        if (!paymentSetup)
+        {
+            payName = "Hellow World";
+            cardNo = "111122223333"+cardNumber;
+            exMonth = "1";
+            exYear = "2080";
+            paymentSetup = true;
         }
     }
 
     /**
      * Pauses the test until the cookie popup on site visitation is present. Necessary due to slow loading times encountered, causing incorrectly failed tests
      * Programmer: Kyle Sullivan
+     *
      * @param test Webdriver to pause
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSite(WebDriver test) throws InterruptedException
     {
-        waitForSitePrimary(test,cookieElement, true, false);
-        waitForSiteXpath(test,"/html/body/div[1]/div/a",true);
+        waitForSitePrimary(test, cookieElement, true, false);
+        waitForSiteXpath(test, "/html/body/div[1]/div/a", true);
     }
 
     /**
      * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
-     * @param test Webdriver to pause
+     *
+     * @param test        Webdriver to pause
      * @param cssSelector element to look for
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSite(WebDriver test, String cssSelector) throws InterruptedException
     {
-        waitForSitePrimary(test,cssSelector, false, false);
+        waitForSitePrimary(test, cssSelector, false, false);
     }
+
     /**
      * Pauses the test until a specific element on the site is present via cssSelector. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
-     * @param test Webdriver to pause
+     *
+     * @param test        Webdriver to pause
      * @param cssSelector element to look for
      * @param interactive boolean to instruct the wait period to try clicking the element as well.
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSite(WebDriver test, String cssSelector, boolean interactive) throws InterruptedException
     {
-        waitForSitePrimary(test,cssSelector,interactive, false);
+        waitForSitePrimary(test, cssSelector, interactive, false);
     }
 
     /**
      * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
-     * @param test Webdriver to pause
-     * @param xPath element to look for
+     *
+     * @param test        Webdriver to pause
+     * @param xPath       element to look for
      * @param interactive boolean to instruct the wait period to try clicking the element as well.
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSiteXpath(WebDriver test, String xPath, boolean interactive) throws InterruptedException
     {
-        waitForSitePrimary(test,xPath,interactive, true);
+        waitForSitePrimary(test, xPath, interactive, true);
 
     }
 
     /**
      * Pauses the test until a specific element on the site is present. Neccessary due to slow loading times causing tests to invalidly fail.
      * Programmer: Kyle Sullivan
-     * @param test Webdriver to pause
+     *
+     * @param test  Webdriver to pause
      * @param xPath element to look for
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void waitForSiteXpath(WebDriver test, String xPath) throws InterruptedException
     {
-        waitForSitePrimary(test,xPath,false, true);
+        waitForSitePrimary(test, xPath, false, true);
     }
 
     /**
      * Functionality for waitForSite
-     * @param test Webdriver to pause
-     * @param path element to look for
+     *
+     * @param test        Webdriver to pause
+     * @param path        element to look for
      * @param interactive whether to click on the element
-     * @param xPath whether to nav via xpath or not
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @param xPath       whether to nav via xpath or not
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
-    private static void waitForSitePrimary(WebDriver test, String path,boolean interactive, boolean xPath) throws InterruptedException
+    private static void waitForSitePrimary(WebDriver test, String path, boolean interactive, boolean xPath) throws InterruptedException
     {
         boolean ready = false; //whether the element has been found
         WebElement element;
         By find = !xPath ? By.cssSelector(path) : By.xpath(path); //Whether to check by xpath or cssinput
-        while(!ready)
+        while (!ready)
         {
             try
             {
                 //find the element
-                    element = test.findElement(find);
+                element = test.findElement(find);
 
                 //if the element is presented...
-                if(element.isDisplayed())
+                if (element.isDisplayed())
                 {
                     if (interactive)
                         element.click();
@@ -216,7 +263,7 @@ public class TestFunctions
                 }
             }
             //if not, catch the exception, wait a moment then try again.
-            catch(NoSuchElementException | ElementClickInterceptedException exception)
+            catch (NoSuchElementException | ElementClickInterceptedException exception)
             {
                 Thread.sleep(100);
             }
@@ -226,16 +273,17 @@ public class TestFunctions
     /**
      * Quick navigation to the login page from any other page.
      * Programmer: Kyle Sullivan
+     *
      * @param test web browser for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void navToLogin(WebDriver test) throws InterruptedException
     {
 
-        try{
+        try
+        {
             test.findElement(By.cssSelector(navbarLogin)).click();
-        }
-        catch(NoSuchElementException | ElementClickInterceptedException qucikLog)
+        } catch (NoSuchElementException | ElementClickInterceptedException qucikLog)
         {
             //Find the account button
             test.findElement(By.cssSelector(navPath)).click();
@@ -250,8 +298,9 @@ public class TestFunctions
     /**
      * Quick navigation to the registration page from any other page.
      * Programmer: Kyle Sullivan
+     *
      * @param test web browser for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void navToReg(WebDriver test) throws InterruptedException
     {
@@ -274,6 +323,7 @@ public class TestFunctions
     /**
      * Navigate to the saved address page via the account menu
      * Programmer: Kyle Sullivan
+     *
      * @param test Test environment to act in
      * @throws InterruptedException Thrown if the test was interruped during a thread waiting period
      */
@@ -286,22 +336,43 @@ public class TestFunctions
         //click on account menu
         test.findElement(By.cssSelector(navPath)).click();
         //click on orders and payments
-        waitForSiteXpath(test,xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3,true);
+        waitForSiteXpath(test, xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3, true);
         //click on my addresses
-        waitForSiteXpath(test,xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3,true);
+        waitForSiteXpath(test, xPathPart1 + 3 + xPathPart2 + 3 + xPathPart3, true);
+    }
+
+    /**
+     * Navigate to the saved payments via the account menu
+     * Programmer: Kyle Sullivan
+     *
+     * @param test test environment ot act in
+     * @throws InterruptedException Thrown if test was interrputed during a thread waiting period.
+     */
+    public static void navToSavedPayment(WebDriver test) throws InterruptedException
+    {
+        String xPathPart1 = "/html/body/div[3]/div[";
+        String xPathPart2 = "]/div/div/div/button[";
+        String xPathPart3 = "]";
+
+        //click on account menu
+        test.findElement(By.cssSelector(navPath)).click();
+        //click on orders and payments
+        waitForSiteXpath(test, xPathPart1 + 2 + xPathPart2 + 2 + xPathPart3, true);
+        //click on my addresses
+        waitForSiteXpath(test, xPathPart1 + 3 + xPathPart2 + 4 + xPathPart3, true);
     }
 
 
     /**
      * Creates an account that can be used for any test, using a separate window.
      * Programmer: Kyle Sullivan
-     * @exception  IOException Thrown if no browser was selected for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
-
+     *
+     * @throws IOException          Thrown if no browser was selected for test
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void createAccount() throws IOException, InterruptedException
     {
-        if(!registerOnce)
+        if (!registerOnce)
         {
             constRandomAccount();
             //create the environment to perform a registration
@@ -322,8 +393,7 @@ public class TestFunctions
                 //Register the Account
                 signUp.fillOutReg(tempBrowser, new Object[]{constEmail, constPassword, constPassword, true, constAnswer});
                 waitForSite(tempBrowser, regButton, true);
-            }
-            finally
+            } finally
             {
                 //close the browser
                 Thread.sleep(endTestWait);
@@ -335,20 +405,30 @@ public class TestFunctions
     }
 
     /**
+     * Quickly confirms a registration of the constant account outside of the create account method
+     * Programmer: Kyle Sullivan
+     */
+    public static void completedRegistration()
+    {
+        registerOnce = true;
+    }
+
+    /**
      * Logs into the site via google and a pre-created google account.
      * Programmer: Seyedmehrad Adimi, Nicole Makarowski, Kyle Sullivan
+     *
      * @param test Test to log in to.
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void login(WebDriver test) throws InterruptedException
     {
         navToLogin(test);
 
         //register via google
-        waitForSite(test,loginButtonG,true);
+        waitForSite(test, loginButtonG, true);
         Thread.sleep(500);
 
-        if(!test.getCurrentUrl().startsWith(website))
+        if (!test.getCurrentUrl().startsWith(website))
         {
             constGoogleAccount();
             //fill out email
@@ -365,71 +445,75 @@ public class TestFunctions
             passwordInput.sendKeys(googlePassword + Keys.ENTER);//enter password
         }
         //as long as we are not back on the main page fo the website, wait
-        while(!test.getCurrentUrl().equals(website))
+        while (!test.getCurrentUrl().equals(website))
             Thread.sleep(100);
 
-        TestFunctions.waitForSite(test,navPath);//wait until the site has loaded
+        TestFunctions.waitForSite(test, navPath);//wait until the site has loaded
     }
 
     /**
      * Logs into the constant account for any test.
      * Programmer: Kyle Sullivan
+     *
      * @param test browser window to log into.
-     * @exception  IOException Thrown if no Browser was selected for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws IOException          Thrown if no Browser was selected for test
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void manualLogin(WebDriver test) throws IOException, InterruptedException
     {
         quickLogFill(test, constPassword);
-        test.findElement(By.id (logButton)).click (); //click on login
+        test.findElement(By.id(logButton)).click(); //click on login
     }
 
     /**
      * Logs into the constant account for any test, using a different password.
      * Programmer: Kyle Sullivan
-     * @param test browser window to log into.
+     *
+     * @param test     browser window to log into.
      * @param password alternate password to use
-     * @exception  IOException Thrown if no Browser was selected for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws IOException          Thrown if no Browser was selected for test
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void manualLogin(WebDriver test, String password) throws IOException, InterruptedException
     {
         quickLogFill(test, password);
-        test.findElement(By.id (logButton)).click (); //click on login
+        test.findElement(By.id(logButton)).click(); //click on login
     }
 
     /**
      * Fills out the login page with the constant account.
      * Programmer: Seyedmehrad Adimi, Kyle Sullivan
-     * @param test browser window to log into.
+     *
+     * @param test     browser window to log into.
      * @param password alternate password to use
-     * @exception  IOException Thrown if no Browser was selected for test
-     * @exception  InterruptedException Thrown if test was interrupted during a wait period
+     * @throws IOException          Thrown if no Browser was selected for test
+     * @throws InterruptedException Thrown if test was interrupted during a wait period
      */
     public static void quickLogFill(WebDriver test, String password) throws IOException, InterruptedException
     {
         //check if the constant account has been created for this test session
-        if(!registerOnce)
+        if (!registerOnce)
             createAccount();
         //Check if we are already on the login page
-        if(!test.getCurrentUrl().equals(website+"login"))
+        if (!test.getCurrentUrl().equals(website + "login"))
             navToLogin(test);
 
         Thread.sleep(500);
 
         test.findElement(By.id("email")).sendKeys(constEmail); //enter email
-        test.findElement(By.id ("password")).sendKeys(password); //enter password
+        test.findElement(By.id("password")).sendKeys(password); //enter password
     }
 
     /**
      * Creates a new address for any tests requiring one.
      * Programmer: Kyle Sullivan
+     *
      * @throws InterruptedException Thrown if test is interrupted during a thread waiting period
      */
     public static void createAddress() throws InterruptedException, IOException
     {
         //Check if a constant address is already made
-        if(!addressMade)
+        if (!addressMade)
         {
             //Create a new setup environment to create an address in.
             CreateEnvironment passBrowser = new CreateEnvironment();
@@ -449,27 +533,56 @@ public class TestFunctions
                 navToSavedAddresses(test);
 
                 //Click on Create New Address
-                waitForSiteXpath(test,"/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button",true);
-                constAddressValues();
+                waitForSiteXpath(test, "/html/body/app-root/div/mat-sidenav-container/mat-sidenav-content/app-saved-address/div/app-address/mat-card/div/button", true);
+                fillOutAddress(test);
 
-                //Set address values
-                for (int i = 1; i <= 7; i++)
-                {
-                    if (i != 5)
-                        test.findElement(By.cssSelector(mInput + i)).sendKeys((String) addressSet[i]);
-                    else
-                        test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
-                }
-                waitForSite(test,"#submitButton",true);
-                addressMade = true;
-            }
-            finally
+            } finally
             {
                 Thread.sleep(endTestWait);
                 test.quit();
             }
         }
     }
+
+    public static void fillOutAddress(WebDriver test) throws InterruptedException
+    {
+        constAddressValues();
+        //Set address values
+        for (int i = 1; i <= 7; i++)
+        {
+            if (i != 5)
+                test.findElement(By.cssSelector(mInput + i)).sendKeys((String) addressSet[i]);
+            else
+                test.findElement(By.cssSelector("#address")).sendKeys((String) addressSet[i]);
+        }
+        waitForSite(test, "#submitButton", true);
+        addressMade = true;
+    }
+
+    /**
+     * QUick fill out of a payment form with constant values
+     * Programmers: Nicole Makarowski, Kyle Sullivan
+     * @param test test environment to work int
+     * @throws InterruptedException Thrown if the test is interrupted during a thread waiting period
+     * @throws IOException Thrown if no browser is set for test
+     */
+    public static void fillOutPayment(WebDriver test) throws InterruptedException, IOException
+    {
+        constPaymentValues();
+        //Set address values
+        TestFunctions.waitForSiteXpath(test, "//*[@id=\"mat-expansion-panel-header-0\"]", true);
+        Thread.sleep(3000);
+        findRadioButton(test, "mat-input-", 1, 15,true).sendKeys(payName);//Name
+        findRadioButton(test, "mat-input-", 1, 15,true).sendKeys(cardNo);//Card No
+
+        new Select(findRadioButton(test, "mat-input-", 1, 15,true)).selectByVisibleText(exMonth);//expiry month
+        new Select(findRadioButton(test, "mat-input-", 1, 15,true)).selectByVisibleText(exYear);//expiry year
+
+        waitForSite(test,"#submitButton",true);
+        paymentMade = true;
+
+    }
+
 
     //Regression Constants Orders & Payment
     //Logged in account menu options
@@ -687,7 +800,7 @@ public class TestFunctions
      * Programmer: Kyle Sullivan
      * @param testing Test environment to test in
      */
-    private static void assertWebElement(WebElement testing)
+    public static void assertWebElement(WebElement testing)
     {
         //Check that the element is enabled
         assertTrue(testing.isEnabled());
@@ -710,18 +823,35 @@ public class TestFunctions
      * @param optionTryLimit ending index for element
      * @return the WebElement if found, or null if unable to find.
      */
-    public static WebElement findRadioButton(WebDriver browserWindow, String idPrefix, int optionTry, int optionTryLimit){
-        if (optionTry > optionTryLimit)
-            return null;
-
-        try {
-            //Try an potential option
-            WebElement element = browserWindow.findElement(By.id(idPrefix + optionTry));
-            return element;
+    public static WebElement findRadioButton(WebDriver browserWindow, String idPrefix, int optionTry, int optionTryLimit) throws IOException, InterruptedException
+    {
+        for (int i = optionTry; i <= optionTryLimit; i++)
+        {
+            try
+            {
+                //Try an potential option
+                WebElement element = browserWindow.findElement(By.id(idPrefix + i));
+                return element;
+            } catch (NoSuchElementException ignore) {}
         }
-        catch (Exception NoSuchElementException) {
-            return findRadioButton(browserWindow, idPrefix, ++optionTry, optionTryLimit);
-        }
+        return null;
     }
+
+    public static WebElement findRadioButton(WebDriver browserWindow, String idPrefix, int optionTry, int optionTryLimit, Boolean filter) throws IOException, InterruptedException
+    {
+        for (int i = optionTry; i <= optionTryLimit; i++)
+        {
+            try
+            {
+                //Try an potential option
+                WebElement element = browserWindow.findElement(By.id(idPrefix + i));
+                if(!element.getAttribute("class").contains("ng-valid"))
+                    return element;
+            } catch (NoSuchElementException ignore) {}
+        }
+        return null;
+    }
+
+
 
 }
