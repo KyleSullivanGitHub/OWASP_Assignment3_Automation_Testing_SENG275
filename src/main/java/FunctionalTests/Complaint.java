@@ -78,7 +78,7 @@ public class Complaint implements ITest
         WebDriver browserWindow = browser.makeDriver();
         browserWindow.manage().window().maximize();
 
-        // Website setup
+        //  Website setup
         browserWindow.get(TestFunctions.website);
         TestFunctions.waitForSite(browserWindow);
         WebDriverWait wait = new WebDriverWait(browserWindow,10);
