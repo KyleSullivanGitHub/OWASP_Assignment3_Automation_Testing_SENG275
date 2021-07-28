@@ -43,10 +43,10 @@ public class DatabaseTesting_DataProvider {
     public static Object[][] addClient()
     {
         return new Object[][]{
-                {44,"James Frizzors","JamieFriz", 111, 3},
-                {42,"Ben Drover","Bendvr", 131, 4},
-                {45,"Salam Hello","salamH", 122, 1},
-                {51,"No Name","NoNameMe", 111, 3}
+                {44,"James Frizzors","JamieFriz", 0, 3},
+                {42,"Ben Drover","Bendvr", 0, 4},
+                {45,"Salam Hello","salamH", 0, 1},
+                {51,"No Name","NoNameMe",0, 3}
         };
     }
 

@@ -20,13 +20,22 @@ import org.springframework.test.annotation.DirtiesContext;
 
 
 /**
- *Database Test Class for OWASP Juice Shop
+ * Database Test Class for OWASP Juice Shop
  * Database imported from Local Host
  * Programmer: Seyedmehrad Adimi
  */
 public class DatabaseTest {
     private static Connection con;
 
+
+
+    /**
+     * Database Test for Valid Extraction from the database of OWASP Juice Shop
+     * The test gets the entity as a parameter and prints out the table of the entity.
+     * The results for this test are manually compared with the database tables from MySQL to ensure accuracy.
+     * Programmer: Seyedmehrad Adimi
+     * @param Entity this is the name of the entity that needs to be extracted.
+     */
     @Test(
             dataProvider = "extraction",
             dataProviderClass = DatabaseTesting_DataProvider.class
@@ -35,12 +44,10 @@ public class DatabaseTest {
         try {
             System.out.println ("\nThis is a Test for Data Extraction from Different Entities. We are Extracting "+ Entity+" Now");
 
+            Statement stm = getStatement ();
 
-
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
             ResultSet EntityList = stm.executeQuery ("SELECT * FROM "+Entity);
+
             System.out.println ("**************************************** List of "+Entity+":");
             while (EntityList.next ()){
 
@@ -60,6 +67,16 @@ public class DatabaseTest {
         }
     }
 
+
+    /**
+     * Database Test for Valid update of the database of different entities' name of OWASP Juice Shop.
+     * The test gets the entity, new name, and ID as parameters and updates the name of the particular entity with the particular ID.
+     * Programmer: Seyedmehrad Adimi
+     * @param Entity this is the name of the entity that needs to be extracted.
+     * @param newName new name to be replaced with the old one
+     * @param ID this is to be used to find the right row to change
+     * NOTE: To keep the table final, all the changes are reset. However, they are printed out, so the changes and the accuracy of the code can be verified
+     */
     @Test(
             dataProvider = "updateName",
             dataProviderClass = DatabaseTesting_DataProvider.class
@@ -68,9 +85,7 @@ public class DatabaseTest {
         try {
             System.out.println ("\nThis is a Test for Updating Name for Different Entities. We are Updating "+ Entity+" with ID: "+ID+" to "+ newName+" Now");
 
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
+            Statement stm = getStatement ();
 
             // Get the name to be changed to we can reset it after updating, we dont want to mess with the tables
             ResultSet previousNameResult = stm.executeQuery ("SELECT `"+Entity+" Name` FROM "+Entity+" WHERE `"+Entity+" ID` = "+ID+";");
@@ -110,6 +125,18 @@ public class DatabaseTest {
     }
 
 
+
+    /**
+     * Database Test for Valid Insertion to the OWASP Juice Shop database of Client entity.
+     * The test gets the Client ID, Name, username, number of purchases, and warehouse ID as parameters and adds the new client to the list.
+     * Programmer: Seyedmehrad Adimi
+     * @param ClientID this is the new client's ID
+     * @param Name this is the new client's name
+     * @param username this is the new client's username
+     * @param numberOfPurchases this is the new client's number of purchases
+     * @param warehouseID this is the new client's warehouse ID.
+     * NOTE: To keep the table final, all the changes are reset. However, they are printed out, so the changes and the accuracy of the code can be verified
+     */
     @Test(
             dataProvider = "addClient",
             dataProviderClass = DatabaseTesting_DataProvider.class
@@ -120,10 +147,7 @@ public class DatabaseTest {
             System.out.println ("\nThis is a Test for Data Insertion for Client. We are Inserting "+ Name+" with ID: "+ClientID+" Now");
 
 
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
-
+            Statement stm = getStatement ();
 
 
             // Insert new Client with the passed parameters
@@ -155,6 +179,13 @@ public class DatabaseTest {
         }
     }
 
+    /**
+     * Database Test for Valid Removal from the OWASP Juice Shop database of Client entity.
+     * The test gets the Client ID as the parameter and deletes the corresponding client.
+     * Programmer: Seyedmehrad Adimi
+     * @param ClientID this is the ID of the client to be deleted from the database.
+     * NOTE: To keep the table final, all the changes are reset. However, they are printed out, so the changes and the accuracy of the code can be verified
+     */
 
     @Test(
             dataProvider = "RemoveClient",
@@ -165,9 +196,7 @@ public class DatabaseTest {
             System.out.println ("\nThis is a Test for Data Removal for Client. We are Removing Client with ID: "+ClientID+" Now");
 
 
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
+            Statement stm = getStatement ();
 
             ResultSet toDelete = stm.executeQuery ("SELECT * FROM Client WHERE `Client ID` ="+ClientID+";");
             toDelete.next ();
@@ -213,6 +242,12 @@ public class DatabaseTest {
     }
 
 
+    /**
+     * Database Test for OWASP Juice Shop database to check that the entities have the proper primary keys
+     * The test gets the Entity as the only parameter and checks the primary key to be correct.
+     * Programmer: Seyedmehrad Adimi
+     * @param Entity the entity to be checked about its primary key
+     */
     @Test(
             dataProvider = "primaryKeysData",
             dataProviderClass = DatabaseTesting_DataProvider.class
@@ -220,13 +255,12 @@ public class DatabaseTest {
     public static void primaryKeysTest(String Entity){
         try {
 
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
+            Statement stm = getStatement ();
 
             ResultSet primaryKey= stm.executeQuery ("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'OWASP' AND TABLE_NAME = "+ "'"+Entity+"'"+" AND COLUMN_KEY = 'PRI';");
             primaryKey.next ();
             String EntityKey = primaryKey.getString ("COLUMN_NAME");
+            System.out.println ("The Primary Key for "+ Entity + " is: "+ EntityKey);
             primaryKey.next ();
 
             assertEquals (Entity + " ID", EntityKey);
@@ -237,27 +271,34 @@ public class DatabaseTest {
         }
     }
 
+    /**
+     * Database Test for OWASP Juice Shop database to check that the entities have the proper foreign keys
+     * The test gets the Entity as the only parameter and checks the foreign key to be correct.
+     * Programmer: Seyedmehrad Adimi
+     * @param Entity the entity to be checked about its foreign key
+     */
     @Test(
             dataProvider = "primaryKeysData",
             dataProviderClass = DatabaseTesting_DataProvider.class
     )
+
     public static void ForeignKeysTest(String Entity){
         try {
 
-            Class.forName ("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP","root","Meri.ad900");
-            Statement stm = con.createStatement ();
+            Statement stm = getStatement ();
 
             ResultSet foreignKey= stm.executeQuery ("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'OWASP' AND TABLE_NAME = "+ "'"+Entity+"'"+" AND COLUMN_KEY = 'MUL';");
 
             String[] arrayOfFKeys = new String[30];
             int i=0;
-           // System.out.println ("this "+ Entity);
+            System.out.println ("The Foreign Keys for "+ Entity+" are : ");
             while (foreignKey.next ()){
                 String EntityKey = foreignKey.getString ("COLUMN_NAME");
                 arrayOfFKeys[i] = String.copyValueOf(EntityKey.toCharArray ());
+                System.out.println (arrayOfFKeys[i]);
                 i++;
             }
+            System.out.println ();
 
             switch (Entity) {
                 case "Employee":
@@ -287,12 +328,23 @@ public class DatabaseTest {
         }
     }
 
+    /**
+     * private helper method to help for the setup of the statement to be executed
+     * Programmer: Seyedmehrad Adimi
+     * @exception ClassNotFoundException thrown if a class is not found
+     * @exception SQLException thrown if there is any problems with the SQL queries.
+     */
+    private static Statement getStatement() throws ClassNotFoundException, SQLException {
+        Class.forName ("com.mysql.cj.jdbc.Driver");
+        con = DriverManager.getConnection ("jdbc:mysql://localhost:3306/OWASP", "root", "Meri.ad900");
+        return con.createStatement ();
+    }
 
-
-
-
-
-
+    /**
+     * private helper method to help printing the entity tables
+     * Programmer: Seyedmehrad Adimi
+     * @exception SQLException thrown if there is any problems with the SQL queries.
+     */
     private static void printEntity(String Entity, Statement stm) throws SQLException {
         ResultSet ClientList = stm.executeQuery ("SELECT * FROM "+Entity);
         while (ClientList.next ()){
