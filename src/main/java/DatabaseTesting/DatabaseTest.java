@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import javax.management.Query;
 import javax.swing.text.html.parser.Entity;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import static org.testng.Assert.*;
@@ -44,6 +46,13 @@ public class DatabaseTest {
         try {
             System.out.println ("\nThis is a Test for Data Extraction from Different Entities. We are Extracting "+ Entity+" Now");
 
+
+
+            File myObj = new File("src/main/java/DatabaseTesting/"+Entity+".txt");
+            FileWriter myWriter = new FileWriter(Entity+".txt");
+
+
+
             Statement stm = getStatement ();
 
             ResultSet EntityList = stm.executeQuery ("SELECT * FROM "+Entity);
@@ -58,10 +67,13 @@ public class DatabaseTest {
                 id  = EntityList.getInt(Entity+" ID");
                 name= EntityList.getString(Entity+" Name");
 
+                myWriter.write("ID: "+ id);
+                myWriter.write(", NAME: "+ name+"\n");
                 //Display values
                 System.out.print("ID: "+ id);
                 System.out.println(", NAME: "+ name);
             }
+            myWriter.close();
         }catch (Exception e){
             System.out.println (e);
         }

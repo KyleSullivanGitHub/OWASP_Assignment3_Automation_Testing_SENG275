@@ -1,0 +1,24 @@
+ID: 1, NAME: Anniversary Ticket
+ID: 2, NAME: Apple Juice
+ID: 3, NAME: Apple Pomace
+ID: 4, NAME: Banana Juice
+ID: 5, NAME: Art Work
+ID: 6, NAME: Carrot Juice
+ID: 7, NAME: Eggfruit Juice
+ID: 8, NAME: Fruit Press
+ID: 9, NAME: Green Smoothie
+ID: 10, NAME: Juice Shop "Permafrost" 2020 Edition
+ID: 11, NAME: Lemon Juice
+ID: 12, NAME: Melon Bike (Comeback-Product 2018 Edition)
+ID: 13, NAME: King of the Hill Facemask
+ID: 14, NAME: CTF Girlie-Shirt
+ID: 15, NAME: Juice Shop Card (non-foil)
+ID: 16, NAME: Juice Shop Coaster
+ID: 17, NAME: Holographic Sticker
+ID: 18, NAME: Juice Shop Hoodie
+ID: 19, NAME: Juice Shop Iron-Ons (16pcs)
+ID: 20, NAME: Juice Shop Logo (3D-printed)
+ID: 21, NAME: Juice Shop Magnets (16pcs)
+ID: 22, NAME: Juice Shop Mug
+ID: 23, NAME: Juice Shop Sticker Page
+ID: 24, NAME: Juice Shop Sticker Single
