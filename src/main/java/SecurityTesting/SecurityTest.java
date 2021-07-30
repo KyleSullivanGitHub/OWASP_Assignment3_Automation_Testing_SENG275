@@ -2,6 +2,7 @@ package SecurityTesting;
 
 import FunctionalTests.Logout;
 import FunctionalTests.TestFunctions;
+import FunctionalTests.Test_Data;
 import Setup.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -120,12 +121,15 @@ public class SecurityTest {
      *Programmer: Nicole Makarowski
      */
     @Test(
-            groups = {"Smoke","Basket Smoke","Basket", "noDataProvider"},
-            priority = 2,
+            groups = {"Security", "hasDataProvider"},
+                    priority = 1,
+            dataProvider = "browserSwitch",
+            dataProviderClass = Test_Data.class,
             enabled = true
     )
-    public void SEC2_Logout_then_hit_back() throws InterruptedException{
-        browserWindow = environment.makeDriver();
+    public void SEC2_Logout_persistence(String chosenBrowser) throws IOException, InterruptedException {
+        TestBrowser browser = passBrowser.createBrowser(chosenBrowser);
+        browserWindow = browser.makeDriver();
         try {
             browserWindow.manage().window().maximize();
             browserWindow.get(website);
@@ -157,4 +161,6 @@ public class SecurityTest {
         }
 
     }
+
+
 }
